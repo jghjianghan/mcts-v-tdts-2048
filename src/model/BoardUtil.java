@@ -120,7 +120,7 @@ public class BoardUtil {
      * @param move The move to be checked
      * @return Whether the move valid in current state
      */
-    public static boolean isMoveValid(long code, Move move){
+    public static boolean isMoveValid(long code, GameAction move){
         switch(move){
             case LEFT:
                 for(int i = 0; i<4; i++){
@@ -180,16 +180,16 @@ public class BoardUtil {
      * @param code The current game state
      * @return An array of available moves in current state
      */
-    public static Move[] getAvailableMoves(long code){
-        List<Move> availableMoves = new ArrayList<>(4);
+    public static GameAction[] getAvailableMoves(long code){
+        List<GameAction> availableMoves = new ArrayList<>(4);
         
-        for (Move move : Move.values()){
+        for (GameAction move : GameAction.values()){
             if (isMoveValid(code, move)){
                 availableMoves.add(move);
             }
         }       
         
-        return availableMoves.toArray(new Move[0]);
+        return availableMoves.toArray(new GameAction[0]);
     }    
     
     /**
@@ -209,7 +209,7 @@ public class BoardUtil {
      * @param move The move to apply on the state
      * @return A pair of score result from the action and the next game state code
      */
-    public static Pair<Integer, Long> slideTiles(long code, Move move) {
+    public static Pair<Integer, Long> slideTiles(long code, GameAction move) {
         int point = 0;
         switch(move){
             case LEFT:
@@ -383,7 +383,7 @@ public class BoardUtil {
      * @param move The move to be applied
      * @return List of tile transitions caused by a move applied to a game state
      */
-    public static List<TileTransition> generateSlidingTransitions(long code, Move move){
+    public static List<TileTransition> generateSlidingTransitions(long code, GameAction move){
         List<TileTransition> transitions = new ArrayList<>();
         int newRow = lastNewPos / 4;
         int newCol = lastNewPos % 4;
@@ -598,7 +598,7 @@ public class BoardUtil {
      * @param move The move to be applied
      * @return Pair of score caused by the action and the next game state
      */
-    public static Pair<Integer, Long> applyMove(long code, Move move){
+    public static Pair<Integer, Long> applyMove(long code, GameAction move){
         Pair<Integer, Long> result = slideTiles(code, move);
         
         code = result.getValue();

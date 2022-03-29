@@ -2,7 +2,7 @@
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import model.BoardUtil;
-import model.Move;
+import model.GameAction;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -98,251 +98,251 @@ public class BoardUtilTest {
     @Test
     public void testAvailableMoves1() {
         int board[][];
-        Move expectedResult[];
+        GameAction expectedResult[];
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 1, 0, 0},
             {0, 0, 1, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), Move.values());
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), GameAction.values());
 
         board = new int[][]{
             {1, 1, 1, 1},
             {1, 1, 1, 1},
             {1, 1, 1, 1},
             {1, 1, 1, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), Move.values());
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), GameAction.values());
 
         board = new int[][]{
             {1, 2, 1, 2},
             {2, 1, 2, 1},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[0]);
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[0]);
     }
 
     @Test
     public void testAvailableMoves2() {
         int board[][];
-        Move expectedResult[];
+        GameAction expectedResult[];
         board = new int[][]{
             {1, 2, 1, 2},
             {2, 3, 3, 1},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT});
 
         board = new int[][]{
             {1, 2, 1, 2},
             {3, 3, 2, 1},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT});
 
         board = new int[][]{
             {1, 2, 1, 2},
             {2, 1, 3, 3},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT});
 
         board = new int[][]{
             {1, 2, 2, 2},
             {2, 1, 2, 1},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), Move.values());
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), GameAction.values());
 
         board = new int[][]{
             {1, 2, 3, 2},
             {2, 1, 3, 1},
             {1, 2, 1, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {1, 2, 1, 2},
             {2, 1, 3, 1},
             {1, 2, 3, 2},
             {2, 1, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {1, 2, 1, 2},
             {2, 1, 2, 1},
             {1, 2, 1, 3},
             {2, 1, 2, 3},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.UP, GameAction.DOWN});
     }
 
     @Test
     public void testAvailableMoves3() {
         int board[][];
-        Move expectedResult[];
+        GameAction expectedResult[];
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {1, 1, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT, GameAction.UP});
 
         board = new int[][]{
             {1, 1, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 1, 1},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 1, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT, GameAction.UP});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {1, 0, 0, 0},
             {1, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 1},
             {0, 0, 0, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 0, 1},
             {0, 0, 0, 1},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {1, 0, 0, 0},
             {1, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.UP, GameAction.DOWN});
     }
 
     @Test
     public void testAvailableMoves4() {
         int board[][];
-        Move expectedResult[];
+        GameAction expectedResult[];
         board = new int[][]{
             {1, 0, 0, 0},
             {2, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.DOWN});
 
         board = new int[][]{
             {1, 2, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 1, 2},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 0, 2},
             {0, 0, 0, 1},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.DOWN});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 2},
             {0, 0, 0, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.UP});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 2, 1},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.UP});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {2, 1, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.UP});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {1, 0, 0, 0},
             {2, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT, Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT, GameAction.UP});
     }
 
     @Test
     public void testAvailableMoves5() {
         int board[][];
-        Move expectedResult[];
+        GameAction expectedResult[];
 
         board = new int[][]{
             {1, 0, 0, 0},
             {2, 0, 0, 0},
             {1, 0, 0, 0},
             {2, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.RIGHT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.RIGHT});
 
         board = new int[][]{
             {0, 1, 0, 0},
             {0, 2, 0, 0},
             {0, 1, 0, 0},
             {0, 2, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT, Move.RIGHT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT, GameAction.RIGHT});
 
         board = new int[][]{
             {0, 0, 0, 1},
             {0, 0, 0, 2},
             {0, 0, 0, 1},
             {0, 0, 0, 2},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.LEFT});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.LEFT});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {1, 2, 1, 2},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.UP});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.UP});
 
         board = new int[][]{
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {1, 2, 1, 2},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.UP, Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.UP, GameAction.DOWN});
 
         board = new int[][]{
             {1, 2, 1, 2},
             {0, 0, 0, 0},
             {0, 0, 0, 0},
             {0, 0, 0, 0},};
-        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new Move[]{Move.DOWN});
+        Assert.assertArrayEquals(BoardUtil.getAvailableMoves(BoardUtil.encode(board)), new GameAction[]{GameAction.DOWN});
     }
 
     @Test
@@ -360,8 +360,8 @@ public class BoardUtilTest {
             {1, 6, 5, 2},
             {11, 6, 0, 0},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.LEFT).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.LEFT).getKey(), (Integer) (4 + 2048));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.LEFT).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.LEFT).getKey(), (Integer) (4 + 2048));
 
         board = new int[][]{
             {1, 1, 2, 3},
@@ -374,8 +374,8 @@ public class BoardUtilTest {
             {5, 5, 0, 0},
             {5, 5, 5, 0},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.LEFT).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.LEFT).getKey(), (Integer) (4 + 8 + 64 + 32));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.LEFT).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.LEFT).getKey(), (Integer) (4 + 8 + 64 + 32));
     }
 
     @Test
@@ -393,8 +393,8 @@ public class BoardUtilTest {
             {1, 6, 5, 2},
             {0, 0, 11, 6},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.RIGHT).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.RIGHT).getKey(), (Integer) (4 + 2048));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.RIGHT).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.RIGHT).getKey(), (Integer) (4 + 2048));
 
         board = new int[][]{
             {1, 1, 2, 3},
@@ -407,8 +407,8 @@ public class BoardUtilTest {
             {0, 0, 5, 5},
             {0, 5, 5, 5},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.RIGHT).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.RIGHT).getKey(), (Integer) (4 + 8 + 64 + 32));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.RIGHT).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.RIGHT).getKey(), (Integer) (4 + 8 + 64 + 32));
     }
 
     @Test
@@ -426,8 +426,8 @@ public class BoardUtilTest {
             {1, 10, 6, 0},
             {10, 0, 0, 0},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.UP).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.UP).getKey(), (Integer) (4));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.UP).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.UP).getKey(), (Integer) (4));
 
         board = new int[][]{
             {1, 2, 4, 5},
@@ -441,8 +441,8 @@ public class BoardUtilTest {
             {3, 0, 0, 5},
             {0, 0, 0, 0},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.UP).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.UP).getKey(), (Integer) (4 + 8 + 64 + 32));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.UP).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.UP).getKey(), (Integer) (4 + 8 + 64 + 32));
     }
 
     @Test
@@ -460,8 +460,8 @@ public class BoardUtilTest {
             {1, 6, 5, 2},
             {10, 10, 6, 2},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.DOWN).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.DOWN).getKey(), (Integer) (4));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.DOWN).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.DOWN).getKey(), (Integer) (4));
 
         board = new int[][]{
             {1, 2, 4, 5},
@@ -475,8 +475,8 @@ public class BoardUtilTest {
             {2, 2, 5, 5},
             {3, 3, 5, 5},};
 
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.DOWN).getValue(), (Long) BoardUtil.encode(expectedBoard));
-        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), Move.DOWN).getKey(), (Integer) (4 + 8 + 64 + 32));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.DOWN).getValue(), (Long) BoardUtil.encode(expectedBoard));
+        Assert.assertEquals(BoardUtil.slideTiles(BoardUtil.encode(board), GameAction.DOWN).getKey(), (Integer) (4 + 8 + 64 + 32));
     }
 
     @Test

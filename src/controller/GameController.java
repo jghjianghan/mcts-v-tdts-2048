@@ -4,7 +4,7 @@ package controller;
 import java.util.List;
 import model.Pair;
 import model.BoardUtil;
-import model.Move;
+import model.GameAction;
 import view.TileTransition;
 import view.UI;
 
@@ -24,7 +24,7 @@ public class GameController {
         ui.start(BoardUtil.decode(board), this);
     }
     
-    public void moveBoard(Move move){
+    public void moveBoard(GameAction move){
         if (BoardUtil.isMoveValid(board, move)){
             Pair<Integer, Long> result = BoardUtil.applyMove(board, move);
             List<TileTransition> transitions = BoardUtil.generateSlidingTransitions(board, move);

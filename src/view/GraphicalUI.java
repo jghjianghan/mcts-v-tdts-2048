@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
-import model.Move;
+import model.GameAction;
 
 /**
  * The graphical user interface for this application
@@ -372,16 +372,16 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
         }
         switch (e.getKeyCode()) {
             case 38: //up
-                controller.moveBoard(Move.UP);
+                controller.moveBoard(GameAction.UP);
                 break;
             case 40: //down
-                controller.moveBoard(Move.DOWN);
+                controller.moveBoard(GameAction.DOWN);
                 break;
             case 37: //left
-                controller.moveBoard(Move.LEFT);
+                controller.moveBoard(GameAction.LEFT);
                 break;
             case 39: //right
-                controller.moveBoard(Move.RIGHT);
+                controller.moveBoard(GameAction.RIGHT);
                 break;
             case 72: //H (Help)
                 showHelp();
