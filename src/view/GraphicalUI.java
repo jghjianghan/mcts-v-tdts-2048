@@ -113,7 +113,7 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
      * @param newScore 
      */
     @Override
-    public void displayBoard(int[][] board, List<TileTransition> transitionList, int newScore) {
+    public void displayBoard(int[][] board, int newScore) {
         if (newScore != score) {
             if (newScore > 0) {
                 scoreIncrement = newScore - score;
@@ -225,17 +225,7 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
         addMouseListener(this);
         this.controller = controller;
 
-        List<TileTransition> transitions = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                int value = board[i][j];
-                if (value != 0) {
-                    transitions.add(new TileTransition(i, j, i, j, value, 0, 1));
-                }
-            }
-        }
-
-        displayBoard(board, transitions, 0);
+        displayBoard(board, 0);
         timer = new Timer(10, this);
         timer.start();
     }
@@ -244,17 +234,7 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
     @Override
     public void restart(int[][] initialBoard) {
         isGameOver = false;
-        List<TileTransition> transitions = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                int value = initialBoard[i][j];
-                if (value != 0) {
-                    transitions.add(new TileTransition(i, j, i, j, value, 0, 1));
-                }
-            }
-        }
-
-        displayBoard(initialBoard, transitions, 0);
+        displayBoard(initialBoard, 0);
     }
 
     //Displays the Help dialog box

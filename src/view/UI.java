@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface UI {
     public void start(int[][] initialBoard, GameController controller);
-    public void displayBoard(int[][] newBoardCode, List<TileTransition> transitionList, int score);    
+    public void displayBoard(int[][] newBoardCode, int score);    
     public void showGameOver();
     public void restart(int[][] initialBoard);
 }

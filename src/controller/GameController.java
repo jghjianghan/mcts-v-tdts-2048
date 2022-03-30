@@ -5,7 +5,6 @@ import java.util.List;
 import model.Pair;
 import model.GameModel;
 import model.GameAction;
-import view.TileTransition;
 import view.UI;
 
 /**
@@ -27,7 +26,6 @@ public class GameController {
     public void moveBoard(GameAction move){
         if (GameModel.isMoveValid(board, move)){
             Pair<Integer, Long> result = GameModel.applyMove(board, move);
-            List<TileTransition> transitions = GameModel.generateSlidingTransitions(board, move);
             
             board = result.getValue();
             score += result.getKey();
@@ -35,7 +33,7 @@ public class GameController {
             if (GameModel.isGameOver(board)){
                 ui.showGameOver();
             }
-            ui.displayBoard(GameModel.decode(board), transitions, score);
+            ui.displayBoard(GameModel.decode(board), score);
         }
     }
     
