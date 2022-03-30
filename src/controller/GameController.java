@@ -3,7 +3,7 @@ package controller;
 
 import java.util.List;
 import model.Pair;
-import model.BoardUtil;
+import model.GameModel;
 import model.GameAction;
 import view.TileTransition;
 import view.UI;
@@ -20,28 +20,28 @@ public class GameController {
     
     public GameController(UI ui){
         this.ui = ui;
-        board = BoardUtil.generateInitialBoard();
-        ui.start(BoardUtil.decode(board), this);
+        board = GameModel.generateInitialBoard();
+        ui.start(GameModel.decode(board), this);
     }
     
     public void moveBoard(GameAction move){
-        if (BoardUtil.isMoveValid(board, move)){
-            Pair<Integer, Long> result = BoardUtil.applyMove(board, move);
-            List<TileTransition> transitions = BoardUtil.generateSlidingTransitions(board, move);
+        if (GameModel.isMoveValid(board, move)){
+            Pair<Integer, Long> result = GameModel.applyMove(board, move);
+            List<TileTransition> transitions = GameModel.generateSlidingTransitions(board, move);
             
             board = result.getValue();
             score += result.getKey();
             
-            if (BoardUtil.isGameOver(board)){
+            if (GameModel.isGameOver(board)){
                 ui.showGameOver();
             }
-            ui.displayBoard(BoardUtil.decode(board), transitions, score);
+            ui.displayBoard(GameModel.decode(board), transitions, score);
         }
     }
     
     public void restartGame(){
         score = 0;
-        board = BoardUtil.generateInitialBoard();
-        ui.restart(BoardUtil.decode(board));
+        board = GameModel.generateInitialBoard();
+        ui.restart(GameModel.decode(board));
     }
 }

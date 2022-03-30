@@ -1,0 +1,75 @@
+
+import model.GameModel;
+import model.GameAction;
+import model.GameModel.GameState;
+import org.junit.Test;
+import org.junit.Assert;
+
+/**
+ *
+ * @author Jiang Han
+ */
+public class GameStateTest {
+
+    @Test
+    public void testEquals() {
+        int board[][];
+        GameModel model = new GameModel();
+        GameModel.GameState state;
+        
+        board = new int[][]{
+            {1, 2, 3, 4},
+            {4, 3, 2, 1},
+            {5, 6, 7, 8},
+            {8, 7, 6, 5},};
+        state = model.new GameState(board);
+        GameModel.GameState state2 = model.new GameState(board);
+        Assert.assertTrue(state.equals(state2));   
+    }
+    
+    @Test
+    public void testSlideLine(){
+        
+    }
+    
+    @Test
+    public void testIsActionValid(){
+        int board[][];
+        GameModel model = new GameModel();
+        GameModel.GameState state;
+        
+        board = new int[][]{
+            {0, 0, 0, 0},
+            {0, 2, 0, 0},
+            {0, 0, 2, 0},
+            {0, 0, 0, 0},};
+        state = model.new GameState(board);
+        Assert.assertTrue(state.isActionValid(GameAction.LEFT));
+        Assert.assertTrue(state.isActionValid(GameAction.RIGHT));
+        Assert.assertTrue(state.isActionValid(GameAction.UP));
+        Assert.assertTrue(state.isActionValid(GameAction.DOWN));
+        
+        board = new int[][]{
+            {2, 4, 2, 4},
+            {4, 2, 4, 2},
+            {2, 4, 2, 4},
+            {4, 2, 2, 4},};
+        state = model.new GameState(board);
+        Assert.assertFalse(state.isActionValid(GameAction.LEFT));
+        Assert.assertFalse(state.isActionValid(GameAction.RIGHT));
+        Assert.assertFalse(state.isActionValid(GameAction.UP));
+        Assert.assertFalse(state.isActionValid(GameAction.DOWN));
+        
+        board = new int[][]{
+            {2, 2, 2, 2},
+            {2, 2, 2, 2},
+            {2, 2, 2, 2},
+            {2, 2, 2, 2},};
+        state = model.new GameState(board);
+        boolean res = state.isActionValid(GameAction.LEFT);
+        Assert.assertTrue(state.isActionValid(GameAction.LEFT));
+        Assert.assertTrue(state.isActionValid(GameAction.RIGHT));
+        Assert.assertTrue(state.isActionValid(GameAction.UP));
+        Assert.assertTrue(state.isActionValid(GameAction.DOWN));
+    }
+}

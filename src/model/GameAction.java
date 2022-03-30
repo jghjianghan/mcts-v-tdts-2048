@@ -5,8 +5,13 @@ package model;
  * @author Jiang Han
  */
 public enum GameAction {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN,
+    LEFT(0),
+    RIGHT(1),
+    UP(2),
+    DOWN(3);
+    
+    final int id;
+    GameAction(int id){
+        this.id = id;
+    }
 }
