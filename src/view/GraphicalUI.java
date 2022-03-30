@@ -123,90 +123,15 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
             this.score = newScore;
         }
 
-        //board transition
-        int steps = 10;
-
-        for (int i = 0; i < steps; i++) {
-            List<Tile> tiles = new ArrayList<>();
-            //prefill with empty tile
-            for (int r = 0; r < board.length; r++) {
-                for (int c = 0; c < board[r].length; c++) {
-                    tiles.add(new Tile(
-                            BOARD_ANCHOR_X + MARGIN * (c + 1) + c * TILE_LEN,
-                            BOARD_ANCHOR_Y + MARGIN * (r + 1) + r * TILE_LEN,
-                            COLOR_LIST[0],
-                            TILE_LEN, 0));
-                }
-            }
-
-            //fill with transition tile
-            for (TileTransition transition : transitionList) {
-                int prevX = BOARD_ANCHOR_X + MARGIN * (transition.prevCol + 1) + transition.prevCol * TILE_LEN;
-                int prevY = BOARD_ANCHOR_Y + MARGIN * (transition.prevRow + 1) + transition.prevRow * TILE_LEN;
-
-                int nextX = BOARD_ANCHOR_X + MARGIN * (transition.nextCol + 1) + transition.nextCol * TILE_LEN;
-                int nextY = BOARD_ANCHOR_Y + MARGIN * (transition.nextRow + 1) + transition.nextRow * TILE_LEN;
-
-                int diffX = nextX - prevX;
-                int diffY = nextY - prevY;
-                double diffSize = transition.nextScale - transition.prevScale;
-                int currentBoardValue = transition.prevValue;
-
-                double progress = (double) i / steps;
-                tiles.add(new Tile(
-                        (int) Math.round(prevX + progress * diffX),
-                        (int) Math.round(prevY + progress * diffY),
-                        COLOR_LIST[currentBoardValue],
-                        TILE_LEN,
-                        currentBoardValue,
-                        transition.prevScale + progress * diffSize)
-                );
-            }
-            tileListQueue.add(tiles);
-        }
-
         //final board state
         List<Tile> tiles = new ArrayList<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                if (!hasSeen[board[i][j]]) {
-                    scheduleFireworks(i, j);
-                }
                 tiles.add(new Tile(BOARD_ANCHOR_X + MARGIN * (j + 1) + j * TILE_LEN, BOARD_ANCHOR_Y + MARGIN * (i + 1) + i * TILE_LEN, COLOR_LIST[board[i][j]], TILE_LEN, board[i][j]));
-            }
-        }
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                hasSeen[board[i][j]] = true;
             }
         }
 
         tileListQueue.add(tiles);
-    }
-
-    /**
-     * Queues in the list of sparkles to be drawn at a certain board position.
-     * @param row Row position in the board
-     * @param col Column position in the board
-     */
-    private void scheduleFireworks(int row, int col) {
-        int xCenter = BOARD_ANCHOR_X + MARGIN * (col + 1) + col * TILE_LEN + (int) Math.round(TILE_LEN / 2);
-        int yCenter = BOARD_ANCHOR_Y + MARGIN * (row + 1) + row * TILE_LEN + (int) Math.round(TILE_LEN / 2);
-
-        int sparkleCount = 20;
-
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
-
-        for (int i = 0; i < sparkleCount; i++) {
-            sparkleList.add(new Sparkle(
-                    xCenter,
-                    yCenter,
-                    rand.nextDouble(-15, 15),
-                    rand.nextDouble(-20, 1),
-                    new Color(rand.nextInt(146, 256), rand.nextInt(0, 150), rand.nextInt(0, 50)),
-                    rand.nextInt(8, 15),
-                    rand.nextDouble(-0.5, 0.1)));
-        }
     }
 
     @Override
@@ -275,16 +200,6 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
             }
         }
 
-        //Fireworks
-        int sparkleCount = sparkleList.size();
-        for (int i = 0; i < sparkleCount; i++) {
-            Sparkle currentSparkle = sparkleList.poll();
-            currentSparkle.draw(g2d);
-            currentSparkle.advance();
-            if (currentSparkle.isInsideBound(SCREEN_WIDTH, SCREEN_HEIGHT)) {
-                sparkleList.add(currentSparkle);
-            }
-        }
         if (isGameOver) {
             font = new Font("SansSerif", Font.BOLD, 28);
             g2d.setFont(font);
