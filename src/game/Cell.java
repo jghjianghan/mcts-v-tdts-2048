@@ -8,7 +8,7 @@ package game;
  * @author Jiang Han
  */
 public class Cell {
-    
+
     /**
      * Nilai dari tile pada cell ini. Nilai 0 berarti cell ini kosong
      */
