@@ -18,12 +18,14 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
 import model.GameAction;
+import model.GameModel;
 
 /**
  * The graphical user interface for this application
@@ -61,26 +63,28 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
     private int scoreIncrement = 0;
     private double incrementPos = 0;
     private int incrementAlpha = 0;
+    private static final Map<Integer, Color> COLOR_LIST = new HashMap<>();
 
-    private static final Color[] COLOR_LIST = {
-        new Color(205, 193, 180), //abu2
-        new Color(121, 183, 172), //kolom 1 
-        new Color(255, 255, 186),
-        new Color(214, 181, 208),
-        new Color(251, 223, 235),
-        new Color(188, 221, 212), //kolom 2
-        new Color(238, 224, 221),
-        new Color(203, 227, 195),
-        new Color(247, 183, 210),
-        new Color(198, 225, 206), //kolom 3
-        new Color(249, 243, 229),
-        new Color(214, 228, 143),
-        new Color(162, 218, 219),
-        new Color(224, 224, 226), //kolom 4
-        new Color(235, 148, 157),
-        new Color(202, 233, 235),
-        new Color(243, 202, 218),};
-
+    static {
+        COLOR_LIST.put(0, new Color(205, 193, 180));
+        COLOR_LIST.put(2, new Color(121, 183, 172)); //kolom 1 
+        COLOR_LIST.put(4, new Color(255, 255, 186));
+        COLOR_LIST.put(8, new Color(214, 181, 208));
+        COLOR_LIST.put(16, new Color(251, 223, 235));
+        COLOR_LIST.put(32, new Color(188, 221, 212)); //kolom 2
+        COLOR_LIST.put(64, new Color(238, 224, 221));
+        COLOR_LIST.put(128, new Color(203, 227, 195));
+        COLOR_LIST.put(256, new Color(247, 183, 210));
+        COLOR_LIST.put(512, new Color(198, 225, 206)); //kolom 3
+        COLOR_LIST.put(1024, new Color(249, 243, 229));
+        COLOR_LIST.put(2048, new Color(214, 228, 143));
+        COLOR_LIST.put(4096, new Color(162, 218, 219));
+        COLOR_LIST.put(8192, new Color(224, 224, 226)); //kolom 4
+        COLOR_LIST.put(16384, new Color(235, 148, 157));
+        COLOR_LIST.put(32768, new Color(202, 233, 235));
+        COLOR_LIST.put(65536, new Color(243, 202, 218));
+    }
+    
     private boolean isGameOver;
 
     public GraphicalUI() {
@@ -108,12 +112,11 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
     /**
      * Displays a game state with the transitions leading to this state.
      * Queues several list of tiles to be drawn into tileListQueue.
-     * @param board
-     * @param transitionList
-     * @param newScore 
+     * @param state The game state
      */
     @Override
-    public void displayBoard(int[][] board, int newScore) {
+    public void displayBoard(GameModel.GameState state) {
+        int newScore = state.getScore();
         if (newScore != score) {
             if (newScore > 0) {
                 scoreIncrement = newScore - score;
@@ -125,9 +128,9 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
 
         //final board state
         List<Tile> tiles = new ArrayList<>();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                tiles.add(new Tile(BOARD_ANCHOR_X + MARGIN * (j + 1) + j * TILE_LEN, BOARD_ANCHOR_Y + MARGIN * (i + 1) + i * TILE_LEN, COLOR_LIST[board[i][j]], TILE_LEN, board[i][j]));
+        for (int i = 0; i < state.getSize(); i++) {
+            for (int j = 0; j < state.getSize(); j++) {
+                tiles.add(new Tile(BOARD_ANCHOR_X + MARGIN * (j + 1) + j * TILE_LEN, BOARD_ANCHOR_Y + MARGIN * (i + 1) + i * TILE_LEN, COLOR_LIST.get(state.getCellValue(i, j)), TILE_LEN, state.getCellValue(i, j)));
             }
         }
 
@@ -220,21 +223,21 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
 
     //Starts the game
     @Override
-    public void start(int[][] board, GameController controller) {
+    public void start(GameModel.GameState state, GameController controller) {
         addKeyListener(this);
         addMouseListener(this);
         this.controller = controller;
 
-        displayBoard(board, 0);
+        displayBoard(state);
         timer = new Timer(10, this);
         timer.start();
     }
 
     //Restarts the game
     @Override
-    public void restart(int[][] initialBoard) {
+    public void restart(GameModel.GameState initialState) {
         isGameOver = false;
-        displayBoard(initialBoard, 0);
+        displayBoard(initialState);
     }
 
     //Displays the Help dialog box

@@ -22,7 +22,7 @@ public class GameModelTest {
     @Test
     public void testAvailableMoves1() {
         int board[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{
@@ -56,7 +56,7 @@ public class GameModelTest {
     @Test
     public void testAvailableMoves2() {
         int board[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{
@@ -119,7 +119,7 @@ public class GameModelTest {
     @Test
     public void testAvailableMoves3() {
         int board[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{
@@ -191,7 +191,7 @@ public class GameModelTest {
     public void testAvailableMoves4() {
         int board[][];
         GameAction expectedResult[];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{
@@ -263,7 +263,7 @@ public class GameModelTest {
     public void testAvailableMoves5() {
         int board[][];
         GameAction expectedResult[];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
 
         board = new int[][]{
@@ -318,7 +318,7 @@ public class GameModelTest {
     @Test
     public void testMoveLeft() {
         int board[][], expectedBoard[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state, expectedState;
         
         board = new int[][]{
@@ -369,7 +369,7 @@ public class GameModelTest {
     @Test
     public void testMoveRight() {
         int board[][], expectedBoard[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state, expectedState;
         
         board = new int[][]{
@@ -420,7 +420,7 @@ public class GameModelTest {
     @Test
     public void testMoveUp() {
         int board[][], expectedBoard[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state, expectedState;
         
         board = new int[][]{
@@ -469,7 +469,7 @@ public class GameModelTest {
     @Test
     public void testMoveDown() {
         int board[][], expectedBoard[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state, expectedState;
         
         board = new int[][]{

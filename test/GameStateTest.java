@@ -14,7 +14,7 @@ public class GameStateTest {
     @Test
     public void testEquals() {
         int board[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{
@@ -35,7 +35,7 @@ public class GameStateTest {
     @Test
     public void testIsActionValid(){
         int board[][];
-        GameModel model = new GameModel();
+        GameModel model = new GameModel(100);
         GameModel.GameState state;
         
         board = new int[][]{

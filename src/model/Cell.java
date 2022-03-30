@@ -4,7 +4,7 @@ package model;
  * Represents a single cell in a board
  * @author Jiang Han
  */
-class Cell {
+public class Cell {
     int value;
     Cell(){}
     Cell(int value){this.value = value;}

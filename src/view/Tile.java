@@ -58,7 +58,7 @@ public class Tile {
             g2d.setFont(font);
             FontMetrics fontMetric = g2d.getFontMetrics();
             
-            String strValue = Integer.toString(1 << value);
+            String strValue = Integer.toString(value);
             
             g2d.drawString(
                     strValue,
