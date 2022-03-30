@@ -1,7 +1,8 @@
 package model;
 
 /**
- * Represents a single cell in a board
+ * Kelas yang merepresentasikan satu sel pada papan permainan.
+ * Tujuan dibuat kelas baru (dan tidak langsung menggunakan integer saya) adalah untuk memungkinan pass by reference
  * @author Jiang Han
  */
 public class Cell {
@@ -26,10 +27,6 @@ public class Cell {
             return false;
         }
         final Cell other = (Cell) obj;
-        if (this.value != other.value) {
-            return false;
-        }
-        return true;
+        return this.value == other.value;
     }
-    
 }
