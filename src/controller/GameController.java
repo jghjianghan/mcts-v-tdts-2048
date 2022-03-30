@@ -1,8 +1,6 @@
 
 package controller;
 
-import java.util.List;
-import model.Pair;
 import model.GameModel;
 import model.GameAction;
 import view.UI;
@@ -13,7 +11,7 @@ import view.UI;
  * @author Jiang Han
  */
 public class GameController {
-    private UI ui;
+    private final UI ui;
     private GameModel.GameState state;
     private GameModel forwardModel;
     

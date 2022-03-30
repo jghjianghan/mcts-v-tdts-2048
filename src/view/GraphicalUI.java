@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
 import model.GameAction;
 import model.GameModel;
@@ -54,7 +53,6 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
 
     //Queues the list of objects to be drawn in one painting. Can be added or taken out concurrently
     private final ConcurrentLinkedQueue<List<Tile>> tileListQueue = new ConcurrentLinkedQueue<>();
-    private final ConcurrentLinkedQueue<Sparkle> sparkleList = new ConcurrentLinkedQueue<>();
 
     private GameController controller;
     private int score = 0;
