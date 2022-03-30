@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.GameModel;
-import model.GameAction;
-import model.GameModel.GameState;
+import game.GameModel;
+import game.GameAction;
+import game.GameModel.GameState;
 import org.junit.Test;
 import org.junit.Assert;
 

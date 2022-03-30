@@ -1,8 +1,8 @@
 
 package controller;
 
-import model.GameModel;
-import model.GameAction;
+import game.GameModel;
+import game.GameAction;
 import view.UI;
 
 /**

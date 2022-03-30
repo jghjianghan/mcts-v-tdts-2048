@@ -1,4 +1,4 @@
-package model;
+package game;
 
 /**
  * An Enumerations of game actions

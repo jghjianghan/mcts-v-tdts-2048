@@ -1,7 +1,7 @@
 package view;
 
 import controller.GameController;
-import model.GameModel;
+import game.GameModel;
 
 /**
  * Interface for the user interface of the game

@@ -1,7 +1,7 @@
 
-import model.GameModel;
-import model.GameAction;
-import model.GameModel.GameState;
+import game.GameModel;
+import game.GameAction;
+import game.GameModel.GameState;
 import org.junit.Test;
 import org.junit.Assert;
 

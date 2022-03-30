@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.imageio.ImageIO;
-import model.GameAction;
-import model.GameModel;
+import game.GameAction;
+import game.GameModel;
 
 /**
  * The graphical user interface for this application

@@ -1,4 +1,4 @@
-package model;
+package game;
 
 /**
  * Kelas yang merepresentasikan satu sel pada papan permainan. Tujuan dibuat
@@ -8,7 +8,7 @@ package model;
  * @author Jiang Han
  */
 public class Cell {
-
+    
     /**
      * Nilai dari tile pada cell ini. Nilai 0 berarti cell ini kosong
      */
