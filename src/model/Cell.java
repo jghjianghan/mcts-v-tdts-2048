@@ -1,14 +1,25 @@
 package model;
 
 /**
- * Kelas yang merepresentasikan satu sel pada papan permainan.
- * Tujuan dibuat kelas baru (dan tidak langsung menggunakan integer saya) adalah untuk memungkinan pass by reference
+ * Kelas yang merepresentasikan satu sel pada papan permainan. Tujuan dibuat
+ * kelas baru (dan tidak langsung menggunakan integer saya) adalah untuk
+ * memungkinan pass by reference
+ *
  * @author Jiang Han
  */
 public class Cell {
+
+    /**
+     * Nilai dari tile pada cell ini. Nilai 0 berarti cell ini kosong
+     */
     int value;
-    Cell(){}
-    Cell(int value){this.value = value;}
+
+    Cell() {
+    }
+
+    Cell(int value) {
+        this.value = value;
+    }
 
     @Override
     public int hashCode() {
