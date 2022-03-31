@@ -15,7 +15,7 @@ import java.util.Random;
  * Game-Playing Agent dengan Algoritma UCT
  * @author Jiang Han
  */
-public class MCTSAgent extends GamePlayingAgent {
+public class MctsAgent extends GamePlayingAgent {
     private final double EXPLORATION_CONSTANT;
     private final Random rand = new Random();
     
@@ -23,13 +23,13 @@ public class MCTSAgent extends GamePlayingAgent {
         System.out.println();
     }
     
-    public MCTSAgent(double c){
+    public MctsAgent(double c){
         EXPLORATION_CONSTANT = c;
     }
     
     @Override
     public GameAction selectAction(GameState state, GameModel model) {
-        StateNode root = new MCTSStateNode(state, null);
+        StateNode root = new MctsStateNode(state, null);
         StateNode leaf = select(root, model);
         StateNode child = expand(leaf, model);
         

@@ -12,8 +12,8 @@ import java.util.HashMap;
  *
  * @author Jiang Han
  */
-public class MCTSActionNode extends ActionNode {
-    MCTSActionNode(GameAction action, StateNode parent) {
+public class MctsActionNode extends ActionNode {
+    MctsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
     
@@ -35,7 +35,7 @@ public class MCTSActionNode extends ActionNode {
         if (children.containsKey(nextState)) {
             return children.get(nextState);
         } else {
-            MCTSStateNode newNode = new MCTSStateNode(nextState, this);
+            MctsStateNode newNode = new MctsStateNode(nextState, this);
             newNode.parent = this;
             children.put(nextState, newNode);
             return newNode;
