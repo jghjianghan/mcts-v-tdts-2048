@@ -2,6 +2,7 @@ package agent.mcts;
 
 import agent.ActionNode;
 import agent.GamePlayingAgent;
+import agent.GameResult;
 import agent.StateNode;
 import game.GameAction;
 import game.GameModel;
@@ -32,6 +33,8 @@ public class MctsAgent extends GamePlayingAgent {
         StateNode root = new MctsStateNode(state, null);
         StateNode leaf = select(root, model);
         StateNode child = expand(leaf, model);
+        long result = simulate(child, model);
+        
         
         return null;
     }
@@ -77,6 +80,9 @@ public class MctsAgent extends GamePlayingAgent {
     }
 
     private StateNode expand(StateNode leaf, GameModel model){
+        if (!model.isUsable())
+            return leaf;
+        
         List<ActionNode> unvisitedActions = new ArrayList();
         for (GameAction action : GameAction.values()) {
             ActionNode child = leaf.getChildNode(action);
@@ -91,5 +97,16 @@ public class MctsAgent extends GamePlayingAgent {
         } else {
             return unvisitedActions.get(rand.nextInt(unvisitedActions.size())).simulateAction(model);
         }
+    }
+    
+    private long simulate(StateNode startingNode, GameModel model){
+        GameState currentState = startingNode.state;
+        int initialScore = currentState.getScore();
+        while(!currentState.isTerminal() && model.isUsable()){
+            List<GameAction> validActions = currentState.getAvailableActions();
+            model.applyAction(currentState, validActions.get(rand.nextInt(validActions.size())));
+        }
+        
+        return currentState.getScore() - initialScore;
     }
 }
