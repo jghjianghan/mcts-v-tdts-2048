@@ -16,11 +16,12 @@ import java.util.List;
  * @author Jiang Han
  */
 public class MCTSStateNode extends StateNode {
-    MCTSStateNode(GameState state, ActionNode action){
+
+    MCTSStateNode(GameState state, ActionNode action) {
         super(state, action);
         children = new ActionNode[GameAction.values().length];
         List<GameAction> validActions = state.getAvailableActions();
-        for (GameAction validAction : validActions){
+        for (GameAction validAction : validActions) {
             children[validAction.id] = new MCTSActionNode(validAction, this);
         }
     }
