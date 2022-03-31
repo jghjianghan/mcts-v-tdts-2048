@@ -1,27 +1,46 @@
 package agent;
 
-import game.GameModel.GameState;
 import game.GameAction;
+import game.GameModel.GameState;
 
 /**
- * Node pada pohon pencarian yang merepresentasikan state
+ * Node pada pohon pencarian yang merepresentasikan state. Semua action node
+ * yang valid otomatis ditambahkan sebagai children.
  *
  * @author Jiang Han
  */
-class StateNode {
+public abstract class StateNode {
 
-    GameState state;
-    ActionNode parent;
-    ActionNode[] children;
+    public final GameState state;
+    
+    public ActionNode parent;
+    protected ActionNode[] children;
 
-    StateNode(GameState state, ActionNode action) {
+    private int visitCount = 0;
+
+    public StateNode(GameState state, ActionNode action) {
         this.state = state;
-        parent = action;
-        children = new ActionNode[GameAction.values().length];
+        parent = action;       
     }
 
-    StateNode(GameState state) {
+    public StateNode(GameState state) {
         this(state, null);
+    }
+
+    public GameState getState() {
+        return state;
+    }
+    
+    public ActionNode getChildNode(GameAction action) {
+        return children[action.id];
+    }
+    
+    public int getVisitCount() {
+        return visitCount;
+    }
+
+    public void incrementVisitCount() {
+        visitCount++;
     }
 
     @Override
@@ -43,5 +62,5 @@ class StateNode {
         final StateNode other = (StateNode) obj;
         return this.state.equals(other.state);
     }
-    
+
 }

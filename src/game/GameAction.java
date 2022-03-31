@@ -10,7 +10,7 @@ public enum GameAction {
     UP(2),
     DOWN(3);
     
-    final int id;
+    public final int id;
     GameAction(int id){
         this.id = id;
     }

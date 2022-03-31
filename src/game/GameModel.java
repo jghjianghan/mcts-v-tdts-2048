@@ -361,4 +361,8 @@ public class GameModel {
 
         return state;
     }
+    
+    public boolean isUsable(){
+        return tickLeft > 0;
+    }
 }

@@ -1,34 +1,47 @@
 package agent;
 
 import game.GameAction;
-import java.util.HashSet;
-import java.util.Set;
+import game.GameModel;
+import game.GameModel.GameState;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Jiang Han
  */
-abstract class ActionNode {
+public abstract class ActionNode {
 
-    GameAction action;
-    Set<StateNode> children;
-    StateNode parent;
+    public final GameAction action;
+    protected Map<GameState, StateNode> children;
+    public StateNode parent;
+    private int visitCount = 0;
 
-    ActionNode(GameAction action, StateNode parent) {
+    public ActionNode(GameAction action, StateNode parent) {
         this.action = action;
         this.parent = parent;
-        children = new HashSet<>();
+        children = new HashMap<>();
     }
 
-    void addChild(StateNode state){
-        state.parent = this;
-//        children.a
+    public int getVisitCount() {
+        return visitCount;
     }
-    
-   
-    
-    abstract void updateUtility(GameResult result);
 
-    abstract double getUtility();
+    public void incrementVisitCount() {
+        visitCount++;
+    }
 
+    /**
+     * Menerapkan aksi ini untuk mendapatkan node State selanjutnya. Jika state
+     * baru pernah dikunjungi, maka method ini akan mereturn salah satu
+     * child. Kalau belum, StateNode baru akan dibuatkan
+     *
+     * @param model
+     * @return Node yang merepresentasikan state
+     */
+    public abstract StateNode simulateAction(GameModel model);
+
+    public abstract void updateUtility(GameResult result);
+
+    public abstract double getUtility();
 }
