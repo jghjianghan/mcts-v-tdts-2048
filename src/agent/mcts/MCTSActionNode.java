@@ -36,7 +36,6 @@ public class MCTSActionNode extends ActionNode {
             return children.get(nextState);
         } else {
             MCTSStateNode newNode = new MCTSStateNode(nextState, this);
-            newNode.incrementVisitCount();
             newNode.parent = this;
             children.put(nextState, newNode);
             return newNode;

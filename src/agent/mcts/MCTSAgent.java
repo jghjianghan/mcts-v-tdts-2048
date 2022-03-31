@@ -31,7 +31,7 @@ public class MCTSAgent extends GamePlayingAgent {
     public GameAction selectAction(GameState state, GameModel model) {
         StateNode root = new MCTSStateNode(state, null);
         StateNode leaf = select(root, model);
-        StateNode child = expand(leaf);
+        StateNode child = expand(leaf, model);
         
         return null;
     }
@@ -76,7 +76,7 @@ public class MCTSAgent extends GamePlayingAgent {
         }
     }
 
-    private StateNode expand(StateNode leaf){
+    private StateNode expand(StateNode leaf, GameModel model){
         List<ActionNode> unvisitedActions = new ArrayList();
         for (GameAction action : GameAction.values()) {
             ActionNode child = leaf.getChildNode(action);
@@ -86,6 +86,10 @@ public class MCTSAgent extends GamePlayingAgent {
                 unvisitedActions.add(child);
             }
         }
-        return null;
+        if (unvisitedActions.isEmpty()){
+            return leaf;
+        } else {
+            return unvisitedActions.get(rand.nextInt(unvisitedActions.size())).simulateAction(model);
+        }
     }
 }
