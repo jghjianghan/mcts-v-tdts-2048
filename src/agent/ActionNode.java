@@ -16,6 +16,8 @@ public abstract class ActionNode {
     protected Map<GameState, StateNode> children;
     public StateNode parent;
     private int visitCount = 0;
+    public double localLowerBound = Double.POSITIVE_INFINITY;
+    public double localUpperBound = Double.NEGATIVE_INFINITY;
 
     public ActionNode(GameAction action, StateNode parent) {
         this.action = action;
@@ -33,8 +35,8 @@ public abstract class ActionNode {
 
     /**
      * Menerapkan aksi ini untuk mendapatkan node State selanjutnya. Jika state
-     * baru pernah dikunjungi, maka method ini akan mereturn salah satu
-     * child. Kalau belum, StateNode baru akan dibuatkan
+     * baru pernah dikunjungi, maka method ini akan mereturn salah satu child.
+     * Kalau belum, StateNode baru akan dibuatkan
      *
      * @param model
      * @return Node yang merepresentasikan state
@@ -44,4 +46,12 @@ public abstract class ActionNode {
     public abstract void updateUtility(GameResult result);
 
     public abstract double getUtility();
+    
+    public double getLowerBound(){
+        return localLowerBound;
+    }
+    
+    public double getUpperBound(){
+        return localUpperBound;
+    }
 }

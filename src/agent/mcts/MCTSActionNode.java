@@ -12,18 +12,30 @@ import game.GameModel.GameState;
  * @author Jiang Han
  */
 public class MctsActionNode extends ActionNode {
+    private long totalUtility = 0;
+    
+    public static void main(String[] args) {
+        System.out.println("hello");
+    }
+    
     MctsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
     
     @Override
     public void updateUtility(GameResult result) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        totalUtility += result.score;
+        ActionNode parentAction = parent.parent;
+        if (parentAction != null){
+            double currentUtility = getUtility();
+            parentAction.localLowerBound = Math.min(parentAction.localLowerBound, currentUtility);
+            parentAction.localUpperBound = Math.max(parentAction.localUpperBound, currentUtility);
+        }
     }
 
     @Override
     public double getUtility() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 1.0 * totalUtility / this.getVisitCount();
     }
 
     @Override
@@ -32,7 +44,7 @@ public class MctsActionNode extends ActionNode {
         model.applyAction(nextState, this.action);
         
         if (children.containsKey(nextState)) {
-            return children.get(nextState);
+            return (StateNode) children.get(nextState);
         } else {
             MctsStateNode newNode = new MctsStateNode(nextState, this);
             newNode.parent = this;
