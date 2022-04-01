@@ -74,7 +74,7 @@ public class GameModel {
                     //Asal ada satu state yang valid, maka state ini non-terminal
                     isTerminal = false;
                 }
-            }            
+            }
         }
 
         public int getCellValue(int row, int col) {
@@ -120,51 +120,72 @@ public class GameModel {
             return salinan;
         }
 
+        /**
+         * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
+         * Method ini dipanggil di konstruktor, sedangkan method
+         * isActionValid(GameAction) memakai hasil perhitungan dari method ini.
+         *
+         * @param action Aksi yang ingin dilakukan
+         * @return True jika aksi valid dan false jika sebaliknya
+         */
         private boolean isSlideable(GameAction action) {
             switch (action) {
                 case LEFT:
                     for (int i = 0; i < BOARD_SIZE; i++) {
                         for (int j = 1; j < BOARD_SIZE; j++) {
-                            if (isTileMovable(board[i][j].value, board[i][j-1].value))
+                            if (isTileMovable(board[i][j].value, board[i][j - 1].value)) {
                                 return true;
+                            }
                         }
                     }
                     break;
                 case RIGHT:
                     for (int i = 0; i < BOARD_SIZE; i++) {
-                        for (int j = 0; j < BOARD_SIZE-1; j++) {
-                            if (isTileMovable(board[i][j].value, board[i][j+1].value))
+                        for (int j = 0; j < BOARD_SIZE - 1; j++) {
+                            if (isTileMovable(board[i][j].value, board[i][j + 1].value)) {
                                 return true;
+                            }
                         }
                     }
                     break;
                 case UP:
                     for (int i = 1; i < BOARD_SIZE; i++) {
                         for (int j = 0; j < BOARD_SIZE; j++) {
-                            if (isTileMovable(board[i][j].value, board[i-1][j].value))
+                            if (isTileMovable(board[i][j].value, board[i - 1][j].value)) {
                                 return true;
+                            }
                         }
                     }
                     break;
                 case DOWN:
-                    for (int i = 0; i < BOARD_SIZE-1; i++) {
+                    for (int i = 0; i < BOARD_SIZE - 1; i++) {
                         for (int j = 0; j < BOARD_SIZE; j++) {
-                            if (isTileMovable(board[i][j].value, board[i+1][j].value))
+                            if (isTileMovable(board[i][j].value, board[i + 1][j].value)) {
                                 return true;
+                            }
                         }
                     }
                     break;
             }
             return false;
         }
-        
-        private boolean isTileMovable(int sourceValue, int targetValue){
+
+        /**
+         * Memeriksa apakah tile di satu cell bisa berpindah ke cell lain.
+         * Diasumsikan kedua tile memang bersebelahan.
+         *
+         * @param sourceValue Nilai pada cell pertama
+         * @param targetValue Nilai pada cell kedua (cell yang dituju)
+         * @return True jika tile pada cell pertama bisa berpindah ke cell
+         * kedua. False jika tidak ada tile pada cell pertama atau memang tidak
+         * bisa berpindah.
+         */
+        private boolean isTileMovable(int sourceValue, int targetValue) {
             return sourceValue != 0 && (targetValue == 0 || targetValue == sourceValue);
         }
-        
+
         /**
          * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
-         * Aksi dianggap valid jika dapat terdapat perubahan pada state
          *
          * @param action Aksi yang ingin dilakukan
          * @return True jika aksi valid dan false jika sebaliknya
