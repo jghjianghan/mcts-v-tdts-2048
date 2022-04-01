@@ -1,8 +1,10 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Forward model dari permainan 2048. Mensimulasikan mekanisme permainan dan
@@ -31,10 +33,17 @@ public class GameModel {
     /**
      * Inner class yang merepresentasikan state permainan
      */
-    public class GameState {
+    public final class GameState {
 
         private Cell[][] board;
         private int score;
+        private boolean isTerminal;
+        /**
+         * Array dari aksi yang valid. Kalau aksi ke-i tidak valid, array[i]
+         * adalah null. Index adalah id dari enum aksi
+         *
+         */
+        private GameAction validActions[];
 
         public GameState() {
             this(new int[BOARD_SIZE][BOARD_SIZE], 0);
@@ -54,6 +63,18 @@ public class GameModel {
                 }
             }
             this.score = score;
+
+            //Precalculate valid actions dan isTerminal
+            validActions = new GameAction[GameAction.values().length];
+            isTerminal = true;
+            for (GameAction action : GameAction.values()) {
+                //Apakah aksi menyebabkan tile berpindah?
+                if (this.isSlideable(action)) {
+                    validActions[action.id] = action;
+                    //Asal ada satu state yang valid, maka state ini non-terminal
+                    isTerminal = false;
+                }
+            }            
         }
 
         public int getCellValue(int row, int col) {
@@ -99,6 +120,48 @@ public class GameModel {
             return salinan;
         }
 
+        private boolean isSlideable(GameAction action) {
+            switch (action) {
+                case LEFT:
+                    for (int i = 0; i < BOARD_SIZE; i++) {
+                        for (int j = 1; j < BOARD_SIZE; j++) {
+                            if (isTileMovable(board[i][j].value, board[i][j-1].value))
+                                return true;
+                        }
+                    }
+                    break;
+                case RIGHT:
+                    for (int i = 0; i < BOARD_SIZE; i++) {
+                        for (int j = 0; j < BOARD_SIZE-1; j++) {
+                            if (isTileMovable(board[i][j].value, board[i][j+1].value))
+                                return true;
+                        }
+                    }
+                    break;
+                case UP:
+                    for (int i = 1; i < BOARD_SIZE; i++) {
+                        for (int j = 0; j < BOARD_SIZE; j++) {
+                            if (isTileMovable(board[i][j].value, board[i-1][j].value))
+                                return true;
+                        }
+                    }
+                    break;
+                case DOWN:
+                    for (int i = 0; i < BOARD_SIZE-1; i++) {
+                        for (int j = 0; j < BOARD_SIZE; j++) {
+                            if (isTileMovable(board[i][j].value, board[i+1][j].value))
+                                return true;
+                        }
+                    }
+                    break;
+            }
+            return false;
+        }
+        
+        private boolean isTileMovable(int sourceValue, int targetValue){
+            return sourceValue != 0 && (targetValue == 0 || targetValue == sourceValue);
+        }
+        
         /**
          * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
          * Aksi dianggap valid jika dapat terdapat perubahan pada state
@@ -107,9 +170,7 @@ public class GameModel {
          * @return True jika aksi valid dan false jika sebaliknya
          */
         public boolean isActionValid(GameAction action) {
-            GameState salinan = this.copy();
-            GameModel.this.slideTiles(salinan, action);
-            return !salinan.equals(this);
+            return validActions[action.id] != null;
         }
 
         @Override
@@ -162,15 +223,9 @@ public class GameModel {
          * @return List aksi yang valid
          */
         public List<GameAction> getAvailableActions() {
-            List<GameAction> availableMoves = new ArrayList<>(BOARD_SIZE);
-
-            for (GameAction move : GameAction.values()) {
-                if (isActionValid(move)) {
-                    availableMoves.add(move);
-                }
-            }
-
-            return availableMoves;
+            return Arrays.stream(validActions)
+                    .filter(action -> action != null)
+                    .collect(Collectors.toList());
         }
 
         /**
@@ -181,7 +236,7 @@ public class GameModel {
          * sebaliknya
          */
         public boolean isTerminal() {
-            return getAvailableActions().isEmpty();
+            return isTerminal;
         }
 
         /**
@@ -361,8 +416,8 @@ public class GameModel {
 
         return state;
     }
-    
-    public boolean isUsable(){
+
+    public boolean isUsable() {
         return tickLeft > 0;
     }
 }

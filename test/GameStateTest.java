@@ -53,7 +53,7 @@ public class GameStateTest {
             {2, 4, 2, 4},
             {4, 2, 4, 2},
             {2, 4, 2, 4},
-            {4, 2, 2, 4},};
+            {4, 2, 4, 2},};
         state = model.new GameState(board);
         Assert.assertFalse(state.isActionValid(GameAction.LEFT));
         Assert.assertFalse(state.isActionValid(GameAction.RIGHT));
