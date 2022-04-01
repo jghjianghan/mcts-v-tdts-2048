@@ -11,7 +11,7 @@ import game.GameModel.GameState;
  *
  * @author Jiang Han
  */
-public class MctsActionNode extends ActionNode {
+class MctsActionNode extends ActionNode {
     private long totalUtility = 0;
     
     public static void main(String[] args) {

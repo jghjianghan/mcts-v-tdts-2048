@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Jiang Han
  */
-public class MctsStateNode extends StateNode {
+class MctsStateNode extends StateNode {
 
     MctsStateNode(GameState state, ActionNode action) {
         super(state, action);
