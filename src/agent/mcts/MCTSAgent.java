@@ -42,7 +42,20 @@ public class MctsAgent extends GamePlayingAgent {
         GameResult result = simulate(child, model);
         backPropagate(child, result);
 
-        return null;
+        //select best child
+        List<GameAction> bestActionList = new ArrayList<>();
+        int maxVisit = -1;
+        for(GameAction action : root.state.getAvailableActions()){
+            ActionNode childAction = root.getChildNode(action);
+            if (childAction.getVisitCount() > maxVisit){
+                maxVisit = childAction.getVisitCount();
+                bestActionList.clear();
+                bestActionList.add(childAction.action);
+            } else if (childAction.getVisitCount() > maxVisit){
+                bestActionList.add(childAction.action);
+            }
+        }
+        return bestActionList.get(rand.nextInt(bestActionList.size()));
     }
 
     private StateNode select(StateNode root, GameModel model) {
@@ -121,7 +134,7 @@ public class MctsAgent extends GamePlayingAgent {
         GameState currentState = startingNode.state;
         while (!currentState.isTerminal() && model.isUsable()) {
             List<GameAction> validActions = currentState.getAvailableActions();
-            model.applyAction(currentState, validActions.get(rand.nextInt(validActions.size())));
+            currentState = model.applyAction(currentState, validActions.get(rand.nextInt(validActions.size())));
         }
 
         return new GameResult(currentState.getScore());

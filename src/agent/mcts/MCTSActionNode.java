@@ -40,8 +40,7 @@ class MctsActionNode extends ActionNode {
 
     @Override
     public StateNode simulateAction(GameModel model) {
-        GameState nextState = parent.state.copy();
-        model.applyAction(nextState, this.action);
+        GameState nextState = model.applyAction(parent.state, this.action);
         
         if (children.containsKey(nextState)) {
             return (StateNode) children.get(nextState);

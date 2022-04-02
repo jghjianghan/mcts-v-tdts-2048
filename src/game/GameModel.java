@@ -35,6 +35,24 @@ public class GameModel {
      */
     public final class GameState {
 
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Score: ");
+            sb.append(score);
+            sb.append('\n');
+
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    sb.append(board[i][j].value);
+                    sb.append('\t');
+                    sb.append('\t');
+                }
+                sb.append('\n');
+            }
+            return sb.toString();
+        }
+
         private Cell[][] board;
         private int score;
         private boolean isTerminal;
@@ -63,8 +81,12 @@ public class GameModel {
                 }
             }
             this.score = score;
-
-            //Precalculate valid actions dan isTerminal
+            
+            evaluateAttributes();
+        }
+        
+        //Precalculate valid actions and isTerminal
+        private void evaluateAttributes(){
             validActions = new GameAction[GameAction.values().length];
             isTerminal = true;
             for (GameAction action : GameAction.values()) {
@@ -110,13 +132,14 @@ public class GameModel {
          * @return Salisan dari state ini
          */
         public GameState copy() {
-            GameState salinan = new GameState();
-            salinan.score = this.score;
+            int copyBoard[][] = new int[BOARD_SIZE][BOARD_SIZE];
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
-                    salinan.board[i][j].value = this.board[i][j].value;
+                    copyBoard[i][j] = this.board[i][j].value;
                 }
             }
+            GameState salinan = new GameState(copyBoard);
+            salinan.score = this.score;
             return salinan;
         }
 
@@ -402,20 +425,24 @@ public class GameModel {
      *
      * @param state State yang ingin dikenakan aksi
      * @param action Aksi yang ingin dilakukan
-     * @return True kalau action berhasil diterapkan. False kaalau tick sudah
-     * habis atau action tidak valid
+     * @return State baru kalau berhasil, null kalau gagal (karena aksi tidak
+     * valid atau tick sudah habis)
      */
-    public boolean applyAction(GameState state, GameAction action) {
+    public GameState applyAction(GameState state, GameAction action) {
         if (tickLeft > 0 && state.isActionValid(action)) {
             tickLeft--;
-            slideTiles(state, action);
-            List<Cell> emptyCells = state.getEmptyCells();
+            GameState copyState = state.copy();
+            slideTiles(copyState, action);
+            List<Cell> emptyCells = copyState.getEmptyCells();
 
             Cell chosen = emptyCells.get(rand.nextInt(emptyCells.size()));
             chosen.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
-            return true;
+            
+            copyState.evaluateAttributes();
+            
+            return copyState;
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -435,6 +462,8 @@ public class GameModel {
         cell1.value = (Math.random() >= 0.9) ? 4 : 2;
         cell2.value = (Math.random() >= 0.9) ? 4 : 2;
 
+        state.evaluateAttributes();
+        
         return state;
     }
 

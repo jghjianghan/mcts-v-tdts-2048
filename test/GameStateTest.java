@@ -66,7 +66,17 @@ public class GameStateTest {
             {2, 2, 2, 2},
             {2, 2, 2, 2},};
         state = model.new GameState(board);
-        boolean res = state.isActionValid(GameAction.LEFT);
+        Assert.assertTrue(state.isActionValid(GameAction.LEFT));
+        Assert.assertTrue(state.isActionValid(GameAction.RIGHT));
+        Assert.assertTrue(state.isActionValid(GameAction.UP));
+        Assert.assertTrue(state.isActionValid(GameAction.DOWN));
+        
+        board = new int[][]{
+            {2, 2, 0, 0},
+            {4, 0, 0, 0},
+            {4, 8, 0, 0},
+            {8, 2, 32, 4},};
+        state = model.new GameState(board);
         Assert.assertTrue(state.isActionValid(GameAction.LEFT));
         Assert.assertTrue(state.isActionValid(GameAction.RIGHT));
         Assert.assertTrue(state.isActionValid(GameAction.UP));

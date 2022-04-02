@@ -3,6 +3,7 @@ package controller;
 
 import game.GameModel;
 import game.GameAction;
+import game.GameModel.GameState;
 import view.UI;
 
 /**
@@ -23,10 +24,13 @@ public class GameController {
     }
     
     public void moveBoard(GameAction move){
-        if (forwardModel.applyAction(state, move)){
+        GameState nextState = forwardModel.applyAction(state, move);
+        if (nextState != null){
+            state = nextState;
             if (state.isTerminal()){
                 ui.showGameOver();
             }
+            System.out.println(state);
             ui.displayBoard(state);
         }
     }
