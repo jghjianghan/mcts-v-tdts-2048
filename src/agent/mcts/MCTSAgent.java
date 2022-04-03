@@ -37,10 +37,12 @@ public class MctsAgent extends GamePlayingAgent {
     @Override
     public GameAction selectAction(GameState state, GameModel model) {
         StateNode root = new MctsStateNode(state, null);
-        StateNode leaf = select(root, model);
-        StateNode child = expand(leaf, model);
-        GameResult result = simulate(child, model);
-        backPropagate(child, result);
+        while(model.isUsable()){
+            StateNode leaf = select(root, model);
+            StateNode child = expand(leaf, model);
+            GameResult result = simulate(child, model);
+            backPropagate(child, result);
+        }
 
         //select best child
         List<GameAction> bestActionList = new ArrayList<>();
@@ -76,6 +78,10 @@ public class MctsAgent extends GamePlayingAgent {
             double bestValue = Double.NEGATIVE_INFINITY;
             for (GameAction action : GameAction.values()) {
                 ActionNode child = root.getChildNode(action);
+                
+                //Aksi tidak valid
+                if (child == null)
+                    continue;
 
                 int nRoot = root.getVisitCount();
                 int nChild = child.getVisitCount();

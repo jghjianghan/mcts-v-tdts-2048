@@ -14,6 +14,7 @@ public abstract class StateNode {
     public final GameState state;
     
     public ActionNode parent;
+    //Jika action ke-i tidak valid, elemen ke-i nilainya null
     protected ActionNode[] children;
 
     private int visitCount = 0;

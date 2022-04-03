@@ -57,14 +57,12 @@ public class Experimentor {
                         ("Action: " + chosenAction + "\n").getBytes(), 
                         StandardOpenOption.APPEND);
                 state = infModel.applyAction(state, chosenAction);
-                System.out.println("Action: " + chosenAction);
-                System.out.println(state);
-                System.out.println("");
                 Files.write(
                         filePath, 
                         (state + "\n").getBytes(), 
                         StandardOpenOption.APPEND);
                 
+                System.out.println("Score: " + state.getScore());
             } while (!state.isTerminal());
         } catch (IOException ex){
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
