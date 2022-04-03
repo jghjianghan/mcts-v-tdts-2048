@@ -24,7 +24,7 @@ public class ExperimentLogger {
     public static void main(String[] args) {
     }
     
-    public ExperimentLogger() {
+    public ExperimentLogger(String initialMessage) {
         String directoryName = "log";
         
         LocalDateTime now = LocalDateTime.now();
@@ -39,6 +39,15 @@ public class ExperimentLogger {
         {
             directory.mkdir();
         }
+        
+        try {
+            Files.write(
+                    filePath, 
+                    (initialMessage + now.format(DateTimeFormatter.ISO_DATE_TIME) + "\n\n").getBytes(), 
+                    StandardOpenOption.CREATE);
+        } catch (IOException ex) {
+            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void log(GameState state){
@@ -46,7 +55,7 @@ public class ExperimentLogger {
             Files.write(
                     filePath, 
                     (state + "\n").getBytes(), 
-                    StandardOpenOption.CREATE);
+                    StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -57,7 +66,18 @@ public class ExperimentLogger {
             Files.write(
                     filePath, 
                     ("Action: " + action + "\n" + state + "\n").getBytes(), 
-                    StandardOpenOption.CREATE);
+                    StandardOpenOption.APPEND);
+        } catch (IOException ex) {
+            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void log(String str){
+        try {
+            Files.write(
+                    filePath, 
+                    (str + "\n").getBytes(), 
+                    StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
