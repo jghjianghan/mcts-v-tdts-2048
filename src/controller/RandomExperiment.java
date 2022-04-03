@@ -7,7 +7,7 @@ import game.GameModel;
 import game.GameModel.GameState;
 
 /**
- * Tester from RandomAgent
+ * Tester for RandomAgent
  * 
  * @author Jiang Han
  */

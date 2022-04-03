@@ -12,7 +12,7 @@ import game.GameModel.GameState;
 public abstract class StateNode {
 
     public final GameState state;
-    
+
     public final ActionNode parent;
     //Jika action ke-i tidak valid, elemen ke-i nilainya null
     protected ActionNode[] children;
@@ -21,7 +21,7 @@ public abstract class StateNode {
 
     public StateNode(GameState state, ActionNode action) {
         this.state = state;
-        parent = action;       
+        parent = action;
     }
 
     public StateNode(GameState state) {
@@ -31,11 +31,18 @@ public abstract class StateNode {
     public GameState getState() {
         return state;
     }
-    
+
+    /**
+     * Mengembalikan node yang merepresentasikan aksi tertentu yang dapat
+     * diambil dari state ini.
+     *
+     * @param action
+     * @return
+     */
     public ActionNode getChildNode(GameAction action) {
         return children[action.id];
     }
-    
+
     public int getVisitCount() {
         return visitCount;
     }

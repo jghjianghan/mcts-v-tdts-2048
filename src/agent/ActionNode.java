@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Class ini merepresentasikan sebuah aksi yang dapat dipilih dari state
+ * tertentu pada pohon pencarian.
  *
  * @author Jiang Han
  */
@@ -46,12 +48,12 @@ public abstract class ActionNode {
     public abstract void updateUtility(GameResult result);
 
     public abstract double getUtility();
-    
-    public double getLowerBound(){
+
+    public double getLowerBound() {
         return localLowerBound;
     }
-    
-    public double getUpperBound(){
+
+    public double getUpperBound() {
         return localUpperBound;
     }
 }
