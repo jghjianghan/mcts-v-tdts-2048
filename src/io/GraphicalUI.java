@@ -1,4 +1,4 @@
-package view;
+package io;
 
 import controller.GameController;
 import java.awt.Color;

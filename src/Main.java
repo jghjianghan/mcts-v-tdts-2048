@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import view.GraphicalUI;
+import io.GraphicalUI;
 
 /**
  * The entry point of the application

@@ -4,7 +4,7 @@ package controller;
 import game.GameModel;
 import game.GameAction;
 import game.GameModel.GameState;
-import view.UI;
+import io.UI;
 
 /**
  * Controls the flow of the application.

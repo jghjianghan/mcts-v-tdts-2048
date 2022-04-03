@@ -51,7 +51,10 @@ public class Experimentor {
         try {
             do {
                 GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(100000));
+                long startTime = System.currentTimeMillis();
+                GameAction chosenAction = agent.selectAction(copyState, new GameModel(1000000));
+                long endTime = System.currentTimeMillis();
+                System.out.println("Duration: " + (endTime - startTime) + " ms");
                 Files.write(
                         filePath, 
                         ("Action: " + chosenAction + "\n").getBytes(), 
