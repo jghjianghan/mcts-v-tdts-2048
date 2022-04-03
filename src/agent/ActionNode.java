@@ -14,7 +14,7 @@ public abstract class ActionNode {
 
     public final GameAction action;
     protected Map<GameState, StateNode> children;
-    public StateNode parent;
+    public final StateNode parent;
     private int visitCount = 0;
     public double localLowerBound = Double.POSITIVE_INFINITY;
     public double localUpperBound = Double.NEGATIVE_INFINITY;

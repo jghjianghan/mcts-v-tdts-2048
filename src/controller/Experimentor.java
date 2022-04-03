@@ -15,8 +15,8 @@ import java.awt.Toolkit;
 public class Experimentor {
 
     public static void main(String[] args) {
-//        runMCTSDetailed(1000000, Math.sqrt(2));
-        getMCTSAverageScore(1000, 1000000, Math.sqrt(2));
+//        runMCTSDetailed(1000, Math.sqrt(2));
+        getMCTSAverageScore(20, 1000000, Math.sqrt(2));
     }
     
     public static void runMCTSDetailed(int MAX_TICK, double EXP_CONST){

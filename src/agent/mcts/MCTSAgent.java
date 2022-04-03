@@ -162,18 +162,17 @@ public class MctsAgent extends GamePlayingAgent {
     }
     
     private double normalizeUtility(ActionNode node){
-        return node.getUtility();
-//        double localLower = node.getLowerBound();
-//        double localUpper = node.getUpperBound();
-//        
-//        if (localLower < localUpper){
-//            return (node.getUtility() - localLower) / (localUpper - localLower);
-//        } else if (globalLowerBound < globalUpperBound){
-//            return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
-//        } else {
-////            return node.getUtility();
-//            return 0.5;
-//        }
+//        return node.getUtility();
+        double localLower = node.getLowerBound();
+        double localUpper = node.getUpperBound();
+        
+        if (localLower < localUpper){
+            return (node.getUtility() - localLower) / (localUpper - localLower);
+        } else if (globalLowerBound < globalUpperBound){
+            return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
+        } else {
+            return 0.5;
+        }
     }
     
     private void updateNormalizationBound(ActionNode node, double value){

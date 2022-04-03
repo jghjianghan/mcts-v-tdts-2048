@@ -13,7 +13,7 @@ public abstract class StateNode {
 
     public final GameState state;
     
-    public ActionNode parent;
+    public final ActionNode parent;
     //Jika action ke-i tidak valid, elemen ke-i nilainya null
     protected ActionNode[] children;
 

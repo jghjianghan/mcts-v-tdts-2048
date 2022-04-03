@@ -14,10 +14,6 @@ import game.GameModel.GameState;
 class MctsActionNode extends ActionNode {
     private long totalUtility = 0;
     
-    public static void main(String[] args) {
-        System.out.println("hello");
-    }
-    
     MctsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
@@ -46,7 +42,6 @@ class MctsActionNode extends ActionNode {
             return (StateNode) children.get(nextState);
         } else {
             MctsStateNode newNode = new MctsStateNode(nextState, this);
-            newNode.parent = this;
             children.put(nextState, newNode);
             return newNode;
         }
