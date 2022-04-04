@@ -23,9 +23,12 @@ class MctsActionNode extends ActionNode {
     @Override
     public void updateUtility(GameResult result) {
         totalUtility += result.score;
+        double currentUtility = getUtility();
+        localLowerBound = Math.min(localLowerBound, currentUtility);
+        localUpperBound = Math.max(localUpperBound, currentUtility);
+        
         ActionNode parentAction = parent.parent;
         if (parentAction != null) {
-            double currentUtility = getUtility();
             parentAction.localLowerBound = Math.min(parentAction.localLowerBound, currentUtility);
             parentAction.localUpperBound = Math.max(parentAction.localUpperBound, currentUtility);
         }
@@ -33,7 +36,7 @@ class MctsActionNode extends ActionNode {
 
     @Override
     public double getUtility() {
-        return 1.0 * totalUtility / this.getVisitCount();
+        return (double) totalUtility / this.getVisitCount();
     }
 
     @Override

@@ -53,7 +53,7 @@ public class MctsAgent extends GamePlayingAgent {
                 maxVisit = childAction.getVisitCount();
                 bestActionList.clear();
                 bestActionList.add(childAction.action);
-            } else if (childAction.getVisitCount() > maxVisit){
+            } else if (childAction.getVisitCount() == maxVisit){
                 bestActionList.add(childAction.action);
             }
         }
@@ -86,8 +86,13 @@ public class MctsAgent extends GamePlayingAgent {
                 int nRoot = root.getVisitCount();
                 int nChild = child.getVisitCount();
                 //menghitung nilai UCB1
-                double value = normalizeUtility(child)
-                        + EXPLORATION_CONSTANT * Math.sqrt(Math.log(nRoot) / nChild);
+                double exploitationComp = normalizeUtility(child);
+                assert exploitationComp <= 1.0;
+                if (exploitationComp > 1){
+                    normalizeUtility(child);
+                }
+                double explorationComp = EXPLORATION_CONSTANT * Math.sqrt(Math.log(nRoot) / nChild);
+                double value = exploitationComp + explorationComp;
 
                 if (value > bestValue) {
                     bestValue = value;
@@ -154,8 +159,7 @@ public class MctsAgent extends GamePlayingAgent {
             } else {
                 stateNode.parent.incrementVisitCount();
                 stateNode.parent.updateUtility(result);
-                updateNormalizationBound(stateNode.parent, result.score);
-                
+                updateNormalizationBound(stateNode.parent, result.score);                
                 stateNode = stateNode.parent.parent;
             }
         }
@@ -171,7 +175,7 @@ public class MctsAgent extends GamePlayingAgent {
         } else if (globalLowerBound < globalUpperBound){
             return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
         } else {
-            return 0.5;
+            return node.getUtility();
         }
     }
     

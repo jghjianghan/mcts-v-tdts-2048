@@ -30,7 +30,7 @@ public class GameController {
             if (state.isTerminal()){
                 ui.showGameOver();
             }
-            System.out.println(state);
+//            System.out.println(state);
             ui.displayBoard(state);
         }
     }
