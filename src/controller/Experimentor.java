@@ -21,7 +21,9 @@ public class Experimentor {
     
     public static void runMCTSDetailed(int MAX_TICK, double EXP_CONST){
         GameModel infModel = new GameModel(Integer.MAX_VALUE);
-        GamePlayingAgent agent = new MctsAgent(EXP_CONST);
+        GamePlayingAgent agent = new MctsAgent.Builder()
+                .setExplorationConstant(EXP_CONST)
+                .build();
         GameState state = infModel.generateInitialState();
         
         ExperimentLogger logger = new ExperimentLogger(String.format("MCTS UCT Agent%nMax Tick: %d%nCp: %f%n", MAX_TICK, EXP_CONST));
@@ -55,7 +57,9 @@ public class Experimentor {
         long totalScore = 0;
         for(int i = 0; i<iteration; i++){
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            GamePlayingAgent agent = new MctsAgent(EXP_CONST);
+            GamePlayingAgent agent = new MctsAgent.Builder()
+                    .setExplorationConstant(EXP_CONST)
+                    .build();
             GameState state = infModel.generateInitialState();
 
             long startTime, endTime;

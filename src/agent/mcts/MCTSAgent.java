@@ -4,6 +4,10 @@ import agent.ActionNode;
 import agent.GamePlayingAgent;
 import agent.GameResult;
 import agent.StateNode;
+import agent.bestChildPolicy.BestChildPolicy;
+import agent.bestChildPolicy.MostVisitPolicy;
+import agent.normalizationPolicy.NoNormalizationPolicy;
+import agent.normalizationPolicy.NormalizationPolicy;
 import game.GameAction;
 import game.GameModel;
 import game.GameModel.GameState;
@@ -19,6 +23,10 @@ import java.util.Random;
 public class MctsAgent extends GamePlayingAgent {
 
     private final double EXPLORATION_CONSTANT;
+    private final BestChildPolicy BEST_CHILD_POLICY;
+    private final NormalizationPolicy NORMALIZATION_POLICY;
+    private final int MAX_SIMULATION_DEPTH;
+
     private final Random rand = new Random();
     private double globalLowerBound = Double.POSITIVE_INFINITY;
     private double globalUpperBound = Double.NEGATIVE_INFINITY;
@@ -27,17 +35,61 @@ public class MctsAgent extends GamePlayingAgent {
         System.out.println();
     }
 
-    public MctsAgent() {
-        EXPLORATION_CONSTANT = Math.sqrt(2);
+    private MctsAgent(
+            double explorationConstant,
+            BestChildPolicy bestChildPolicy,
+            NormalizationPolicy normalizationPolicy,
+            int maxDepth) {
+        this.EXPLORATION_CONSTANT = explorationConstant;
+        this.BEST_CHILD_POLICY = bestChildPolicy;
+        this.NORMALIZATION_POLICY = normalizationPolicy;
+        this.MAX_SIMULATION_DEPTH = maxDepth;
     }
-    public MctsAgent(double c) {
-        EXPLORATION_CONSTANT = c;
+
+    public static class Builder {
+
+        private double explorationConstant;
+        private BestChildPolicy bestChildPolicy;
+        private NormalizationPolicy normalizationPolicy;
+        private int maxDepth;
+
+        public Builder() {
+            //set default values
+            explorationConstant = Math.sqrt(2);
+            bestChildPolicy = new MostVisitPolicy();
+            normalizationPolicy = new NoNormalizationPolicy();
+            maxDepth = Integer.MAX_VALUE;
+        }
+
+        public Builder setExplorationConstant(double explorationConstant) {
+            this.explorationConstant = explorationConstant;
+            return this;
+        }
+
+        public Builder setBestChildPolicy(BestChildPolicy bestChildPolicy) {
+            this.bestChildPolicy = bestChildPolicy;
+            return this;
+        }
+
+        public Builder setNormalizationPolicy(NormalizationPolicy normalizationPolicy) {
+            this.normalizationPolicy = normalizationPolicy;
+            return this;
+        }
+
+        public Builder setMaxDepth(int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
+        }
+
+        public MctsAgent build() {
+            return new MctsAgent(explorationConstant, bestChildPolicy, normalizationPolicy, maxDepth);
+        }
     }
 
     @Override
     public GameAction selectAction(GameState state, GameModel model) {
         StateNode root = new MctsStateNode(state, null);
-        while(model.isUsable()){
+        while (model.isUsable()) {
             StateNode leaf = select(root, model);
             StateNode child = expand(leaf, model);
             GameResult result = simulate(child, model);
@@ -47,13 +99,13 @@ public class MctsAgent extends GamePlayingAgent {
         //select best child
         List<GameAction> bestActionList = new ArrayList<>();
         int maxVisit = -1;
-        for(GameAction action : root.state.getAvailableActions()){
+        for (GameAction action : root.state.getAvailableActions()) {
             ActionNode childAction = root.getChildNode(action);
-            if (childAction.getVisitCount() > maxVisit){
+            if (childAction.getVisitCount() > maxVisit) {
                 maxVisit = childAction.getVisitCount();
                 bestActionList.clear();
                 bestActionList.add(childAction.action);
-            } else if (childAction.getVisitCount() == maxVisit){
+            } else if (childAction.getVisitCount() == maxVisit) {
                 bestActionList.add(childAction.action);
             }
         }
@@ -78,17 +130,18 @@ public class MctsAgent extends GamePlayingAgent {
             double bestValue = Double.NEGATIVE_INFINITY;
             for (GameAction action : GameAction.values()) {
                 ActionNode child = root.getChildNode(action);
-                
+
                 //Aksi tidak valid
-                if (child == null)
+                if (child == null) {
                     continue;
+                }
 
                 int nRoot = root.getVisitCount();
                 int nChild = child.getVisitCount();
                 //menghitung nilai UCB1
                 double exploitationComp = normalizeUtility(child);
                 assert exploitationComp <= 1.0;
-                if (exploitationComp > 1){
+                if (exploitationComp > 1) {
                     normalizeUtility(child);
                 }
                 double explorationComp = EXPLORATION_CONSTANT * Math.sqrt(Math.log(nRoot) / nChild);
@@ -159,27 +212,27 @@ public class MctsAgent extends GamePlayingAgent {
             } else {
                 stateNode.parent.incrementVisitCount();
                 stateNode.parent.updateUtility(result);
-                updateNormalizationBound(stateNode.parent, result.score);                
+                updateNormalizationBound(stateNode.parent, result.score);
                 stateNode = stateNode.parent.parent;
             }
         }
     }
-    
-    private double normalizeUtility(ActionNode node){
+
+    private double normalizeUtility(ActionNode node) {
 //        return node.getUtility();
         double localLower = node.getLowerBound();
         double localUpper = node.getUpperBound();
-        
-        if (localLower < localUpper){
+
+        if (localLower < localUpper) {
             return (node.getUtility() - localLower) / (localUpper - localLower);
-        } else if (globalLowerBound < globalUpperBound){
+        } else if (globalLowerBound < globalUpperBound) {
             return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
         } else {
             return node.getUtility();
         }
     }
-    
-    private void updateNormalizationBound(ActionNode node, double value){
+
+    private void updateNormalizationBound(ActionNode node, double value) {
         globalLowerBound = Math.min(globalLowerBound, value);
         globalUpperBound = Math.max(globalUpperBound, value);
     }
