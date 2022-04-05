@@ -1,6 +1,5 @@
 
-import controller.Experimentor;
-import controller.GameController;
+import controller.*;
 import java.awt.Dimension;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -17,7 +16,8 @@ public class Main {
         System.out.println("=========TDTS vs MCTS in 2048==========");
         System.out.println("1. Run single experiment [MCTS]");
         System.out.println("2. Run multiple experiment, get average [MCTS]");
-        System.out.println("3. Play the 2048 game (GUI)");
+        System.out.println("3. Run multiple experiment, get average [Random]");
+        System.out.println("0. Play the 2048 game (GUI)");
         Scanner sc = new Scanner(System.in);
         System.out.print("Command: ");
         
@@ -37,8 +37,8 @@ public class Main {
                         explorationConst = Double.parseDouble(sc.nextLine());
                     }
                     Experimentor.runMCTSDetailed(maxTick, explorationConst);
-                    
                     break;
+                    
                 case 2:
                     System.out.print("Number of experiment: ");
                     int iteration = Integer.parseInt(sc.nextLine());
@@ -54,7 +54,13 @@ public class Main {
                     }
                     Experimentor.getMCTSAverageScore(iteration, maxTick, explorationConst);
                     break;
+                    
                 case 3:
+                    System.out.print("Number of experiment: ");
+                    iteration = Integer.parseInt(sc.nextLine());
+                    RandomExperiment.averageAgentScore(iteration);
+                    break;
+                case 0:
                     startGame();
                     break;
                 default:

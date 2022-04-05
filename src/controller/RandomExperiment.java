@@ -11,14 +11,7 @@ import game.GameModel.GameState;
  * 
  * @author Jiang Han
  */
-public class RandomExperiment {
-    public static void main(String[] args) {
-//        Result
-//        Average Score ~ 1090
-//        Average step ~ 118
-        averageAgentScore(10000);
-    }
-    
+public class RandomExperiment {    
     public static void averageAgentScore(int iteration){
         long totalScore = 0;
         long step = 0;
