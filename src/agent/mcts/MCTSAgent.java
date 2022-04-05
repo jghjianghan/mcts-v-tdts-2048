@@ -28,8 +28,8 @@ public class MctsAgent extends GamePlayingAgent {
     private final int MAX_SIMULATION_DEPTH;
 
     private final Random rand = new Random();
-    private double globalLowerBound = Double.POSITIVE_INFINITY;
-    private double globalUpperBound = Double.NEGATIVE_INFINITY;
+    private double globalLowerBound;
+    private double globalUpperBound;
 
     public static void main(String[] args) {
         System.out.println();
@@ -88,6 +88,9 @@ public class MctsAgent extends GamePlayingAgent {
 
     @Override
     public GameAction selectAction(GameState state, GameModel model) {
+        globalLowerBound = Double.POSITIVE_INFINITY;
+        globalUpperBound = Double.NEGATIVE_INFINITY;
+        
         StateNode root = new MctsStateNode(state, null);
         while (model.isUsable()) {
             StateNode leaf = select(root, model);
