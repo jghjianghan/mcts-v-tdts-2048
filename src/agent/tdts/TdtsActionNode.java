@@ -14,31 +14,31 @@ import game.GameModel.GameState;
  */
 class TdtsActionNode extends ActionNode {
 
-    private long totalUtility = 0;
+    private double utility = 0;
 
     TdtsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
 
     @Override
-    public void updateUtility(GameResult result) {
+    public void updateUtility(double result) {
         //TODO
-//        totalUtility += result.score;
-//        double currentUtility = getUtility();
-//        localLowerBound = Math.min(localLowerBound, currentUtility);
-//        localUpperBound = Math.max(localUpperBound, currentUtility);
+        double updateStepSize = 1.0 / this.getVisitCount();
+        utility = utility + updateStepSize * result;
+        
+        localLowerBound = Math.min(localLowerBound, utility);
+        localUpperBound = Math.max(localUpperBound, utility);
 //        
-//        ActionNode parentAction = parent.parent;
-//        if (parentAction != null) {
-//            parentAction.localLowerBound = Math.min(parentAction.localLowerBound, currentUtility);
-//            parentAction.localUpperBound = Math.max(parentAction.localUpperBound, currentUtility);
-//        }
+        ActionNode parentAction = parent.parent;
+        if (parentAction != null) {
+            parentAction.localLowerBound = Math.min(parentAction.localLowerBound, utility);
+            parentAction.localUpperBound = Math.max(parentAction.localUpperBound, utility);
+        }
     }
 
     @Override
     public double getUtility() {
-        //TODO
-        return (double) totalUtility / this.getVisitCount();
+        return utility;
     }
 
     @Override

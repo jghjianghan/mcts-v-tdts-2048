@@ -17,6 +17,7 @@ public class Main {
         System.out.println("1. Run single experiment [MCTS]");
         System.out.println("2. Run multiple experiment, get average [MCTS]");
         System.out.println("3. Run multiple experiment, get average [Random]");
+        System.out.println("4. Run single experiment [TDTS]");
         System.out.println("0. Play the 2048 game (GUI)");
         Scanner sc = new Scanner(System.in);
         System.out.print("Command: ");
@@ -58,9 +59,24 @@ public class Main {
                     iteration = Integer.parseInt(sc.nextLine());
                     RandomExperiment.averageAgentScore(iteration);
                     break;
+                    
+                case 4:
+                    System.out.print("Maximum Tick [1000000]: ");
+                    
+                    input = sc.nextLine();
+                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    
+                    System.out.print("Exploration constant [sqrt(2)]: ");
+                    input = sc.nextLine();
+                    explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
+                    
+                    Experimentor.runTDTSDetailed(maxTick, explorationConst);
+                    break;
+                    
                 case 0:
                     startGame();
                     break;
+                    
                 default:
                     System.err.println("Unknown command");
             }

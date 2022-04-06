@@ -3,6 +3,7 @@ package controller;
 import agent.GamePlayingAgent;
 import agent.mcts.MctsAgent;
 import agent.normalizationPolicy.SpaceLocalNormalization;
+import agent.tdts.TdtsAgent;
 import game.GameAction;
 import game.GameModel;
 import game.GameModel.GameState;
@@ -104,6 +105,37 @@ public class Experimentor {
                 + "\nAverage time per run: " + ((double)totalTime / iteration / 1000) + " s"
         );
         
+        Toolkit.getDefaultToolkit().beep();
+    }
+
+    public static void runTDTSDetailed(int MAX_TICK, double EXP_CONST) {
+        GameModel infModel = new GameModel(Integer.MAX_VALUE);
+        GamePlayingAgent agent = new TdtsAgent.Builder()
+                .setExplorationConstant(EXP_CONST)
+                .setNormalizationPolicy(new SpaceLocalNormalization())
+                .build();
+        GameState state = infModel.generateInitialState();
+
+        ExperimentLogger logger = new ExperimentLogger("tdts",
+                agent.getConfigurationString() + 
+                String.format("Max Tick: %d%n", MAX_TICK)
+        );
+
+        logger.log(state);
+        long startTime, endTime, totalWriteTime = 0, total;
+
+        do {
+            GameState copyState = state.copy();
+            startTime = System.currentTimeMillis();
+            GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
+            endTime = System.currentTimeMillis();
+
+            state = infModel.applyAction(state, chosenAction);
+            System.out.println("Duration: " + (endTime - startTime) + " ms");
+            logger.log(chosenAction, state);
+
+            System.out.println("Score: " + state.getScore());
+        } while (!state.isTerminal());
         Toolkit.getDefaultToolkit().beep();
     }
 }

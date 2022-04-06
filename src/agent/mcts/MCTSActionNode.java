@@ -14,15 +14,15 @@ import game.GameModel.GameState;
  */
 class MctsActionNode extends ActionNode {
 
-    private long totalUtility = 0;
+    private double totalUtility = 0;
 
     MctsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
 
     @Override
-    public void updateUtility(GameResult result) {
-        totalUtility += result.score;
+    public void updateUtility(double result) {
+        totalUtility += result;
         double currentUtility = getUtility();
         localLowerBound = Math.min(localLowerBound, currentUtility);
         localUpperBound = Math.max(localUpperBound, currentUtility);
@@ -36,7 +36,7 @@ class MctsActionNode extends ActionNode {
 
     @Override
     public double getUtility() {
-        return (double) totalUtility / this.getVisitCount();
+        return totalUtility / this.getVisitCount();
     }
 
     @Override

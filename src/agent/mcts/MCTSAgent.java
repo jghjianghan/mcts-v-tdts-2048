@@ -239,7 +239,7 @@ public class MctsAgent extends GamePlayingAgent {
                 break;
             } else {
                 stateNode.parent.incrementVisitCount();
-                stateNode.parent.updateUtility(result);
+                stateNode.parent.updateUtility(result.score);
                 NORMALIZATION_POLICY.updateNormalizationBound(result.score);
                 stateNode = stateNode.parent.parent;
             }

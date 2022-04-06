@@ -4,6 +4,10 @@ import agent.ActionNode;
 import agent.GamePlayingAgent;
 import agent.GameResult;
 import agent.StateNode;
+import agent.bestChildPolicy.BestChildPolicy;
+import agent.bestChildPolicy.MostVisitPolicy;
+import agent.normalizationPolicy.NormalizationPolicy;
+import agent.normalizationPolicy.SpaceLocalNormalization;
 import game.GameAction;
 import game.GameModel;
 import java.util.ArrayList;
@@ -19,13 +23,96 @@ import java.util.Stack;
  */
 public class TdtsAgent extends GamePlayingAgent {
 
-    private final double EXPLORATION_CONSTANT = Math.sqrt(2);
+    private final double EXPLORATION_CONSTANT;
+    private final BestChildPolicy BEST_CHILD_POLICY;
+    private final NormalizationPolicy NORMALIZATION_POLICY;
+    //gamma
+    private final double REWARD_DISCOUNT;
+    //lambda
+    private final double ELIGIBILITY_TRACE_DECAY;
+    private int maxDepth;
+    
+    public TdtsAgent(
+            double explorationConstant,
+            BestChildPolicy bestChildPolicy, 
+            NormalizationPolicy NORMALIZATION_POLICY, 
+            double rewardDiscount,
+            double eligibilityTraceDecay,
+            int maxDepth) {
+        this.EXPLORATION_CONSTANT = explorationConstant;
+        this.BEST_CHILD_POLICY = bestChildPolicy;
+        this.NORMALIZATION_POLICY = NORMALIZATION_POLICY;
+        this.REWARD_DISCOUNT = rewardDiscount;
+        this.ELIGIBILITY_TRACE_DECAY = eligibilityTraceDecay;
+        this.maxDepth = maxDepth;
+    }
+    
+    public static class Builder {
+
+        private double explorationConstant;
+        private BestChildPolicy bestChildPolicy;
+        private NormalizationPolicy normalizationPolicy;
+        private double gamma, lambda;
+        private int maxDepth;
+
+        public Builder() {
+            //set default values
+            explorationConstant = Math.sqrt(2);
+            bestChildPolicy = new MostVisitPolicy();
+            normalizationPolicy = new SpaceLocalNormalization();
+            lambda = gamma = 1;
+            maxDepth = Integer.MAX_VALUE;
+        }
+
+        public Builder setExplorationConstant(double explorationConstant) {
+            this.explorationConstant = explorationConstant;
+            return this;
+        }
+
+        public Builder setBestChildPolicy(BestChildPolicy bestChildPolicy) {
+            this.bestChildPolicy = bestChildPolicy;
+            return this;
+        }
+
+        public Builder setNormalizationPolicy(NormalizationPolicy normalizationPolicy) {
+            this.normalizationPolicy = normalizationPolicy;
+            return this;
+        }
+
+        public Builder setRewardDiscount(double rewardDiscount) {
+            this.gamma = rewardDiscount;
+            return this;
+        }
+        
+        public Builder setEligibilityTraceDecay(double eligibilityTraceDecay) {
+            this.lambda = eligibilityTraceDecay;
+            return this;
+        }
+        
+        public Builder setMaxDepth(int maxDepth) {
+            this.maxDepth = maxDepth;
+            return this;
+        }
+
+        public TdtsAgent build() {
+            return new TdtsAgent(
+                    explorationConstant, 
+                    bestChildPolicy, 
+                    normalizationPolicy, 
+                    gamma,
+                    lambda,
+                    maxDepth
+            );
+        }
+    }
+    
     private final Random rand = new Random();
 
     @Override
     public GameAction selectAction(GameModel.GameState state, GameModel model) {
+        NORMALIZATION_POLICY.resetNormalizationBound();
+        
         StateNode root = new TdtsStateNode(state, null);
-
         while (model.isUsable()) {
             StateNode leaf = select(root, model);
             StateNode child = expand(leaf, model);
@@ -33,7 +120,7 @@ public class TdtsAgent extends GamePlayingAgent {
             backPropagate(child, simulatedTrajectory);
         }
 
-        return null;
+        return BEST_CHILD_POLICY.selectBestChild(root).action;
     }
 
     /**
@@ -73,8 +160,8 @@ public class TdtsAgent extends GamePlayingAgent {
                 int nCurr = root.getVisitCount();
                 int nChild = child.getVisitCount();
                 //menghitung nilai UCB1
-                double exploitationComp = child.getUtility();
-//                    assert exploitationComp <= 1.0;
+                double exploitationComp = NORMALIZATION_POLICY.getNormalizedUtility(child);
+                    assert exploitationComp <= 1.0;
                 double explorationComp = EXPLORATION_CONSTANT
                         * Math.sqrt(Math.log(nCurr) / nChild);
                 double ucb1 = exploitationComp + explorationComp;
@@ -166,20 +253,57 @@ public class TdtsAgent extends GamePlayingAgent {
      * direpresentasikan oleh node leaf.
      */
     private void backPropagate(StateNode leaf, Stack<GameResult> simulatedTrajectory) {
+        double cummulativeDelta = 0;
+        double nextValue = 0; //Q_next(s, a)
+        double nextScore = simulatedTrajectory.peek().score;
+        GameResult currentResult = null;
+        
+        //Unmemorized space update
+        while (!simulatedTrajectory.isEmpty()) {
+            currentResult = simulatedTrajectory.pop();
+            double reward = nextScore - currentResult.score;
 
+            double currentValue = 0; //Use V_playout here is needed
+            double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
+            cummulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cummulativeDelta + delta;
+
+            nextValue = currentValue;
+            nextScore = currentResult.score;
+            
+            NORMALIZATION_POLICY.updateNormalizationBound(cummulativeDelta);
+        }
+        assert currentResult != null && currentResult.state.equals(leaf.state);
+        
+        //Memorized space update
+        while (true){
+            //TODO
+            leaf.incrementVisitCount();
+            if (leaf.parent == null){ //sudah sampai ke root
+                break;
+            } else {
+                leaf.parent.incrementVisitCount();
+                leaf.parent.updateUtility(cummulativeDelta);
+                NORMALIZATION_POLICY.updateNormalizationBound(cummulativeDelta);
+                leaf = leaf.parent.parent;
+            }
+        }
     }
-
+    
     @Override
     public String getConfigurationString() {
         return String.format("#TDTS Agent%n"
-                + "Exploration constant: %f%n" //                + "Best-child policy: %s%n"
-                //                + "Normalization Policy: %s%n"
-                //                + "Max Depth: %d%n"
-                ,
-                 EXPLORATION_CONSTANT
-        //                BEST_CHILD_POLICY.getClass().getSimpleName(), 
-        //                NORMALIZATION_POLICY.getClass().getSimpleName(), 
-        //                MAX_SIMULATION_DEPTH
+                + "Exploration constant: %f%n"
+                + "Best-child policy: %s%n"
+                + "Normalization Policy: %s%n"
+                + "Gamma: %f%n"
+                + "Lambda: %f%n"
+                + "Max Depth: %d%n",
+                EXPLORATION_CONSTANT,
+                BEST_CHILD_POLICY.getClass().getSimpleName(), 
+                NORMALIZATION_POLICY.getClass().getSimpleName(), 
+                REWARD_DISCOUNT,
+                ELIGIBILITY_TRACE_DECAY,
+                maxDepth
         );
     }
 

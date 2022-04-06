@@ -51,7 +51,7 @@ public abstract class ActionNode {
      *
      * @param result Hasil permainan
      */
-    public abstract void updateUtility(GameResult result);
+    public abstract void updateUtility(double result);
 
     public abstract double getUtility();
 
