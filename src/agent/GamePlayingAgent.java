@@ -10,4 +10,5 @@ import game.GameModel.GameState;
  */
 public abstract class GamePlayingAgent {
     abstract public GameAction selectAction(GameState state, GameModel model);
+    abstract public String getConfigurationString();
 }

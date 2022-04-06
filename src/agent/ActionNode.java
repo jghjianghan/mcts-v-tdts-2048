@@ -45,6 +45,12 @@ public abstract class ActionNode {
      */
     public abstract StateNode simulateAction(GameModel model);
 
+    /**
+     * Memperbarui informasi utilitas yang tercapat pada state ini, termasuk
+     * local bounds-nya.
+     *
+     * @param result Hasil permainan
+     */
     public abstract void updateUtility(GameResult result);
 
     public abstract double getUtility();

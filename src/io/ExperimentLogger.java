@@ -22,22 +22,22 @@ import java.util.logging.Logger;
 public class ExperimentLogger {
 
     Path filePath;
-
-    public static void main(String[] args) {
-    }
+    String openingPattern = "#*#*#*#*"; 
+    String closingPattern = "*#*#*#*#"; 
 
     /**
      * Konstruktor ini menginisialisasi nama file, menciptakan file baru, lalu
      * menuliskan pesan pembuka file jika ada.
      *
-     * @param initialMessage Pesan yang akan ditulis di awal file
+     * @param codeName Nama dari experiment, akan dipakai sebagai awalan nama file/
+     * @param initialMessage Pesan yang akan ditulis di awal file.
      */
-    public ExperimentLogger(String initialMessage) {
+    public ExperimentLogger(String codeName, String initialMessage) {
         String directoryName = "log";
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        String fileName = "mcts-" + now.format(formatter) + ".txt";
+        String fileName = codeName + "-" + now.format(formatter) + ".txt";
 
         Path dirPath = Paths.get(directoryName);
         filePath = Paths.get(directoryName, fileName);
@@ -46,11 +46,14 @@ public class ExperimentLogger {
         if (!directory.exists()) {
             directory.mkdir();
         }
-
+        
         try {
-            Files.write(
-                    filePath,
-                    (initialMessage + now.format(DateTimeFormatter.ISO_DATE_TIME) + "\n\n").getBytes(),
+            Files.write(filePath,
+                    String.format("%s%n%s%n%s%n", 
+                            now.format(DateTimeFormatter.ISO_DATE_TIME),
+                            initialMessage,
+                            openingPattern
+                    ).getBytes(),
                     StandardOpenOption.CREATE);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,10 +103,17 @@ public class ExperimentLogger {
         try {
             Files.write(
                     filePath,
-                    (str + "\n").getBytes(),
+                    String.format("%s%n", str).getBytes(),
                     StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /**
+     * Prints a closing pattern to the log file
+     */
+    public void logClosingPattern(){
+        log(closingPattern);
     }
 }

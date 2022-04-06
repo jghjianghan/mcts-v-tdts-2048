@@ -6,8 +6,8 @@ import agent.GameResult;
 import agent.StateNode;
 import agent.bestChildPolicy.BestChildPolicy;
 import agent.bestChildPolicy.MostVisitPolicy;
-import agent.normalizationPolicy.NoNormalizationPolicy;
 import agent.normalizationPolicy.NormalizationPolicy;
+import agent.normalizationPolicy.SpaceLocalNormalization;
 import game.GameAction;
 import game.GameModel;
 import game.GameModel.GameState;
@@ -31,10 +31,6 @@ public class MctsAgent extends GamePlayingAgent {
     private double globalLowerBound;
     private double globalUpperBound;
 
-    public static void main(String[] args) {
-        System.out.println();
-    }
-
     private MctsAgent(
             double explorationConstant,
             BestChildPolicy bestChildPolicy,
@@ -57,7 +53,7 @@ public class MctsAgent extends GamePlayingAgent {
             //set default values
             explorationConstant = Math.sqrt(2);
             bestChildPolicy = new MostVisitPolicy();
-            normalizationPolicy = new NoNormalizationPolicy();
+            normalizationPolicy = new SpaceLocalNormalization();
             maxDepth = Integer.MAX_VALUE;
         }
 
@@ -87,9 +83,21 @@ public class MctsAgent extends GamePlayingAgent {
     }
 
     @Override
+    public String getConfigurationString(){
+        return String.format("#MCTS Agent%n"
+                + "Exploration constant: %f%n"
+                + "Best-child policy: %s%n"
+                + "Normalization Policy: %s%n"
+                + "Max Depth: %d%n"
+                , EXPLORATION_CONSTANT, 
+                BEST_CHILD_POLICY.getClass().getSimpleName(), 
+                NORMALIZATION_POLICY.getClass().getSimpleName(), 
+                MAX_SIMULATION_DEPTH);
+    }
+    
+    @Override
     public GameAction selectAction(GameState state, GameModel model) {
-        globalLowerBound = Double.POSITIVE_INFINITY;
-        globalUpperBound = Double.NEGATIVE_INFINITY;
+        NORMALIZATION_POLICY.resetNormalizationBound();
         
         StateNode root = new MctsStateNode(state, null);
         while (model.isUsable()) {
@@ -142,7 +150,7 @@ public class MctsAgent extends GamePlayingAgent {
                 int nRoot = root.getVisitCount();
                 int nChild = child.getVisitCount();
                 //menghitung nilai UCB1
-                double exploitationComp = normalizeUtility(child);
+                double exploitationComp = NORMALIZATION_POLICY.getNormalizedUtility(child);
                 assert exploitationComp <= 1.0;
 //                if (exploitationComp > 1) {
 //                    normalizeUtility(child);
@@ -215,29 +223,9 @@ public class MctsAgent extends GamePlayingAgent {
             } else {
                 stateNode.parent.incrementVisitCount();
                 stateNode.parent.updateUtility(result);
-                updateNormalizationBound(stateNode.parent, result.score);
+                NORMALIZATION_POLICY.updateNormalizationBound(result.score);
                 stateNode = stateNode.parent.parent;
             }
         }
-    }
-
-    private double normalizeUtility(ActionNode node) {
-//        return node.getUtility();
-        double localLower = node.getLowerBound();
-        double localUpper = node.getUpperBound();
-
-        if (localLower < localUpper) {
-            return (node.getUtility() - localLower) / (localUpper - localLower);
-        } else if (globalLowerBound < globalUpperBound) {
-            return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
-        } else {
-//            return node.getUtility();
-            return 0.5;
-        }
-    }
-
-    private void updateNormalizationBound(ActionNode node, double value) {
-        globalLowerBound = Math.min(globalLowerBound, value);
-        globalUpperBound = Math.max(globalUpperBound, value);
     }
 }

@@ -17,5 +17,10 @@ public class RandomAgent extends GamePlayingAgent {
         List<GameAction> actions = state.getAvailableActions();
         return actions.get((new Random()).nextInt(actions.size()));
     }
+
+    @Override
+    public String getConfigurationString() {
+        return "#Random Agent";
+    }
     
 }
