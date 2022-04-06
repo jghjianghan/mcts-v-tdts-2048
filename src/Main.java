@@ -26,32 +26,30 @@ public class Main {
             int command = Integer.parseInt(input);
             switch (command){
                 case 1:
-                    System.out.print("Maximum Tick: ");
-                    int maxTick = Integer.parseInt(sc.nextLine());
+                    System.out.print("Maximum Tick [1000000]: ");
+                    int maxTick;
+                    input = sc.nextLine();
+                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    
                     System.out.print("Exploration constant [sqrt(2)]: ");
                     input = sc.nextLine();
-                    double explorationConst;
-                    if (input.isEmpty()){
-                        explorationConst = Math.sqrt(2);
-                    } else {
-                        explorationConst = Double.parseDouble(sc.nextLine());
-                    }
+                    double explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
+                    
                     Experimentor.runMCTSDetailed(maxTick, explorationConst);
                     break;
                     
                 case 2:
                     System.out.print("Number of experiment: ");
                     int iteration = Integer.parseInt(sc.nextLine());
-                    System.out.print("Maximum Tick: ");
-                    maxTick = Integer.parseInt(sc.nextLine());
+                    
+                    System.out.print("Maximum Tick [1000000]: ");
+                    input = sc.nextLine();
+                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    
                     System.out.print("Exploration constant [sqrt(2)]: ");
                     input = sc.nextLine();
+                    explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
-                    if (input.isEmpty()){
-                        explorationConst = Math.sqrt(2);
-                    } else {
-                        explorationConst = Double.parseDouble(sc.nextLine());
-                    }
                     Experimentor.getMCTSAverageScore(iteration, maxTick, explorationConst);
                     break;
                     
