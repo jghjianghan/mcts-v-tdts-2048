@@ -226,7 +226,8 @@ public class MctsAgent extends GamePlayingAgent {
 
     /**
      * Memperbarui informasi utilitas yang dicatat dalam pohon permainan
-     * berdasarkan hasil selection() dan simulation().
+     * berdasarkan hasil selection() dan simulation(). Class ini menjacat total
+     * skor dan jumlah visit dari simulasi yang melewati setiap ActionState.
      *
      * @param stateNode StateNode leaf tempat simulasi dimulai.
      * @param result Hasil simulasi permainan
