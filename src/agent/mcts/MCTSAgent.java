@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Game-Playing Agent dengan Algoritma UCT
+ * Game-Playing Agent Monte Carlo Tree Search dengan Algoritma UCT
  *
  * @author Jiang Han
  */
@@ -108,19 +108,8 @@ public class MctsAgent extends GamePlayingAgent {
         }
 
         //select best child
-        List<GameAction> bestActionList = new ArrayList<>();
-        int maxVisit = -1;
-        for (GameAction action : root.state.getAvailableActions()) {
-            ActionNode childAction = root.getChildNode(action);
-            if (childAction.getVisitCount() > maxVisit) {
-                maxVisit = childAction.getVisitCount();
-                bestActionList.clear();
-                bestActionList.add(childAction.action);
-            } else if (childAction.getVisitCount() == maxVisit) {
-                bestActionList.add(childAction.action);
-            }
-        }
-        return bestActionList.get(rand.nextInt(bestActionList.size()));
+        
+        return BEST_CHILD_POLICY.selectBestChild(root).action;
     }
 
     private StateNode select(StateNode root, GameModel model) {
