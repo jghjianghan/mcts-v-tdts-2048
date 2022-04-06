@@ -144,9 +144,9 @@ public class MctsAgent extends GamePlayingAgent {
                 //menghitung nilai UCB1
                 double exploitationComp = normalizeUtility(child);
                 assert exploitationComp <= 1.0;
-                if (exploitationComp > 1) {
-                    normalizeUtility(child);
-                }
+//                if (exploitationComp > 1) {
+//                    normalizeUtility(child);
+//                }
                 double explorationComp = EXPLORATION_CONSTANT * Math.sqrt(Math.log(nRoot) / nChild);
                 double value = exploitationComp + explorationComp;
 
@@ -231,7 +231,8 @@ public class MctsAgent extends GamePlayingAgent {
         } else if (globalLowerBound < globalUpperBound) {
             return (node.getUtility() - globalLowerBound) / (globalUpperBound - globalLowerBound);
         } else {
-            return node.getUtility();
+//            return node.getUtility();
+            return 0.5;
         }
     }
 
