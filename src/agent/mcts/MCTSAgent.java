@@ -83,22 +83,22 @@ public class MctsAgent extends GamePlayingAgent {
     }
 
     @Override
-    public String getConfigurationString(){
+    public String getConfigurationString() {
         return String.format("#MCTS Agent%n"
                 + "Exploration constant: %f%n"
                 + "Best-child policy: %s%n"
                 + "Normalization Policy: %s%n"
-                + "Max Depth: %d%n"
-                , EXPLORATION_CONSTANT, 
-                BEST_CHILD_POLICY.getClass().getSimpleName(), 
-                NORMALIZATION_POLICY.getClass().getSimpleName(), 
+                + "Max Depth: %d%n",
+                EXPLORATION_CONSTANT,
+                BEST_CHILD_POLICY.getClass().getSimpleName(),
+                NORMALIZATION_POLICY.getClass().getSimpleName(),
                 MAX_SIMULATION_DEPTH);
     }
-    
+
     @Override
     public GameAction selectAction(GameState state, GameModel model) {
         NORMALIZATION_POLICY.resetNormalizationBound();
-        
+
         StateNode root = new MctsStateNode(state, null);
         while (model.isUsable()) {
             StateNode leaf = select(root, model);
@@ -110,6 +110,16 @@ public class MctsAgent extends GamePlayingAgent {
         return BEST_CHILD_POLICY.selectBestChild(root).action;
     }
 
+    /**
+     * Mengembalikan node state yang memiliki aksi yang belum pernah dikunjungi
+     * dari pohon pencarian. Jika tidak ditemukan node yang memenuhi hingga
+     * terminal state, maka terminal state itu yang dikembalikan. Pemilihan aksi
+     * saat menuruni pohon dilakukan berdasarkan teknik UCB1.
+     *
+     * @param root Titik awal pemilihan
+     * @param model Forward model dari permainan 2048
+     * @return Node state yang memiliki unvisted action atau node terminal
+     */
     private StateNode select(StateNode root, GameModel model) {
         if (root.state.isTerminal() || !model.isUsable()) {
             return root;
@@ -142,14 +152,15 @@ public class MctsAgent extends GamePlayingAgent {
 //                if (exploitationComp > 1) {
 //                    normalizeUtility(child);
 //                }
-                double explorationComp = EXPLORATION_CONSTANT * Math.sqrt(Math.log(nRoot) / nChild);
-                double value = exploitationComp + explorationComp;
+                double explorationComp = EXPLORATION_CONSTANT
+                        * Math.sqrt(Math.log(nRoot) / nChild);
+                double ucb1 = exploitationComp + explorationComp;
 
-                if (value > bestValue) {
-                    bestValue = value;
+                if (ucb1 > bestValue) {
+                    bestValue = ucb1;
                     bestChildList.clear();
                     bestChildList.add(child);
-                } else if (value == bestValue) {
+                } else if (ucb1 == bestValue) {
                     bestChildList.add(child);
                 }
             }
@@ -158,6 +169,19 @@ public class MctsAgent extends GamePlayingAgent {
         }
     }
 
+    /**
+     * "Mengembangkan" sebuah StateNode leaf dari pohon dengan memilih salah
+     * satu aksi yang belum pernah dicoba, lalu mengembalikan StateNode yang
+     * dihasilkan dari aksi tersebut. StateNode baru tersebut akan menjadi titik
+     * awal dilakukannya simulai.
+     *
+     * @param leaf StateMode yang ingin di-expand
+     * @param model Forward model dari permainan 2048
+     * @return StateNode baru sebagai titik awal dilakukannya simulasi. Node
+     * baru ini dihasilkan dari sebuah aksi di node leaf yang belum pernah, atau
+     * node leaf itu sendiri jika leaf adalah state terminal atau jika model
+     * sudah tidak usable. dicoba.
+     */
     private StateNode expand(StateNode leaf, GameModel model) {
         if (!model.isUsable() || leaf.state.isTerminal()) {
             return leaf;
@@ -200,6 +224,13 @@ public class MctsAgent extends GamePlayingAgent {
         return new GameResult(currentState.getScore());
     }
 
+    /**
+     * Memperbarui informasi utilitas yang dicatat dalam pohon permainan
+     * berdasarkan hasil selection() dan simulation().
+     *
+     * @param stateNode StateNode leaf tempat simulasi dimulai.
+     * @param result Hasil simulasi permainan
+     */
     private void backPropagate(StateNode stateNode, GameResult result) {
         while (true) {
             stateNode.incrementVisitCount();
