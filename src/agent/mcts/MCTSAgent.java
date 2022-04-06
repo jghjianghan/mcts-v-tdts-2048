@@ -107,15 +107,13 @@ public class MctsAgent extends GamePlayingAgent {
             backPropagate(child, result);
         }
 
-        //select best child
-        
         return BEST_CHILD_POLICY.selectBestChild(root).action;
     }
 
     private StateNode select(StateNode root, GameModel model) {
-        if (root.state.isTerminal()) {
+        if (root.state.isTerminal() || !model.isUsable()) {
             return root;
-        } else if (model.isUsable()) {
+        } else {
             for (GameAction action : GameAction.values()) {
                 ActionNode child = root.getChildNode(action);
 
@@ -157,8 +155,6 @@ public class MctsAgent extends GamePlayingAgent {
             }
             ActionNode bestChild = bestChildList.get(rand.nextInt(bestChildList.size()));
             return select(bestChild.simulateAction(model), model);
-        } else {
-            return root;
         }
     }
 
