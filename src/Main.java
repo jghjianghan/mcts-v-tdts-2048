@@ -18,6 +18,7 @@ public class Main {
         System.out.println("2. Run multiple experiment, get average [MCTS]");
         System.out.println("3. Run multiple experiment, get average [Random]");
         System.out.println("4. Run single experiment [TDTS]");
+        System.out.println("5. Run multiple experiment, get average [TDTS]");
         System.out.println("0. Play the 2048 game (GUI)");
         Scanner sc = new Scanner(System.in);
         System.out.print("Command: ");
@@ -70,7 +71,38 @@ public class Main {
                     input = sc.nextLine();
                     explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
-                    Experimentor.runTDTSDetailed(maxTick, explorationConst);
+                    System.out.print("Reward discount rate (gamma) [1]: ");
+                    input = sc.nextLine();
+                    double gamma = (input.isEmpty()) ? 1 : Double.parseDouble(input);
+                    
+                    System.out.print("Eligibility trace decay rate (lambda) [1]: ");
+                    input = sc.nextLine();
+                    double lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
+                    
+                    Experimentor.runTDTSDetailed(maxTick, explorationConst, gamma, lambda);
+                    break;
+                    
+                case 5:
+                    System.out.print("Number of experiment: ");
+                    iteration = Integer.parseInt(sc.nextLine());
+                    
+                    System.out.print("Maximum Tick [1000000]: ");
+                    input = sc.nextLine();
+                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    
+                    System.out.print("Exploration constant [sqrt(2)]: ");
+                    input = sc.nextLine();
+                    explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
+                    
+                    System.out.print("Reward discount rate (gamma) [1]: ");
+                    input = sc.nextLine();
+                    gamma = (input.isEmpty()) ? 1 : Double.parseDouble(input);
+                    
+                    System.out.print("Eligibility trace decay rate (lambda) [1]: ");
+                    input = sc.nextLine();
+                    lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
+                    
+                    Experimentor.getTDTSAverageScore(iteration, maxTick, explorationConst, gamma, lambda);
                     break;
                     
                 case 0:
