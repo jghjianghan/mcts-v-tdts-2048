@@ -17,8 +17,18 @@ import java.awt.Toolkit;
 public class Experimentor {
 
     public static void main(String[] args) {
-//        runMCTSDetailed(5000, Math.sqrt(2));
-        getMCTSAverageScore(30, 1000000, Math.sqrt(2));
+        GameModel infModel = new GameModel(Integer.MAX_VALUE);
+        GamePlayingAgent agent = new TdtsAgent.Builder()
+                .setNormalizationPolicy(new SpaceLocalNormalization())
+                .build();
+        GameState state = infModel.new GameState(new int[][]{
+            {4, 16, 4, 2},
+            {8, 32, 64, 2},
+            {2, 16, 128, 8},
+            {32, 8, 4, 32},}, 1560);
+        
+        GameState copyState = state.copy();
+        GameAction chosenAction = agent.selectAction(copyState, new GameModel(100));
     }
 
     public static void runMCTSDetailed(int MAX_TICK, double EXP_CONST) {
@@ -30,8 +40,8 @@ public class Experimentor {
         GameState state = infModel.generateInitialState();
 
         ExperimentLogger logger = new ExperimentLogger("mcts",
-                agent.getConfigurationString() + 
-                String.format("Max Tick: %d%n", MAX_TICK)
+                agent.getConfigurationString()
+                + String.format("Max Tick: %d%n", MAX_TICK)
         );
 
         logger.log(state);
@@ -54,16 +64,16 @@ public class Experimentor {
 
     public static void getMCTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST) {
         GamePlayingAgent agent = new MctsAgent.Builder()
-                    .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
-                    .build();
+                .setExplorationConstant(EXP_CONST)
+                .setNormalizationPolicy(new SpaceLocalNormalization())
+                .build();
         ExperimentLogger logger = new ExperimentLogger("mcts",
-                String.format("Average MCTS score over n experiments%n") +
-                agent.getConfigurationString() + 
-                String.format("Max Tick: %d%n", MAX_TICK) +
-                String.format("Num of Experiment: %d%n", iteration)
+                String.format("Average MCTS score over n experiments%n")
+                + agent.getConfigurationString()
+                + String.format("Max Tick: %d%n", MAX_TICK)
+                + String.format("Num of Experiment: %d%n", iteration)
         );
-        
+
         long totalScore = 0;
         long totalTime = 0;
         for (int i = 0; i < iteration; i++) {
@@ -85,26 +95,25 @@ public class Experimentor {
             endTime = System.currentTimeMillis();
             System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore());
             System.out.println("Time: " + (endTime - startTime) + " ms");
-            
-            
+
             logger.log("Iteration[" + (i + 1) + "] Final Score: " + state.getScore()
                     + "\nTime: " + (endTime - startTime) + " ms\n");
-            
+
             totalScore += state.getScore();
             totalTime += (endTime - startTime);
         }
         logger.logClosingPattern();
-        
+
         System.out.println("Average: " + ((double) totalScore / iteration));
         System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double)totalTime / iteration / 1000) + " s");
-        
+        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
+
         logger.log(
                 "Average: " + ((double) totalScore / iteration)
                 + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double)totalTime / iteration / 1000) + " s"
+                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
         );
-        
+
         Toolkit.getDefaultToolkit().beep();
     }
 
@@ -119,8 +128,8 @@ public class Experimentor {
         GameState state = infModel.generateInitialState();
 
         ExperimentLogger logger = new ExperimentLogger("tdts",
-                agent.getConfigurationString() + 
-                String.format("Max Tick: %d%n", MAX_TICK)
+                agent.getConfigurationString()
+                + String.format("Max Tick: %d%n", MAX_TICK)
         );
 
         logger.log(state);
@@ -143,18 +152,18 @@ public class Experimentor {
 
     public static void getTDTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST, double gamma, double lambda) {
         GamePlayingAgent agent = new TdtsAgent.Builder()
-                    .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
-                    .setRewardDiscount(gamma)
-                    .setEligibilityTraceDecay(lambda)
-                    .build();
+                .setExplorationConstant(EXP_CONST)
+                .setNormalizationPolicy(new SpaceLocalNormalization())
+                .setRewardDiscount(gamma)
+                .setEligibilityTraceDecay(lambda)
+                .build();
         ExperimentLogger logger = new ExperimentLogger("tdts_avg",
-                String.format("Average TDTS score over n experiments%n") +
-                agent.getConfigurationString() + 
-                String.format("Max Tick: %d%n", MAX_TICK) +
-                String.format("Num of Experiment: %d%n", iteration)
+                String.format("Average TDTS score over n experiments%n")
+                + agent.getConfigurationString()
+                + String.format("Max Tick: %d%n", MAX_TICK)
+                + String.format("Num of Experiment: %d%n", iteration)
         );
-        
+
         long totalScore = 0;
         long totalTime = 0;
         for (int i = 0; i < iteration; i++) {
@@ -178,26 +187,25 @@ public class Experimentor {
             endTime = System.currentTimeMillis();
             System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore());
             System.out.println("Time: " + (endTime - startTime) + " ms");
-            
-            
+
             logger.log("Iteration[" + (i + 1) + "] Final Score: " + state.getScore()
                     + "\nTime: " + (endTime - startTime) + " ms\n");
-            
+
             totalScore += state.getScore();
             totalTime += (endTime - startTime);
         }
         logger.logClosingPattern();
-        
+
         System.out.println("Average: " + ((double) totalScore / iteration));
         System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double)totalTime / iteration / 1000) + " s");
-        
+        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
+
         logger.log(
                 "Average: " + ((double) totalScore / iteration)
                 + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double)totalTime / iteration / 1000) + " s"
+                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
         );
-        
+
         Toolkit.getDefaultToolkit().beep();
     }
 }
