@@ -253,13 +253,13 @@ public class TdtsAgent extends GamePlayingAgent {
      */
     private void backPropagate(StateNode leaf, Stack<GameResult> simulatedTrajectory) {
         double cummulativeDelta = 0;
-        double nextValue = 0; //Q_next(s, a)
-        double nextScore = simulatedTrajectory.peek().score;
+        double nextValue = 0; //Q_next(s_t, a)
+        double nextScore = simulatedTrajectory.pop().score;
 
         //Unmemorized space update
-        while (simulatedTrajectory.size() > 1) {
+        while (!simulatedTrajectory.isEmpty()) {
             GameResult currentResult = simulatedTrajectory.pop();
-            double reward = nextScore - currentResult.score;
+            double reward = nextScore - currentResult.score; //harusnya dikurang skor 1 state sebelumnya
 
             double currentValue = 0; //Use V_playout here is needed
             double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
