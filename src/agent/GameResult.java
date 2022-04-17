@@ -9,7 +9,7 @@ import game.GameModel.GameState;
  */
 public class GameResult {
 
-    public long score;
+    public final long score;
 
     public GameResult(long score) {
         this.score = score;
