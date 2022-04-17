@@ -19,10 +19,14 @@ public class GameModel {
     public final int BOARD_SIZE = 4;
     //Batas probabilitan untuk menentukan nilai tile baru
     private final double NEW_TILE_PROB_THRES = 0.9;
+    //Nilai tile baru yang ditambahkan jika nilai random < threshold
     private final int NEW_TILE_VALUE_PRIMARY = 2;
+    //Nilai tile baru yang ditambahkan jika nilai random >= threshold
     private final int NEW_TILE_VALUE_SECONDARY = 4;
 
     /**
+     * Membuat sebuah forward model baru untuk permainan 2048 yang dapat dipakai
+     * oleh GPA dengan jumlah pemakaian yang dibatasi oleh tick. *
      *
      * @param tick Batas jumlah pemakaian objek (pemanggilan applyMove())
      */
@@ -81,12 +85,12 @@ public class GameModel {
                 }
             }
             this.score = score;
-            
+
             evaluateAttributes();
         }
-        
+
         //Precalculate valid actions and isTerminal
-        private void evaluateAttributes(){
+        private void evaluateAttributes() {
             validActions = new GameAction[GameAction.values().length];
             isTerminal = true;
             for (GameAction action : GameAction.values()) {
@@ -437,9 +441,9 @@ public class GameModel {
 
             Cell chosen = emptyCells.get(rand.nextInt(emptyCells.size()));
             chosen.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
-            
+
             copyState.evaluateAttributes();
-            
+
             return copyState;
         } else {
             return null;
@@ -463,11 +467,14 @@ public class GameModel {
         cell2.value = (Math.random() >= 0.9) ? 4 : 2;
 
         state.evaluateAttributes();
-        
+
         return state;
     }
 
-    //Apakah objek model ini masih dapat dipakai untuk applyAction?
+    /**
+     * Apakah objek model ini masih dapat dipakai untuk applyAction? Model hanya
+     * dapat dipakai jika tick belum habis. *
+     */
     public boolean isUsable() {
         return tickLeft > 0;
     }

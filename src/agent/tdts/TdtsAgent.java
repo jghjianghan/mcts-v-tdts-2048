@@ -29,7 +29,7 @@ public class TdtsAgent extends GamePlayingAgent {
     private final double REWARD_DISCOUNT;
     //lambda
     private final double ELIGIBILITY_TRACE_DECAY;
-    private int maxDepth;
+    private final int MAX_SIMULATION_DEPTH; //blm dipake, blm ada di class diag
 
     public TdtsAgent(
             double explorationConstant,
@@ -43,7 +43,7 @@ public class TdtsAgent extends GamePlayingAgent {
         this.NORMALIZATION_POLICY = NORMALIZATION_POLICY;
         this.REWARD_DISCOUNT = rewardDiscount;
         this.ELIGIBILITY_TRACE_DECAY = eligibilityTraceDecay;
-        this.maxDepth = maxDepth;
+        this.MAX_SIMULATION_DEPTH = maxDepth;
     }
 
     public static class Builder {
@@ -309,7 +309,7 @@ public class TdtsAgent extends GamePlayingAgent {
                 NORMALIZATION_POLICY.getClass().getSimpleName(),
                 REWARD_DISCOUNT,
                 ELIGIBILITY_TRACE_DECAY,
-                maxDepth
+                MAX_SIMULATION_DEPTH
         );
     }
 

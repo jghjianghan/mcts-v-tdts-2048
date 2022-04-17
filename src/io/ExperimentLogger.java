@@ -21,9 +21,9 @@ import java.util.logging.Logger;
  */
 public class ExperimentLogger {
 
-    Path filePath;
-    String openingPattern = "#*#*#*#*"; 
-    String closingPattern = "*#*#*#*#"; 
+    private Path filePath;
+    private static final String OPENING_PATTERN = "#*#*#*#*"; 
+    private static final String CLOSING_PATTERN = "*#*#*#*#"; 
 
     /**
      * Konstruktor ini menginisialisasi nama file, menciptakan file baru, lalu
@@ -52,7 +52,7 @@ public class ExperimentLogger {
                     String.format("%s%n%s%n%s%n", 
                             now.format(DateTimeFormatter.ISO_DATE_TIME),
                             initialMessage,
-                            openingPattern
+                            OPENING_PATTERN
                     ).getBytes(),
                     StandardOpenOption.CREATE);
         } catch (IOException ex) {
@@ -114,6 +114,6 @@ public class ExperimentLogger {
      * Prints a closing pattern to the log file
      */
     public void logClosingPattern(){
-        log(closingPattern);
+        log(CLOSING_PATTERN);
     }
 }

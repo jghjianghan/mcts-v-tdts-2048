@@ -25,11 +25,9 @@ public class MctsAgent extends GamePlayingAgent {
     private final double EXPLORATION_CONSTANT;
     private final BestChildPolicy BEST_CHILD_POLICY;
     private final NormalizationPolicy NORMALIZATION_POLICY;
-    private final int MAX_SIMULATION_DEPTH;
+    private final int MAX_SIMULATION_DEPTH; //blm dipake, blm ada di Class Diag
 
     private final Random rand = new Random();
-    private double globalLowerBound;
-    private double globalUpperBound;
 
     private MctsAgent(
             double explorationConstant,

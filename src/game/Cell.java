@@ -2,8 +2,8 @@ package game;
 
 /**
  * Kelas yang merepresentasikan satu sel pada papan permainan. Tujuan dibuat
- * kelas baru (dan tidak langsung menggunakan integer saya) adalah untuk
- * memungkinan pass by reference
+ * kelas baru (dan tidak langsung menggunakan integer saja) adalah untuk
+ * memungkinan pass by reference terhadap sel di papan.
  *
  * @author Jiang Han
  */
