@@ -1,7 +1,6 @@
 package agent.tdts;
 
 import agent.ActionNode;
-import agent.GameResult;
 import agent.StateNode;
 import game.GameAction;
 import game.GameModel;
@@ -39,6 +38,10 @@ class TdtsActionNode extends ActionNode {
     @Override
     public double getUtility() {
         return utility;
+    }
+    
+    void setUtility(double utility){
+        this.utility = utility;
     }
 
     @Override
