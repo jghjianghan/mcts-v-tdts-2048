@@ -281,15 +281,14 @@ public class TdtsAgent extends GamePlayingAgent {
                 
                 double currentScore = leaf.parent.parent.state.getScore();
                 double reward = nextScore - currentScore;
-                double currentValue = leaf.parent.getUtility();
-                double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
+                double delta = reward + REWARD_DISCOUNT * nextValue - leaf.parent.getUtility();
                 cummulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cummulativeDelta + delta;
                 
                 leaf.parent.updateUtility(cummulativeDelta);
                 NORMALIZATION_POLICY.updateNormalizationBound(cummulativeDelta);
                 
                 nextScore = currentScore;
-                nextValue = currentValue;
+                nextValue = leaf.parent.getUtility();
                 leaf = leaf.parent.parent;
             }
         }
@@ -312,5 +311,5 @@ public class TdtsAgent extends GamePlayingAgent {
                 MAX_SIMULATION_DEPTH
         );
     }
-
+    
 }
