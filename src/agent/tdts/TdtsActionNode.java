@@ -39,10 +39,6 @@ class TdtsActionNode extends ActionNode {
     public double getUtility() {
         return utility;
     }
-    
-    void setUtility(double utility){
-        this.utility = utility;
-    }
 
     @Override
     public StateNode simulateAction(GameModel model) {
