@@ -10,10 +10,13 @@ import agent.normalizationPolicy.NormalizationPolicy;
 import agent.normalizationPolicy.SpaceLocalNormalization;
 import game.GameAction;
 import game.GameModel;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Agen Temporal Difference Tree Search dengan algoritma Sarsa-UCT(lambda)
@@ -312,4 +315,124 @@ public class TdtsAgent extends GamePlayingAgent {
         );
     }
     
+    public static void main(String[] args) {
+        //Test back-propagation and TD-Backup
+        TdtsAgent agent = new TdtsAgent.Builder().build();
+        agent.NORMALIZATION_POLICY.updateNormalizationBound(0);
+        agent.NORMALIZATION_POLICY.updateNormalizationBound(228);
+        GameModel model = new GameModel(Integer.MAX_VALUE);
+        
+        TdtsStateNode s1 = new TdtsStateNode(model.new GameState(new int[][]{
+            {4, 16, 4, 2},
+            {8, 32, 64, 2},
+            {2, 16, 128, 8},
+            {32, 8, 4, 32}
+        }, 1560), null);
+        s1.incrementVisitCount();
+        s1.incrementVisitCount();
+        
+        TdtsActionNode s1Up = (TdtsActionNode)s1.getChildNode(GameAction.UP);
+        s1Up.setUtility(228);
+        s1Up.localLowerBound = 228;
+        s1Up.localUpperBound = 228;
+        s1Up.incrementVisitCount();
+        
+        TdtsActionNode s1Down = (TdtsActionNode)s1.getChildNode(GameAction.DOWN);
+        s1Down.setUtility(4);
+        s1Down.localLowerBound = 4;
+        s1Down.localUpperBound = 4;
+        s1Down.incrementVisitCount();
+        
+        TdtsStateNode s2 = new TdtsStateNode(model.new GameState(new int[][]{
+            {4, 16, 4, 4},
+            {8, 32, 64, 8},
+            {2, 16, 128, 32},
+            {32, 8, 4, 4}
+        }, 1564), s1Up);
+        s2.incrementVisitCount();
+        
+        TdtsStateNode s3 = new TdtsStateNode(model.new GameState(new int[][]{
+            {4, 16, 4, 2},
+            {8, 32, 64, 4},
+            {2, 16, 128, 8},
+            {32, 8, 4, 32}
+        }, 1564), s1Down);
+        s3.incrementVisitCount();
+        
+        TdtsStateNode s4 = new TdtsStateNode(model.new GameState(new int[][]{
+            {4, 16, 4, 4},
+            {8, 32, 64, 8},
+            {2, 16, 128, 32},
+            {32, 8, 4, 2}
+        }, 1564), s1Up);
+        
+        TdtsActionNode s4Right = (TdtsActionNode)s4.getChildNode(GameAction.RIGHT);
+        
+        TdtsStateNode s5 = new TdtsStateNode(model.new GameState(new int[][]{
+            {2, 4, 16, 8},
+            {8, 32, 64, 8},
+            {2, 16, 128, 32},
+            {32, 8, 4, 2}
+        }, 1572), s4Right);
+        
+        Stack<GameResult> trajectory = new Stack<>();
+        trajectory.push(new GameResult(GameAction.RIGHT, s5.state));
+        
+        trajectory.push(new GameResult(GameAction.UP, model.new GameState(new int[][]{
+            {2, 4, 16, 16},
+            {8, 32, 64, 32},
+            {2, 16, 128, 2},
+            {32, 8, 4, 2}
+        }, 1588))); //s6
+        
+        trajectory.push(new GameResult(GameAction.UP, model.new GameState(new int[][]{
+            {2, 4, 16, 16},
+            {8, 32, 64, 32},
+            {2, 16, 128, 4},
+            {32, 8, 4, 2}
+        }, 1592))); //s7
+        
+        trajectory.push(new GameResult(GameAction.RIGHT, model.new GameState(new int[][]{
+            {2, 4, 32, 2},
+            {8, 32, 64, 32},
+            {2, 16, 128, 4},
+            {32, 8, 4, 2}
+        }, 1624))); //s8
+        
+        agent.backPropagate(s5, trajectory);
+        
+        //assert
+        assert s5.getVisitCount() == 1;
+        assert s4Right.getUtility() == 60;
+        assert s4Right.getVisitCount() == 1;
+        assert s4Right.localLowerBound == 60;
+        assert s4Right.localUpperBound == 60;
+        assert s4.getVisitCount() == 1;
+        
+        assert s2.getVisitCount() == 1;
+        assert s3.getVisitCount() == 1;
+        
+        assert s1Up.getUtility() == 176;
+        assert s1Up.getVisitCount() == 2;
+        assert s1Up.localLowerBound == 60;
+        assert s1Up.localUpperBound == 228;
+        
+        assert s1Down.getUtility() == 4;
+        assert s1Down.getVisitCount() == 1;
+        assert s1Down.localLowerBound == 4;
+        assert s1Down.localUpperBound == 4;
+        
+        assert s1.getVisitCount() == 3;
+        
+        try {
+            Field gLower = agent.NORMALIZATION_POLICY.getClass().getDeclaredField("globalLowerBound");
+            Field gUpper = agent.NORMALIZATION_POLICY.getClass().getDeclaredField("globalUpperBound");
+            gLower.setAccessible(true);
+            gUpper.setAccessible(true);
+            assert ((double)gLower.get(agent.NORMALIZATION_POLICY)) == (-104);
+            assert ((double)gUpper.get(agent.NORMALIZATION_POLICY)) == (228);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(TdtsAgent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
