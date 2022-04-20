@@ -1,7 +1,10 @@
 package controller;
 
 import agent.GamePlayingAgent;
+import agent.bestChildPolicy.MaxUtilPolicy;
+import agent.bestChildPolicy.MostVisitPolicy;
 import agent.mcts.MctsAgent;
+import agent.normalizationPolicy.NoNormalization;
 import agent.normalizationPolicy.SpaceLocalNormalization;
 import agent.tdts.TdtsAgent;
 import game.GameAction;
@@ -62,11 +65,28 @@ public class Experimentor {
         Toolkit.getDefaultToolkit().beep();
     }
 
-    public static void getMCTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST) {
-        GamePlayingAgent agent = new MctsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .build();
+    public static void getMCTSAverageScore(
+            int iteration, 
+            int MAX_TICK,
+            double EXP_CONST, 
+            boolean isRobustChild, 
+            boolean isSpaceLocalNorm) {
+        MctsAgent.Builder builder = new MctsAgent.Builder()
+                .setExplorationConstant(EXP_CONST);
+                
+        if (isRobustChild)
+            builder.setBestChildPolicy(new MostVisitPolicy());
+        else
+            builder.setBestChildPolicy(new MaxUtilPolicy());
+        
+        if (isSpaceLocalNorm)
+            builder.setNormalizationPolicy(new SpaceLocalNormalization());
+        else
+            builder.setNormalizationPolicy(new NoNormalization());
+        
+        GamePlayingAgent agent = builder.build();
+        
+        //Todo: ubah metode logging
         ExperimentLogger logger = new ExperimentLogger("mcts",
                 String.format("Average MCTS score over n experiments%n")
                 + agent.getConfigurationString()
@@ -150,13 +170,30 @@ public class Experimentor {
         Toolkit.getDefaultToolkit().beep();
     }
 
-    public static void getTDTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST, double gamma, double lambda) {
-        GamePlayingAgent agent = new TdtsAgent.Builder()
+    public static void getTDTSAverageScore(
+            int iteration, 
+            int MAX_TICK,
+            double EXP_CONST, 
+            double gamma, 
+            double lambda, 
+            boolean isRobustChild, 
+            boolean isSpaceLocalNorm) {
+        TdtsAgent.Builder builder = new TdtsAgent.Builder()
                 .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
                 .setRewardDiscount(gamma)
-                .setEligibilityTraceDecay(lambda)
-                .build();
+                .setEligibilityTraceDecay(lambda);
+        
+        if (isRobustChild)
+            builder.setBestChildPolicy(new MostVisitPolicy());
+        else
+            builder.setBestChildPolicy(new MaxUtilPolicy());
+        
+        if (isSpaceLocalNorm)
+            builder.setNormalizationPolicy(new SpaceLocalNormalization());
+        else
+            builder.setNormalizationPolicy(new NoNormalization());
+        
+        GamePlayingAgent agent = builder.build();
         ExperimentLogger logger = new ExperimentLogger("tdts_avg",
                 String.format("Average TDTS score over n experiments%n")
                 + agent.getConfigurationString()

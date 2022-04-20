@@ -13,57 +13,62 @@ import java.util.Scanner;
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=========TDTS vs MCTS in 2048==========");
-        System.out.println("1. Run single experiment [MCTS]");
-        System.out.println("2. Run multiple experiment, get average [MCTS]");
-        System.out.println("3. Run multiple experiment, get average [Random]");
-        System.out.println("4. Run single experiment [TDTS]");
-        System.out.println("5. Run multiple experiment, get average [TDTS]");
-        System.out.println("0. Play the 2048 game (GUI)");
+        System.out.println("=========Game-Playing Agent Tester for 2048==========");
+        System.out.println("Choose the algorithm:");
+        System.out.println("1. Random");
+        System.out.println("2. MCTS [UCT]");
+        System.out.println("3. TDTS [Sarsa-UCT(lambda)]");
+        System.out.println("Or");
+        System.out.println("0. Play the 2048 Game");
+        
         Scanner sc = new Scanner(System.in);
         System.out.print("Command: ");
         
         String input = sc.nextLine();
         try {
             int command = Integer.parseInt(input);
-            switch (command){
+            
+            switch(command){
                 case 1:
-                    System.out.print("Maximum Tick [1000000]: ");
-                    int maxTick;
+                    System.out.print("Number of experiment: ");
+                    int iteration = Integer.parseInt(sc.nextLine());
+                    RandomExperiment.averageAgentScore(iteration);
+                    break;
+                case 2: 
+                    System.out.print("Number of experiment: ");
+                    iteration = Integer.parseInt(sc.nextLine());
+                    
+                    System.out.print("Number of time steps [1000000]: ");
                     input = sc.nextLine();
-                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    int maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
                     
                     System.out.print("Exploration constant [sqrt(2)]: ");
                     input = sc.nextLine();
                     double explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
-                    Experimentor.runMCTSDetailed(maxTick, explorationConst);
+                    System.out.println("Best-Child Policy");
+                    System.out.println("1. Robust child (most visit)");
+                    System.out.println("2. Max child (maximum utility)");
+                    System.out.print("Choice [1]: ");
+                    input = sc.nextLine();
+                    
+                    boolean isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
+                    
+                    System.out.println("Normalization Policy");
+                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("2. No normalization");
+                    System.out.print("Choice [1]: ");
+                    input = sc.nextLine();
+                    boolean isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
+                    
+                    Experimentor.getMCTSAverageScore(iteration, maxTick, explorationConst, isRobustChild, isSpaceLocalNorm);
                     break;
                     
-                case 2:
-                    System.out.print("Number of experiment: ");
-                    int iteration = Integer.parseInt(sc.nextLine());
-                    
-                    System.out.print("Maximum Tick [1000000]: ");
-                    input = sc.nextLine();
-                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
-                    
-                    System.out.print("Exploration constant [sqrt(2)]: ");
-                    input = sc.nextLine();
-                    explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
-                    
-                    Experimentor.getMCTSAverageScore(iteration, maxTick, explorationConst);
-                    break;
-                    
-                case 3:
+                case 3: 
                     System.out.print("Number of experiment: ");
                     iteration = Integer.parseInt(sc.nextLine());
-                    RandomExperiment.averageAgentScore(iteration);
-                    break;
                     
-                case 4:
-                    System.out.print("Maximum Tick [1000000]: ");
-                    
+                    System.out.print("Number of time steps [1000000]: ");
                     input = sc.nextLine();
                     maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
                     
@@ -79,30 +84,21 @@ public class Main {
                     input = sc.nextLine();
                     double lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
                     
-                    Experimentor.runTDTSDetailed(maxTick, explorationConst, gamma, lambda);
-                    break;
-                    
-                case 5:
-                    System.out.print("Number of experiment: ");
-                    iteration = Integer.parseInt(sc.nextLine());
-                    
-                    System.out.print("Maximum Tick [1000000]: ");
+                    System.out.println("Best-Child Policy");
+                    System.out.println("1. Robust child (most visit)");
+                    System.out.println("2. Max child (maximum utility)");
+                    System.out.print("Choice [1]: ");
                     input = sc.nextLine();
-                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    System.out.print("Exploration constant [sqrt(2)]: ");
+                    System.out.println("Normalization Policy");
+                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("2. No normalization");
+                    System.out.print("Choice [1]: ");
                     input = sc.nextLine();
-                    explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
+                    isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    System.out.print("Reward discount rate (gamma) [1]: ");
-                    input = sc.nextLine();
-                    gamma = (input.isEmpty()) ? 1 : Double.parseDouble(input);
-                    
-                    System.out.print("Eligibility trace decay rate (lambda) [1]: ");
-                    input = sc.nextLine();
-                    lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
-                    
-                    Experimentor.getTDTSAverageScore(iteration, maxTick, explorationConst, gamma, lambda);
+                    Experimentor.getTDTSAverageScore(iteration, maxTick, explorationConst, gamma, lambda, isRobustChild, isSpaceLocalNorm);
                     break;
                     
                 case 0:
