@@ -24,33 +24,33 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.print("Command: ");
         
-        String input = sc.nextLine();
+        String input = sc.nextLine().trim();
         try {
             int command = Integer.parseInt(input);
             
             switch(command){
                 case 1:
                     System.out.print("Number of experiment: ");
-                    int iteration = Integer.parseInt(sc.nextLine());
+                    int iteration = Integer.parseInt(sc.nextLine().trim());
                     RandomExperiment.averageAgentScore(iteration);
                     break;
                 case 2: 
                     System.out.print("Number of experiment: ");
-                    iteration = Integer.parseInt(sc.nextLine());
+                    iteration = Integer.parseInt(sc.nextLine().trim());
                     
                     System.out.print("Number of time steps [1000000]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     int maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
                     
                     System.out.print("Exploration constant [sqrt(2)]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     double explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
                     System.out.println("Best-Child Policy");
                     System.out.println("1. Robust child (most visit)");
                     System.out.println("2. Max child (maximum utility)");
                     System.out.print("Choice [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     
                     boolean isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
@@ -58,7 +58,7 @@ public class Main {
                     System.out.println("1. Space-Local Value Normalization");
                     System.out.println("2. No normalization");
                     System.out.print("Choice [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     boolean isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
                     Experimentor.getMCTSAverageScore(iteration, maxTick, explorationConst, isRobustChild, isSpaceLocalNorm);
@@ -66,36 +66,36 @@ public class Main {
                     
                 case 3: 
                     System.out.print("Number of experiment: ");
-                    iteration = Integer.parseInt(sc.nextLine());
+                    iteration = Integer.parseInt(sc.nextLine().trim());
                     
                     System.out.print("Number of time steps [1000000]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
                     
                     System.out.print("Exploration constant [sqrt(2)]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
                     System.out.print("Reward discount rate (gamma) [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     double gamma = (input.isEmpty()) ? 1 : Double.parseDouble(input);
                     
                     System.out.print("Eligibility trace decay rate (lambda) [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     double lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
                     
                     System.out.println("Best-Child Policy");
                     System.out.println("1. Robust child (most visit)");
                     System.out.println("2. Max child (maximum utility)");
                     System.out.print("Choice [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
                     System.out.println("Normalization Policy");
                     System.out.println("1. Space-Local Value Normalization");
                     System.out.println("2. No normalization");
                     System.out.print("Choice [1]: ");
-                    input = sc.nextLine();
+                    input = sc.nextLine().trim();
                     isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
                     Experimentor.getTDTSAverageScore(iteration, maxTick, explorationConst, gamma, lambda, isRobustChild, isSpaceLocalNorm);

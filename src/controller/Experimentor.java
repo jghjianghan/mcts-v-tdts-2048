@@ -19,73 +19,19 @@ import java.awt.Toolkit;
  */
 public class Experimentor {
 
-    public static void main(String[] args) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
-        GamePlayingAgent agent = new TdtsAgent.Builder()
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .build();
-        GameState state = infModel.new GameState(new int[][]{
-            {4, 16, 4, 2},
-            {8, 32, 64, 2},
-            {2, 16, 128, 8},
-            {32, 8, 4, 32},}, 1560);
-        
-        GameState copyState = state.copy();
-        GameAction chosenAction = agent.selectAction(copyState, new GameModel(100));
-    }
+    public static void getMCTSAverageScore(
+            int iteration,
+            int MAX_TICK,
+            double EXP_CONST,
+            boolean isRobustChild,
+            boolean isSpaceLocalNorm) {
 
-    public static void runMCTSDetailed(int MAX_TICK, double EXP_CONST) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
         GamePlayingAgent agent = new MctsAgent.Builder()
                 .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
+                .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
-        GameState state = infModel.generateInitialState();
 
-        ExperimentLogger logger = new ExperimentLogger("mcts",
-                agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-        );
-
-        logger.log(state);
-        long startTime, endTime, totalWriteTime = 0, total;
-
-        do {
-            GameState copyState = state.copy();
-            startTime = System.currentTimeMillis();
-            GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-            endTime = System.currentTimeMillis();
-
-            state = infModel.applyAction(state, chosenAction);
-            System.out.println("Duration: " + (endTime - startTime) + " ms");
-            logger.log(chosenAction, state);
-
-            System.out.println("Score: " + state.getScore());
-        } while (!state.isTerminal());
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    public static void getMCTSAverageScore(
-            int iteration, 
-            int MAX_TICK,
-            double EXP_CONST, 
-            boolean isRobustChild, 
-            boolean isSpaceLocalNorm) {
-        MctsAgent.Builder builder = new MctsAgent.Builder()
-                .setExplorationConstant(EXP_CONST);
-                
-        if (isRobustChild)
-            builder.setBestChildPolicy(new MostVisitPolicy());
-        else
-            builder.setBestChildPolicy(new MaxUtilPolicy());
-        
-        if (isSpaceLocalNorm)
-            builder.setNormalizationPolicy(new SpaceLocalNormalization());
-        else
-            builder.setNormalizationPolicy(new NoNormalization());
-        
-        GamePlayingAgent agent = builder.build();
-        
         //Todo: ubah metode logging
         ExperimentLogger logger = new ExperimentLogger("mcts",
                 String.format("Average MCTS score over n experiments%n")
@@ -100,7 +46,8 @@ public class Experimentor {
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
             agent = new MctsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
+                    .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                    .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                     .build();
             GameState state = infModel.generateInitialState();
 
@@ -122,7 +69,6 @@ public class Experimentor {
             totalScore += state.getScore();
             totalTime += (endTime - startTime);
         }
-        logger.logClosingPattern();
 
         System.out.println("Average: " + ((double) totalScore / iteration));
         System.out.println("Total time: " + (totalTime / 1000) + " s");
@@ -137,63 +83,22 @@ public class Experimentor {
         Toolkit.getDefaultToolkit().beep();
     }
 
-    public static void runTDTSDetailed(int MAX_TICK, double EXP_CONST, double gamma, double lambda) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
+    public static void getTDTSAverageScore(
+            int iteration,
+            int MAX_TICK,
+            double EXP_CONST,
+            double gamma,
+            double lambda,
+            boolean isRobustChild,
+            boolean isSpaceLocalNorm) {
         GamePlayingAgent agent = new TdtsAgent.Builder()
                 .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
                 .setRewardDiscount(gamma)
                 .setEligibilityTraceDecay(lambda)
+                .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
-        GameState state = infModel.generateInitialState();
 
-        ExperimentLogger logger = new ExperimentLogger("tdts",
-                agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-        );
-
-        logger.log(state);
-        long startTime, endTime, totalWriteTime = 0, total;
-
-        do {
-            GameState copyState = state.copy();
-            startTime = System.currentTimeMillis();
-            GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-            endTime = System.currentTimeMillis();
-
-            state = infModel.applyAction(state, chosenAction);
-            System.out.println("Duration: " + (endTime - startTime) + " ms");
-            logger.log(chosenAction, state);
-
-            System.out.println("Score: " + state.getScore());
-        } while (!state.isTerminal());
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    public static void getTDTSAverageScore(
-            int iteration, 
-            int MAX_TICK,
-            double EXP_CONST, 
-            double gamma, 
-            double lambda, 
-            boolean isRobustChild, 
-            boolean isSpaceLocalNorm) {
-        TdtsAgent.Builder builder = new TdtsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setRewardDiscount(gamma)
-                .setEligibilityTraceDecay(lambda);
-        
-        if (isRobustChild)
-            builder.setBestChildPolicy(new MostVisitPolicy());
-        else
-            builder.setBestChildPolicy(new MaxUtilPolicy());
-        
-        if (isSpaceLocalNorm)
-            builder.setNormalizationPolicy(new SpaceLocalNormalization());
-        else
-            builder.setNormalizationPolicy(new NoNormalization());
-        
-        GamePlayingAgent agent = builder.build();
         ExperimentLogger logger = new ExperimentLogger("tdts_avg",
                 String.format("Average TDTS score over n experiments%n")
                 + agent.getConfigurationString()
@@ -207,10 +112,12 @@ public class Experimentor {
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
             agent = new TdtsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
                     .setRewardDiscount(gamma)
                     .setEligibilityTraceDecay(lambda)
+                    .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                    .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                     .build();
+
             GameState state = infModel.generateInitialState();
 
             long startTime, endTime;
@@ -231,7 +138,6 @@ public class Experimentor {
             totalScore += state.getScore();
             totalTime += (endTime - startTime);
         }
-        logger.logClosingPattern();
 
         System.out.println("Average: " + ((double) totalScore / iteration));
         System.out.println("Total time: " + (totalTime / 1000) + " s");
