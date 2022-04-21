@@ -74,8 +74,6 @@ public class ExperimentLogger {
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        nextFile();
     }
 
     /**
@@ -122,7 +120,7 @@ public class ExperimentLogger {
         }
     }
     
-    public final void nextFile(){
+    public void nextFile(){
         try {
             fileCounter++;
             filePath = dirPath.resolve(dirName + "-" + fileCounter);

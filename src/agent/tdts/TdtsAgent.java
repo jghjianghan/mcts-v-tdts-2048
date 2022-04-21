@@ -302,7 +302,7 @@ public class TdtsAgent extends GamePlayingAgent {
                 + "Normalization Policy: %s%n"
                 + "Gamma: %f%n"
                 + "Lambda: %f%n"
-                + "Max Depth: %d%n",
+                + "Max Depth: %d",
                 EXPLORATION_CONSTANT,
                 BEST_CHILD_POLICY.getClass().getSimpleName(),
                 NORMALIZATION_POLICY.getClass().getSimpleName(),

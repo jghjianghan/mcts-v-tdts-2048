@@ -21,6 +21,8 @@ public class RandomExperiment {
         ExperimentLogger logger = new ExperimentLogger("random", "Average score of Random GPA");
         
         for (int i = 0; i < iteration; i++) {
+            logger.nextFile();
+            
             GamePlayingAgent agent = new RandomAgent();
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
             GameModel.GameState state = infModel.generateInitialState();
@@ -38,8 +40,6 @@ public class RandomExperiment {
             System.out.println("Score: " + state.getScore());
             logger.logSummary("Score: " + state.getScore());
             logger.log("Score: " + state.getScore());
-            
-            logger.nextFile();
         }
         System.out.println("Average Score: " + ((double) totalScore / iteration));
         logger.logSummary("Average Score: " + ((double) totalScore / iteration));
