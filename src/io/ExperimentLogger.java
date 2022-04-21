@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class bantuan untuk menuliskan informaasi ke file log.
+ * Class bantuan untuk menuliskan informasi ke file log.
  *
  * @author Jiang Han
  */
@@ -29,16 +29,26 @@ public class ExperimentLogger {
 
     /**
      * Konstruktor ini menginisialisasi nama file, menciptakan file baru, lalu
-     * menuliskan pesan pembuka file jika ada.
+     * menuliskan pesan pembuka file jika ada. Seluruh file log untuk 1
+     * eksperimen akan ditulis dalam 1 folder yang sama. Folder tersebut akan
+     * mengandung _SUMMARY.txt yang berisi konfigurasi eksperimen dan agregasi
+     * data hasil eksperimen. Selain itu, ExperimentLogger juga dapat menuliskan
+     * ke beberapa file log baru yang akan dibuat jika nextFile() dipanggil.
+     * Nama file-file baru tersebut sama dengan nama folder eksperimen dengan
+     * tambahan nomor file sebagai akhiran. nextFile() harus dipanggil sebelum
+     * menggunakan method log(String), log(GameState), atau log(GameAction,
+     * GameState).
      *
-     * @param codeName Nama dari experiment, akan dipakai sebagai awalan nama file/
-     * @param initialMessage Pesan yang akan ditulis di awal file.
+     * @param codeName Nama dari experiment, akan dipakai sebagai awalan nama
+     * folder dan file log
+     * @param initialMessage 0 atau lebih pesan yang akan ditulis di awal file.
      */
     public ExperimentLogger(String codeName, String... initialMessage) {
         String baseDirectory = "log";
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss");
         dirName = codeName + "-" + now.format(formatter);
 
         Path baseDirPath = Paths.get(baseDirectory);
@@ -48,25 +58,25 @@ public class ExperimentLogger {
         if (!directoryFile.exists()) {
             directoryFile.mkdir();
         }
-        
+
         //Buat folder untuk eksperimen (./log/[codename]-[date]_[time])
         dirPath = Paths.get(baseDirectory, dirName);
         File innerDirectory = dirPath.toFile();
         if (!innerDirectory.exists()) {
             innerDirectory.mkdir();
         }
-             
+
         summaryPath = dirPath.resolve("_SUMMARY.txt");
         try {
             Files.createFile(summaryPath);
         } catch (IOException ex) {
             Logger.getLogger(ExperimentLogger.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         //menulis konfigurasi eksperimen
         try {
             Files.write(summaryPath,
-                    String.format("%s%n%s%n", 
+                    String.format("%s%n%s%n",
                             now.format(DateTimeFormatter.ISO_DATE_TIME),
                             String.join(System.lineSeparator(), initialMessage)
                     ).getBytes(),
@@ -74,15 +84,6 @@ public class ExperimentLogger {
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    /**
-     * Menuliskan state permaianan dalam bentuk teks ke file log.
-     *
-     * @param state State yang ingin dicatat
-     */
-    public void log(GameState state) {
-        log(state.toString());
     }
 
     /**
@@ -98,18 +99,29 @@ public class ExperimentLogger {
 
     /**
      * Menulis sembarang data ke file log.
-     * 
-     * @param str Teks yang ingin dituliskan.
+     *
+     * @param data Data yang ingin dicatat
      */
-    public void log(String str) {
-        this.write(filePath, str);
+    public void log(Object data) {
+        this.write(filePath, data.toString());
     }
-    
+
+    /**
+     * Menulis teks ke file log summary (_SUMMARY.txt).
+     *
+     * @param str Teks yang ingin dicatat ke file summary
+     */
     public void logSummary(String str) {
         this.write(summaryPath, str);
     }
-    
-    private void write(Path path, String content){
+
+    /**
+     * Method bantuan untuk menuliskan sembarang teks ke file tertentu.
+     *
+     * @param path Path dari file yang ingin dituliskan
+     * @param content Teks yang ingin ditulis
+     */
+    private void write(Path path, String content) {
         try {
             Files.write(
                     path,
@@ -119,8 +131,14 @@ public class ExperimentLogger {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void nextFile(){
+
+    /**
+     * Membuat file log baru dengan nomor file yang lebih tinggi 1 dari file
+     * sebelumnya. Penomoran file dimulai dari 1. Method ini harus dipanggil
+     * sebelum method log(String), log(GameState), atau log(GameAction,
+     * GameState) dipakai.
+     */
+    public void nextFile() {
         try {
             fileCounter++;
             filePath = dirPath.resolve(dirName + "-" + fileCounter);

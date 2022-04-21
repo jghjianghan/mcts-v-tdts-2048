@@ -14,11 +14,27 @@ import io.ExperimentLogger;
 import java.awt.Toolkit;
 
 /**
+ * Class untuk menjalankan eksperimen pengujian performa GPA dalam memainkan
+ * 2048.
  *
  * @author Jiang Han
  */
 public class Experimentor {
 
+    /**
+     * Melakukan beberapa kali pengujian untuk agen MCTS dengan algoritma UCT,
+     * lalu mencatat hasil pengujian dan rata-rata skornya.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
+     * pemilihan aksi.
+     * @param EXP_CONST Konstanta eksplorasi UCT
+     * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
+     * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
+     * @param isSpaceLocalNorm Jika true, agen akan memakai Space-Local Value
+     * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
+     * tidak akan memakai metode normalisasi apapun.
+     */
     public static void getMCTSAverageScore(
             int iteration,
             int MAX_TICK,
@@ -44,7 +60,7 @@ public class Experimentor {
         long totalTime = 0;
         for (int i = 0; i < iteration; i++) {
             logger.nextFile();
-            
+
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
             agent = new MctsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
@@ -53,7 +69,7 @@ public class Experimentor {
                     .build();
             GameState state = infModel.generateInitialState();
             logger.log(state);
-            
+
             long startTime, endTime;
 
             startTime = System.currentTimeMillis();
@@ -87,6 +103,23 @@ public class Experimentor {
         Toolkit.getDefaultToolkit().beep();
     }
 
+    /**
+     * Melakukan beberapa kali pengujian untuk agen TDTS dengan algoritma
+     * Sarsa-UCT(lambda), lalu mencatat hasil pengujian dan rata-rata skornya.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
+     * pemilihan aksi.
+     * @param EXP_CONST Konstanta eksplorasi UCT
+     * @param gamma Reward discount yang mengurangi nilai dari state yang jauh
+     * dari state saat ini.
+     * @param lambda Eligibility trace decay rate.
+     * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
+     * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
+     * @param isSpaceLocalNorm Jika true, agen akan memakai Space-Local Value
+     * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
+     * tidak akan memakai metode normalisasi apapun.
+     */
     public static void getTDTSAverageScore(
             int iteration,
             int MAX_TICK,
@@ -114,7 +147,7 @@ public class Experimentor {
         long totalTime = 0;
         for (int i = 0; i < iteration; i++) {
             logger.nextFile();
-            
+
             GameModel infModel = new GameModel(Integer.MAX_VALUE);
             agent = new TdtsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
@@ -126,7 +159,7 @@ public class Experimentor {
 
             GameState state = infModel.generateInitialState();
             logger.log(state);
-            
+
             long startTime, endTime;
 
             startTime = System.currentTimeMillis();
