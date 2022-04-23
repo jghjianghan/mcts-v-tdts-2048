@@ -168,6 +168,10 @@ public class Experimentor {
         System.out.println("Average Score: " + avgScore);
         logger.logSummary("Average Score: " + avgScore);
 
+        double medianScore = median(scores);
+        System.out.println("Median Score: " + medianScore);
+        logger.logSummary("Median Score: " + medianScore);
+        
         double avgStep = average(steps);
         System.out.println("Average Step: " + avgStep);
         logger.logSummary("Average Step: " + avgStep);
