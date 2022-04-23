@@ -294,16 +294,9 @@ public class GameModel {
          * @return List dari cell yang kosong
          */
         private List<Cell> getEmptyCells() {
-            List<Cell> emptyCells = new ArrayList<>();
-            for (int i = 0; i < BOARD_SIZE; i++) {
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    if (board[i][j].value == 0) {
-                        emptyCells.add(board[i][j]);
-                    }
-                }
-            }
-
-            return emptyCells;
+            return Arrays.stream(board).flatMap(Arrays::stream)
+                    .filter(cell -> cell.value == 0)
+                    .collect(Collectors.toList());
         }
     
         /**
