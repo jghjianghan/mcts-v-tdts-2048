@@ -30,12 +30,12 @@ public class Main {
             
             switch(command){
                 case 1:
-                    System.out.print("Number of experiment: ");
+                    System.out.print("Number of games: ");
                     int iteration = Integer.parseInt(sc.nextLine().trim());
                     RandomExperiment.averageAgentScore(iteration);
                     break;
                 case 2: 
-                    System.out.print("Number of experiment: ");
+                    System.out.print("Number of games: ");
                     iteration = Integer.parseInt(sc.nextLine().trim());
                     
                     System.out.print("Number of time steps [1000000]: ");
@@ -65,7 +65,7 @@ public class Main {
                     break;
                     
                 case 3: 
-                    System.out.print("Number of experiment: ");
+                    System.out.print("Number of games: ");
                     iteration = Integer.parseInt(sc.nextLine().trim());
                     
                     System.out.print("Number of time steps [1000000]: ");
