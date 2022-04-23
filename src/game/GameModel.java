@@ -306,6 +306,11 @@ public class GameModel {
             return emptyCells;
         }
     
+        /**
+         * Gets the value of the largest tile is this state.
+         * 
+         * @return The value of the largest tile
+         */
         public int getLargestTile(){
             int maxValue = 0;
             for(int i = 0; i<BOARD_SIZE; i++){
