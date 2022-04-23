@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -303,6 +304,16 @@ public class GameModel {
             }
 
             return emptyCells;
+        }
+    
+        public int getLargestTile(){
+            int maxValue = 0;
+            for(int i = 0; i<BOARD_SIZE; i++){
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    maxValue = Math.max(maxValue, board[i][j].value);
+                }
+            }
+            return maxValue;
         }
     }
 
