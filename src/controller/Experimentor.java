@@ -13,6 +13,9 @@ import game.GameModel;
 import game.GameModel.GameState;
 import io.ExperimentLogger;
 import java.awt.Toolkit;
+import java.util.Arrays;
+import java.util.function.Supplier;
+import static util.StatHelper.*;
 
 /**
  * Class untuk menjalankan eksperimen pengujian performa GPA dalam memainkan
@@ -43,65 +46,21 @@ public class Experimentor {
             boolean isRobustChild,
             boolean isSpaceLocalNorm) {
 
-        GamePlayingAgent agent = new MctsAgent.Builder()
+        System.out.println("UCT Agent is being tested...");
+        Supplier<GamePlayingAgent> agentBuilder = () -> new MctsAgent.Builder()
                 .setExplorationConstant(EXP_CONST)
                 .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
                 .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
 
-        System.out.println("UCT Agent is testing...");
         ExperimentLogger logger = new ExperimentLogger("mcts",
                 "Average MCTS score over n experiments",
-                agent.getConfigurationString(),
+                agentBuilder.get().getConfigurationString(),
                 "Max Tick: " + MAX_TICK,
-                "Num of Experiment: " + iteration
+                "Number of Games: " + iteration
         );
 
-        long totalScore = 0;
-        long totalTime = 0;
-        for (int i = 0; i < iteration; i++) {
-            logger.nextFile();
-
-            GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            agent = new MctsAgent.Builder()
-                    .setExplorationConstant(EXP_CONST)
-                    .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
-                    .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
-                    .build();
-            GameState state = infModel.generateInitialState();
-            logger.log(state);
-
-            long startTime, endTime;
-
-            startTime = System.currentTimeMillis();
-            do {
-                GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-                state = infModel.applyAction(state, chosenAction);
-                logger.log(chosenAction, state);
-            } while (!state.isTerminal());
-            endTime = System.currentTimeMillis();
-            long elapsedTime = endTime - startTime;
-            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + elapsedTime + " ms)");
-
-            logger.log("Score: " + state.getScore() + " (" + elapsedTime + " ms)");
-            logger.logSummary("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + elapsedTime + " ms)");
-
-            totalScore += state.getScore();
-            totalTime += elapsedTime;
-        }
-
-        System.out.println("Average: " + ((double) totalScore / iteration));
-        System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
-
-        logger.logSummary(
-                "Average: " + ((double) totalScore / iteration)
-                + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
-        );
-
-        Toolkit.getDefaultToolkit().beep();
+        runExperiment(iteration, MAX_TICK, agentBuilder, logger);
     }
 
     /**
@@ -129,104 +88,108 @@ public class Experimentor {
             double lambda,
             boolean isRobustChild,
             boolean isSpaceLocalNorm) {
-        GamePlayingAgent agent = new TdtsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setRewardDiscount(gamma)
-                .setEligibilityTraceDecay(lambda)
-                .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
-                .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
-                .build();
-
-        System.out.println("Sarsa UCT(lambda) Agent is testing...");
-        ExperimentLogger logger = new ExperimentLogger("tdts",
-                "Average TDTS score over n experiments",
-                agent.getConfigurationString(),
-                "Max Tick: " + MAX_TICK,
-                "Num of Experiment: " + iteration
-        );
-
-        long totalScore = 0;
-        long totalTime = 0;
-        for (int i = 0; i < iteration; i++) {
-            logger.nextFile();
-
-            GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            agent = new TdtsAgent.Builder()
+        System.out.println("Sarsa UCT(lambda) Agent is being tested...");
+        
+        Supplier<GamePlayingAgent> agentBuilder = () -> new TdtsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
                     .setRewardDiscount(gamma)
                     .setEligibilityTraceDecay(lambda)
                     .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
                     .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                     .build();
+        
+        ExperimentLogger logger = new ExperimentLogger("tdts",
+                "Average TDTS score over n experiments",
+                agentBuilder.get().getConfigurationString(),
+                "Max Tick: " + MAX_TICK,
+                "Number of Games: " + iteration
+        );
 
-            GameState state = infModel.generateInitialState();
+        runExperiment(iteration, MAX_TICK, agentBuilder, logger);
+    }
+
+    public static void RandomAverage(int iteration) {
+        System.out.println("Random Agent is being tested...");
+        ExperimentLogger logger = new ExperimentLogger(
+                "random", 
+                "Average score of Random GPA",
+                "Number of Games: " + iteration
+        );
+
+        runExperiment(iteration, Integer.MAX_VALUE, () -> new RandomAgent(), logger);
+    }
+
+    private static void runExperiment(
+            int iteration,
+            int maxTick,
+            Supplier<GamePlayingAgent> agentBuilder,
+            ExperimentLogger logger) {
+
+        int scores[] = new int[iteration];
+        int steps[] = new int[iteration];
+        int maxTiles[] = new int[iteration];
+        long durations[] = new long[iteration];
+
+        for (int i = 0; i < iteration; i++) {
+            logger.nextFile();
+            GamePlayingAgent agent = agentBuilder.get();
+            GameModel infModel = new GameModel(Integer.MAX_VALUE);
+            GameModel.GameState state = infModel.generateInitialState();
+
             logger.log(state);
-
+            int step = 0;
             long startTime, endTime;
-
             startTime = System.currentTimeMillis();
             do {
                 GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-                state = infModel.applyAction(state, chosenAction);
-                logger.log(chosenAction, state);
-            } while (!state.isTerminal());
-            endTime = System.currentTimeMillis();
-            long elapsedTime = endTime - startTime;
-            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + elapsedTime + " ms)");
+                GameAction chosenAction = agent.selectAction(copyState, new GameModel(maxTick));
 
-            logger.log("Score: " + state.getScore() + " (" + elapsedTime + " ms)");
-            logger.logSummary("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + elapsedTime + " ms)");
-
-            totalScore += state.getScore();
-            totalTime += elapsedTime;
-        }
-
-        System.out.println("Average: " + ((double) totalScore / iteration));
-        System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
-
-        logger.logSummary(
-                "Average: " + ((double) totalScore / iteration)
-                + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
-        );
-
-        Toolkit.getDefaultToolkit().beep();
-    }
-    
-    public static void RandomAverage(int iteration){
-        long totalScore = 0;
-        long step = 0;
-        System.out.println("Random Agent is testing...");
-        
-        ExperimentLogger logger = new ExperimentLogger("random", "Average score of Random GPA");
-        
-        for (int i = 0; i < iteration; i++) {
-            logger.nextFile();
-            
-            GamePlayingAgent agent = new RandomAgent();
-            GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            GameModel.GameState state = infModel.generateInitialState();
-            
-            logger.log(state);
-            do {
-                GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(100000));
-                
                 state = infModel.applyAction(state, chosenAction);
                 logger.log(chosenAction, state);
                 step++;
             } while (!state.isTerminal());
-            totalScore += state.getScore();
-            System.out.println("Score: " + state.getScore());
-            logger.logSummary("Score: " + state.getScore());
+            endTime = System.currentTimeMillis();
+            
+            steps[i] = step;
+            durations[i] = endTime - startTime;
+
+            scores[i] = state.getScore();
             logger.log("Score: " + state.getScore());
+            logger.log("Step: " + step);
+            logger.log("Duration: " + durations[i] + " ms");
+
+            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + durations[i] + " ms)");
+            logger.logSummary("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + durations[i] + " ms)");
+
+            maxTiles[i] = state.getLargestTile();
+            logger.log("Max Tile: " + maxTiles[i]);
         }
-        System.out.println("Average Score: " + ((double) totalScore / iteration));
-        logger.logSummary("Average Score: " + ((double) totalScore / iteration));
+        double avgScore = average(scores);
+        System.out.println("Average Score: " + avgScore);
+        logger.logSummary("Average Score: " + avgScore);
+
+        double avgStep = average(steps);
+        System.out.println("Average Step: " + avgStep);
+        logger.logSummary("Average Step: " + avgStep);
         
-        System.out.println("Average Step: " + ((double) step / iteration));
-        logger.logSummary("Average Step: " + ((double) step / iteration));
+        long totalTime = Arrays.stream(durations).sum();
+        System.out.println("Total time: " + (totalTime/1000.0) + " s");
+        logger.logSummary("Total time: " + (totalTime/1000.0) + " s");
+        System.out.println("Average time per game: " + (totalTime/1000.0/iteration) + " s");
+        logger.logSummary("Average time per game: " + (totalTime/1000.0/iteration) + " s");
+
+        int maxScoreId = idOfMaximum(scores);
+        System.out.println("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
+        logger.logSummary("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
+
+        int minScoreId = idOfMinimum(scores);
+        System.out.println("Min Score: " + scores[minScoreId] + " (Iteration[" + (minScoreId + 1) + "])");
+        logger.logSummary("Min Score: " + scores[minScoreId] + " (Iteration[" + (minScoreId + 1) + "])");
+
+        int maxTileId = idOfMaximum(maxTiles);
+        System.out.println("Max Tile: " + maxTiles[maxTileId] + " (Iteration[" + (maxTileId + 1) + "])");
+        logger.logSummary("Max Tile: " + maxTiles[maxTileId] + " (Iteration[" + (maxTileId + 1) + "])");
+
+        Toolkit.getDefaultToolkit().beep();
     }
 }
