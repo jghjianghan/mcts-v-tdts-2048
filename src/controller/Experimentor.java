@@ -1,6 +1,7 @@
 package controller;
 
 import agent.GamePlayingAgent;
+import agent.RandomAgent;
 import agent.bestChildPolicy.MaxUtilPolicy;
 import agent.bestChildPolicy.MostVisitPolicy;
 import agent.mcts.MctsAgent;
@@ -35,7 +36,7 @@ public class Experimentor {
      * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
      * tidak akan memakai metode normalisasi apapun.
      */
-    public static void getMCTSAverageScore(
+    public static void MCTSAverage(
             int iteration,
             int MAX_TICK,
             double EXP_CONST,
@@ -48,7 +49,7 @@ public class Experimentor {
                 .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
 
-        //Todo: ubah metode logging
+        System.out.println("UCT Agent is testing...");
         ExperimentLogger logger = new ExperimentLogger("mcts",
                 "Average MCTS score over n experiments",
                 agent.getConfigurationString(),
@@ -120,7 +121,7 @@ public class Experimentor {
      * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
      * tidak akan memakai metode normalisasi apapun.
      */
-    public static void getTDTSAverageScore(
+    public static void TDTSAverage(
             int iteration,
             int MAX_TICK,
             double EXP_CONST,
@@ -136,6 +137,7 @@ public class Experimentor {
                 .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
 
+        System.out.println("Sarsa UCT(lambda) Agent is testing...");
         ExperimentLogger logger = new ExperimentLogger("tdts",
                 "Average TDTS score over n experiments",
                 agent.getConfigurationString(),
@@ -191,5 +193,40 @@ public class Experimentor {
         );
 
         Toolkit.getDefaultToolkit().beep();
+    }
+    
+    public static void RandomAverage(int iteration){
+        long totalScore = 0;
+        long step = 0;
+        System.out.println("Random Agent is testing...");
+        
+        ExperimentLogger logger = new ExperimentLogger("random", "Average score of Random GPA");
+        
+        for (int i = 0; i < iteration; i++) {
+            logger.nextFile();
+            
+            GamePlayingAgent agent = new RandomAgent();
+            GameModel infModel = new GameModel(Integer.MAX_VALUE);
+            GameModel.GameState state = infModel.generateInitialState();
+            
+            logger.log(state);
+            do {
+                GameState copyState = state.copy();
+                GameAction chosenAction = agent.selectAction(copyState, new GameModel(100000));
+                
+                state = infModel.applyAction(state, chosenAction);
+                logger.log(chosenAction, state);
+                step++;
+            } while (!state.isTerminal());
+            totalScore += state.getScore();
+            System.out.println("Score: " + state.getScore());
+            logger.logSummary("Score: " + state.getScore());
+            logger.log("Score: " + state.getScore());
+        }
+        System.out.println("Average Score: " + ((double) totalScore / iteration));
+        logger.logSummary("Average Score: " + ((double) totalScore / iteration));
+        
+        System.out.println("Average Step: " + ((double) step / iteration));
+        logger.logSummary("Average Step: " + ((double) step / iteration));
     }
 }
