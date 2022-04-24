@@ -168,7 +168,10 @@ public class Experimentor {
         System.out.println("Average Score: " + avgScore);
         logger.logSummary("Average Score: " + avgScore);
 
-        double standardDeviation = Math.sqrt(sampleVariance(scores));
+        double variance = sampleVariance(scores);
+        System.out.println("Sample variance: " + variance);
+        logger.logSummary("Sample variance: " + variance);
+        double standardDeviation = Math.sqrt(variance);
         System.out.println("Sample standard deviation: " + standardDeviation);
         logger.logSummary("Sample standard deviation: " + standardDeviation);
         
