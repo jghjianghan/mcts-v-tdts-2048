@@ -168,6 +168,10 @@ public class Experimentor {
         System.out.println("Average Score: " + avgScore);
         logger.logSummary("Average Score: " + avgScore);
 
+        double standardDeviation = Math.sqrt(sampleVariance(scores));
+        System.out.println("Sample standard deviation: " + standardDeviation);
+        logger.logSummary("Sample standard deviation: " + standardDeviation);
+        
         double medianScore = median(scores);
         System.out.println("Median Score: " + medianScore);
         logger.logSummary("Median Score: " + medianScore);
@@ -179,8 +183,8 @@ public class Experimentor {
         long totalTime = Arrays.stream(durations).sum();
         System.out.println("Total time: " + (totalTime/1000.0) + " s");
         logger.logSummary("Total time: " + (totalTime/1000.0) + " s");
-        System.out.println("Average time per game: " + (totalTime/1000.0/iteration) + " s");
-        logger.logSummary("Average time per game: " + (totalTime/1000.0/iteration) + " s");
+        System.out.printf("Average time per game: %.3f s%n", (totalTime/1000.0/iteration));
+        logger.logSummary(String.format("Average time per game: %.3f s", (totalTime/1000.0/iteration)));
 
         int maxScoreId = idOfMaximum(scores);
         System.out.println("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
