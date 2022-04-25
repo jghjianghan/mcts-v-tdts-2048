@@ -413,7 +413,7 @@ public class TdtsAgent extends GamePlayingAgent {
         assert s2.getVisitCount() == 1;
         assert s3.getVisitCount() == 1;
         
-        assert s1Up.getUtility() == 176;
+        assert s1Up.getUtility() == 146;
         assert s1Up.getVisitCount() == 2;
         assert s1Up.localLowerBound == 60;
         assert s1Up.localUpperBound == 228;
@@ -430,10 +430,11 @@ public class TdtsAgent extends GamePlayingAgent {
             Field gUpper = agent.NORMALIZATION_POLICY.getClass().getDeclaredField("globalUpperBound");
             gLower.setAccessible(true);
             gUpper.setAccessible(true);
-            assert ((double)gLower.get(agent.NORMALIZATION_POLICY)) == (-104);
+            assert ((double)gLower.get(agent.NORMALIZATION_POLICY)) == (-164);
             assert ((double)gUpper.get(agent.NORMALIZATION_POLICY)) == (228);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(TdtsAgent.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Clear");
     }
 }
