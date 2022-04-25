@@ -252,7 +252,7 @@ public class TdtsAgent extends GamePlayingAgent {
      * direpresentasikan oleh node leaf.
      */
     private void backPropagate(StateNode leaf, Stack<GameResult> simulatedTrajectory) {
-        double cummulativeDelta = 0;
+        double cumulativeDelta = 0;
         double nextValue = 0; //Q_next(s_t, a)
         double nextScore = simulatedTrajectory.pop().score;
 
@@ -263,12 +263,12 @@ public class TdtsAgent extends GamePlayingAgent {
 
             double currentValue = 0; //Use V_playout here is needed
             double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
-            cummulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cummulativeDelta + delta;
+            cumulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cumulativeDelta + delta;
 
             nextValue = currentValue;
             nextScore = currentResult.score;
 
-            NORMALIZATION_POLICY.updateNormalizationBound(cummulativeDelta);
+            NORMALIZATION_POLICY.updateNormalizationBound(cumulativeDelta);
         }
 
         //Memorized space update
@@ -281,14 +281,15 @@ public class TdtsAgent extends GamePlayingAgent {
                 
                 double currentScore = leaf.parent.parent.state.getScore();
                 double reward = nextScore - currentScore;
-                double delta = reward + REWARD_DISCOUNT * nextValue - leaf.parent.getUtility();
-                cummulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cummulativeDelta + delta;
+                double currentValue = leaf.parent.getUtility();
+                double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
+                cumulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cumulativeDelta + delta;
                 
-                leaf.parent.updateUtility(cummulativeDelta);
-                NORMALIZATION_POLICY.updateNormalizationBound(cummulativeDelta);
+                leaf.parent.updateUtility(cumulativeDelta);
+                NORMALIZATION_POLICY.updateNormalizationBound(cumulativeDelta);
                 
                 nextScore = currentScore;
-                nextValue = leaf.parent.getUtility();
+                nextValue = currentValue;
                 leaf = leaf.parent.parent;
             }
         }
