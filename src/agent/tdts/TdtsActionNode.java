@@ -15,6 +15,10 @@ class TdtsActionNode extends ActionNode {
 
     private double utility = 0;
 
+    public void setUtility(double utility) {
+        this.utility = utility;
+    }
+
     TdtsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
     }
