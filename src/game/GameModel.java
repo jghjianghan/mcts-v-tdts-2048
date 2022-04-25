@@ -1,6 +1,5 @@
 package game;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -293,16 +292,24 @@ public class GameModel {
          * @return List dari cell yang kosong
          */
         private List<Cell> getEmptyCells() {
-            List<Cell> emptyCells = new ArrayList<>();
-            for (int i = 0; i < BOARD_SIZE; i++) {
+            return Arrays.stream(board).flatMap(Arrays::stream)
+                    .filter(cell -> cell.value == 0)
+                    .collect(Collectors.toList());
+        }
+    
+        /**
+         * Gets the value of the largest tile is this state.
+         * 
+         * @return The value of the largest tile
+         */
+        public int getLargestTile(){
+            int maxValue = 0;
+            for(int i = 0; i<BOARD_SIZE; i++){
                 for (int j = 0; j < BOARD_SIZE; j++) {
-                    if (board[i][j].value == 0) {
-                        emptyCells.add(board[i][j]);
-                    }
+                    maxValue = Math.max(maxValue, board[i][j].value);
                 }
             }
-
-            return emptyCells;
+            return maxValue;
         }
     }
 

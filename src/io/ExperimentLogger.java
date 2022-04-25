@@ -15,62 +15,72 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class bantuan untuk menuliskan informaasi ke file log.
+ * Class bantuan untuk menuliskan informasi ke file log.
  *
  * @author Jiang Han
  */
 public class ExperimentLogger {
 
+    private Path dirPath;
+    private Path summaryPath;
     private Path filePath;
-    private static final String OPENING_PATTERN = "#*#*#*#*"; 
-    private static final String CLOSING_PATTERN = "*#*#*#*#"; 
+    private final String dirName;
+    private int fileCounter = 0;
 
     /**
      * Konstruktor ini menginisialisasi nama file, menciptakan file baru, lalu
-     * menuliskan pesan pembuka file jika ada.
+     * menuliskan pesan pembuka file jika ada. Seluruh file log untuk 1
+     * eksperimen akan ditulis dalam 1 folder yang sama. Folder tersebut akan
+     * mengandung _SUMMARY.txt yang berisi konfigurasi eksperimen dan agregasi
+     * data hasil eksperimen. Selain itu, ExperimentLogger juga dapat menuliskan
+     * ke beberapa file log baru yang akan dibuat jika nextFile() dipanggil.
+     * Nama file-file baru tersebut sama dengan nama folder eksperimen dengan
+     * tambahan nomor file sebagai akhiran. nextFile() harus dipanggil sebelum
+     * menggunakan method log(String), log(GameState), atau log(GameAction,
+     * GameState).
      *
-     * @param codeName Nama dari experiment, akan dipakai sebagai awalan nama file/
-     * @param initialMessage Pesan yang akan ditulis di awal file.
+     * @param codeName Nama dari experiment, akan dipakai sebagai awalan nama
+     * folder dan file log
+     * @param initialMessage 0 atau lebih pesan yang akan ditulis di awal file.
      */
-    public ExperimentLogger(String codeName, String initialMessage) {
-        String directoryName = "log";
+    public ExperimentLogger(String codeName, String... initialMessage) {
+        String baseDirectory = "log";
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        String fileName = codeName + "-" + now.format(formatter) + ".txt";
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss");
+        dirName = codeName + "-" + now.format(formatter);
 
-        Path dirPath = Paths.get(directoryName);
-        filePath = Paths.get(directoryName, fileName);
+        Path baseDirPath = Paths.get(baseDirectory);
 
-        File directory = dirPath.toFile();
-        if (!directory.exists()) {
-            directory.mkdir();
+        //Buat root folder kalau belum ada (./log)
+        File directoryFile = baseDirPath.toFile();
+        if (!directoryFile.exists()) {
+            directoryFile.mkdir();
         }
-        
+
+        //Buat folder untuk eksperimen (./log/[codename]-[date]_[time])
+        dirPath = Paths.get(baseDirectory, dirName);
+        File innerDirectory = dirPath.toFile();
+        if (!innerDirectory.exists()) {
+            innerDirectory.mkdir();
+        }
+
+        summaryPath = dirPath.resolve("_SUMMARY.txt");
         try {
-            Files.write(filePath,
-                    String.format("%s%n%s%n%s%n", 
+            Files.createFile(summaryPath);
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentLogger.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //menulis konfigurasi eksperimen
+        try {
+            Files.write(summaryPath,
+                    String.format("%s%n%s%n",
                             now.format(DateTimeFormatter.ISO_DATE_TIME),
-                            initialMessage,
-                            OPENING_PATTERN
+                            String.join(System.lineSeparator(), initialMessage)
                     ).getBytes(),
                     StandardOpenOption.CREATE);
-        } catch (IOException ex) {
-            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * Menuliskan state permaianan dalam bentuk teks ke file log.
-     *
-     * @param state State yang ingin dicatat
-     */
-    public void log(GameState state) {
-        try {
-            Files.write(
-                    filePath,
-                    (state + "\n").getBytes(),
-                    StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,10 +94,38 @@ public class ExperimentLogger {
      * @param state State yang ingin dicatat
      */
     public void log(GameAction action, GameState state) {
+        log(String.format("Action: %s%n%s", action, state));
+    }
+
+    /**
+     * Menulis sembarang data ke file log.
+     *
+     * @param data Data yang ingin dicatat
+     */
+    public void log(Object data) {
+        this.write(filePath, data.toString());
+    }
+
+    /**
+     * Menulis teks ke file log summary (_SUMMARY.txt).
+     *
+     * @param str Teks yang ingin dicatat ke file summary
+     */
+    public void logSummary(String str) {
+        this.write(summaryPath, str);
+    }
+
+    /**
+     * Method bantuan untuk menuliskan sembarang teks ke file tertentu.
+     *
+     * @param path Path dari file yang ingin dituliskan
+     * @param content Teks yang ingin ditulis
+     */
+    private void write(Path path, String content) {
         try {
             Files.write(
-                    filePath,
-                    ("Action: " + action + "\n" + state + "\n").getBytes(),
+                    path,
+                    String.format("%s%n", content).getBytes(),
                     StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,25 +133,18 @@ public class ExperimentLogger {
     }
 
     /**
-     * Menulis sembarang data ke file log.
-     * 
-     * @param str Teks yang ingin dituliskan.
+     * Membuat file log baru dengan nomor file yang lebih tinggi 1 dari file
+     * sebelumnya. Penomoran file dimulai dari 1. Method ini harus dipanggil
+     * sebelum method log(String), log(GameState), atau log(GameAction,
+     * GameState) dipakai.
      */
-    public void log(String str) {
+    public void nextFile() {
         try {
-            Files.write(
-                    filePath,
-                    String.format("%s%n", str).getBytes(),
-                    StandardOpenOption.APPEND);
+            fileCounter++;
+            filePath = dirPath.resolve(dirName + "-" + fileCounter);
+            Files.createFile(filePath);
         } catch (IOException ex) {
-            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExperimentLogger.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    /**
-     * Prints a closing pattern to the log file
-     */
-    public void logClosingPattern(){
-        log(CLOSING_PATTERN);
     }
 }

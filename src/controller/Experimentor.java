@@ -1,7 +1,11 @@
 package controller;
 
 import agent.GamePlayingAgent;
+import agent.RandomAgent;
+import agent.bestChildPolicy.MaxUtilPolicy;
+import agent.bestChildPolicy.MostVisitPolicy;
 import agent.mcts.MctsAgent;
+import agent.normalizationPolicy.NoNormalization;
 import agent.normalizationPolicy.SpaceLocalNormalization;
 import agent.tdts.TdtsAgent;
 import game.GameAction;
@@ -9,202 +13,193 @@ import game.GameModel;
 import game.GameModel.GameState;
 import io.ExperimentLogger;
 import java.awt.Toolkit;
+import java.util.Arrays;
+import java.util.function.Supplier;
+import static util.StatHelper.*;
 
 /**
+ * Class untuk menjalankan eksperimen pengujian performa GPA dalam memainkan
+ * 2048.
  *
  * @author Jiang Han
  */
 public class Experimentor {
 
-    public static void main(String[] args) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
-        GamePlayingAgent agent = new TdtsAgent.Builder()
-                .setNormalizationPolicy(new SpaceLocalNormalization())
+    /**
+     * Melakukan beberapa kali pengujian untuk agen MCTS dengan algoritma UCT,
+     * lalu mencatat hasil pengujian dan rata-rata skornya.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
+     * pemilihan aksi.
+     * @param EXP_CONST Konstanta eksplorasi UCT
+     * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
+     * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
+     * @param isSpaceLocalNorm Jika true, agen akan memakai Space-Local Value
+     * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
+     * tidak akan memakai metode normalisasi apapun.
+     */
+    public static void MCTSAverage(
+            int iteration,
+            int MAX_TICK,
+            double EXP_CONST,
+            boolean isRobustChild,
+            boolean isSpaceLocalNorm) {
+
+        System.out.println("UCT Agent is being tested...");
+        Supplier<GamePlayingAgent> agentBuilder = () -> new MctsAgent.Builder()
+                .setExplorationConstant(EXP_CONST)
+                .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                 .build();
-        GameState state = infModel.new GameState(new int[][]{
-            {4, 16, 4, 2},
-            {8, 32, 64, 2},
-            {2, 16, 128, 8},
-            {32, 8, 4, 32},}, 1560);
+
+        ExperimentLogger logger = new ExperimentLogger("mcts",
+                "Average MCTS score over n experiments",
+                agentBuilder.get().getConfigurationString(),
+                "Max Tick: " + MAX_TICK,
+                "Number of Games: " + iteration
+        );
+
+        runExperiment(iteration, MAX_TICK, agentBuilder, logger);
+    }
+
+    /**
+     * Melakukan beberapa kali pengujian untuk agen TDTS dengan algoritma
+     * Sarsa-UCT(lambda), lalu mencatat hasil pengujian dan rata-rata skornya.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
+     * pemilihan aksi.
+     * @param EXP_CONST Konstanta eksplorasi UCT
+     * @param gamma Reward discount yang mengurangi nilai dari state yang jauh
+     * dari state saat ini.
+     * @param lambda Eligibility trace decay rate.
+     * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
+     * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
+     * @param isSpaceLocalNorm Jika true, agen akan memakai Space-Local Value
+     * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
+     * tidak akan memakai metode normalisasi apapun.
+     */
+    public static void TDTSAverage(
+            int iteration,
+            int MAX_TICK,
+            double EXP_CONST,
+            double gamma,
+            double lambda,
+            boolean isRobustChild,
+            boolean isSpaceLocalNorm) {
+        System.out.println("Sarsa UCT(lambda) Agent is being tested...");
         
-        GameState copyState = state.copy();
-        GameAction chosenAction = agent.selectAction(copyState, new GameModel(100));
-    }
-
-    public static void runMCTSDetailed(int MAX_TICK, double EXP_CONST) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
-        GamePlayingAgent agent = new MctsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .build();
-        GameState state = infModel.generateInitialState();
-
-        ExperimentLogger logger = new ExperimentLogger("mcts",
-                agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-        );
-
-        logger.log(state);
-        long startTime, endTime, totalWriteTime = 0, total;
-
-        do {
-            GameState copyState = state.copy();
-            startTime = System.currentTimeMillis();
-            GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-            endTime = System.currentTimeMillis();
-
-            state = infModel.applyAction(state, chosenAction);
-            System.out.println("Duration: " + (endTime - startTime) + " ms");
-            logger.log(chosenAction, state);
-
-            System.out.println("Score: " + state.getScore());
-        } while (!state.isTerminal());
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    public static void getMCTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST) {
-        GamePlayingAgent agent = new MctsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .build();
-        ExperimentLogger logger = new ExperimentLogger("mcts",
-                String.format("Average MCTS score over n experiments%n")
-                + agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-                + String.format("Num of Experiment: %d%n", iteration)
-        );
-
-        long totalScore = 0;
-        long totalTime = 0;
-        for (int i = 0; i < iteration; i++) {
-            GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            agent = new MctsAgent.Builder()
+        Supplier<GamePlayingAgent> agentBuilder = () -> new TdtsAgent.Builder()
                     .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
-                    .build();
-            GameState state = infModel.generateInitialState();
-
-            long startTime, endTime;
-
-            startTime = System.currentTimeMillis();
-            do {
-                GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-                state = infModel.applyAction(state, chosenAction);
-            } while (!state.isTerminal());
-            endTime = System.currentTimeMillis();
-            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore());
-            System.out.println("Time: " + (endTime - startTime) + " ms");
-
-            logger.log("Iteration[" + (i + 1) + "] Final Score: " + state.getScore()
-                    + "\nTime: " + (endTime - startTime) + " ms\n");
-
-            totalScore += state.getScore();
-            totalTime += (endTime - startTime);
-        }
-        logger.logClosingPattern();
-
-        System.out.println("Average: " + ((double) totalScore / iteration));
-        System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
-
-        logger.log(
-                "Average: " + ((double) totalScore / iteration)
-                + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
-        );
-
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    public static void runTDTSDetailed(int MAX_TICK, double EXP_CONST, double gamma, double lambda) {
-        GameModel infModel = new GameModel(Integer.MAX_VALUE);
-        GamePlayingAgent agent = new TdtsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .setRewardDiscount(gamma)
-                .setEligibilityTraceDecay(lambda)
-                .build();
-        GameState state = infModel.generateInitialState();
-
-        ExperimentLogger logger = new ExperimentLogger("tdts",
-                agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-        );
-
-        logger.log(state);
-        long startTime, endTime, totalWriteTime = 0, total;
-
-        do {
-            GameState copyState = state.copy();
-            startTime = System.currentTimeMillis();
-            GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
-            endTime = System.currentTimeMillis();
-
-            state = infModel.applyAction(state, chosenAction);
-            System.out.println("Duration: " + (endTime - startTime) + " ms");
-            logger.log(chosenAction, state);
-
-            System.out.println("Score: " + state.getScore());
-        } while (!state.isTerminal());
-        Toolkit.getDefaultToolkit().beep();
-    }
-
-    public static void getTDTSAverageScore(int iteration, int MAX_TICK, double EXP_CONST, double gamma, double lambda) {
-        GamePlayingAgent agent = new TdtsAgent.Builder()
-                .setExplorationConstant(EXP_CONST)
-                .setNormalizationPolicy(new SpaceLocalNormalization())
-                .setRewardDiscount(gamma)
-                .setEligibilityTraceDecay(lambda)
-                .build();
-        ExperimentLogger logger = new ExperimentLogger("tdts_avg",
-                String.format("Average TDTS score over n experiments%n")
-                + agent.getConfigurationString()
-                + String.format("Max Tick: %d%n", MAX_TICK)
-                + String.format("Num of Experiment: %d%n", iteration)
-        );
-
-        long totalScore = 0;
-        long totalTime = 0;
-        for (int i = 0; i < iteration; i++) {
-            GameModel infModel = new GameModel(Integer.MAX_VALUE);
-            agent = new TdtsAgent.Builder()
-                    .setExplorationConstant(EXP_CONST)
-                    .setNormalizationPolicy(new SpaceLocalNormalization())
                     .setRewardDiscount(gamma)
                     .setEligibilityTraceDecay(lambda)
+                    .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                    .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
                     .build();
-            GameState state = infModel.generateInitialState();
+        
+        ExperimentLogger logger = new ExperimentLogger("tdts",
+                "Average TDTS score over n experiments",
+                agentBuilder.get().getConfigurationString(),
+                "Max Tick: " + MAX_TICK,
+                "Number of Games: " + iteration
+        );
 
+        runExperiment(iteration, MAX_TICK, agentBuilder, logger);
+    }
+
+    public static void RandomAverage(int iteration) {
+        System.out.println("Random Agent is being tested...");
+        ExperimentLogger logger = new ExperimentLogger(
+                "random", 
+                "Average score of Random GPA",
+                "Number of Games: " + iteration
+        );
+
+        runExperiment(iteration, Integer.MAX_VALUE, () -> new RandomAgent(), logger);
+    }
+
+    private static void runExperiment(
+            int iteration,
+            int maxTick,
+            Supplier<GamePlayingAgent> agentBuilder,
+            ExperimentLogger logger) {
+
+        int scores[] = new int[iteration];
+        int steps[] = new int[iteration];
+        int maxTiles[] = new int[iteration];
+        long durations[] = new long[iteration];
+
+        for (int i = 0; i < iteration; i++) {
+            logger.nextFile();
+            GamePlayingAgent agent = agentBuilder.get();
+            GameModel infModel = new GameModel(Integer.MAX_VALUE);
+            GameModel.GameState state = infModel.generateInitialState();
+
+            logger.log(state);
+            int step = 0;
             long startTime, endTime;
-
             startTime = System.currentTimeMillis();
             do {
                 GameState copyState = state.copy();
-                GameAction chosenAction = agent.selectAction(copyState, new GameModel(MAX_TICK));
+                GameAction chosenAction = agent.selectAction(copyState, new GameModel(maxTick));
+
                 state = infModel.applyAction(state, chosenAction);
+                logger.log(chosenAction, state);
+                step++;
             } while (!state.isTerminal());
             endTime = System.currentTimeMillis();
-            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore());
-            System.out.println("Time: " + (endTime - startTime) + " ms");
+            
+            steps[i] = step;
+            durations[i] = endTime - startTime;
 
-            logger.log("Iteration[" + (i + 1) + "] Final Score: " + state.getScore()
-                    + "\nTime: " + (endTime - startTime) + " ms\n");
+            scores[i] = state.getScore();
+            logger.log("Score: " + state.getScore());
+            logger.log("Step: " + step);
+            logger.log("Duration: " + durations[i] + " ms");
 
-            totalScore += state.getScore();
-            totalTime += (endTime - startTime);
+            System.out.println("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + durations[i] + " ms)");
+            logger.logSummary("Iteration[" + (i + 1) + "] Final Score: " + state.getScore() + " (" + durations[i] + " ms)");
+
+            maxTiles[i] = state.getLargestTile();
+            logger.log("Max Tile: " + maxTiles[i]);
         }
-        logger.logClosingPattern();
+        double avgScore = average(scores);
+        System.out.println("Average Score: " + avgScore);
+        logger.logSummary("Average Score: " + avgScore);
 
-        System.out.println("Average: " + ((double) totalScore / iteration));
-        System.out.println("Total time: " + (totalTime / 1000) + " s");
-        System.out.println("Average time per run: " + ((double) totalTime / iteration / 1000) + " s");
+        double variance = sampleVariance(scores);
+        System.out.println("Sample variance: " + variance);
+        logger.logSummary("Sample variance: " + variance);
+        double standardDeviation = Math.sqrt(variance);
+        System.out.println("Sample standard deviation: " + standardDeviation);
+        logger.logSummary("Sample standard deviation: " + standardDeviation);
+        
+        double medianScore = median(scores);
+        System.out.println("Median Score: " + medianScore);
+        logger.logSummary("Median Score: " + medianScore);
+        
+        double avgStep = average(steps);
+        System.out.println("Average Step: " + avgStep);
+        logger.logSummary("Average Step: " + avgStep);
+        
+        long totalTime = Arrays.stream(durations).sum();
+        System.out.println("Total time: " + (totalTime/1000.0) + " s");
+        logger.logSummary("Total time: " + (totalTime/1000.0) + " s");
+        System.out.printf("Average time per game: %.3f s%n", (totalTime/1000.0/iteration));
+        logger.logSummary(String.format("Average time per game: %.3f s", (totalTime/1000.0/iteration)));
 
-        logger.log(
-                "Average: " + ((double) totalScore / iteration)
-                + "\nTotal time: " + (totalTime / 1000) + " s"
-                + "\nAverage time per run: " + ((double) totalTime / iteration / 1000) + " s"
-        );
+        int maxScoreId = idOfMaximum(scores);
+        System.out.println("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
+        logger.logSummary("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
+
+        int minScoreId = idOfMinimum(scores);
+        System.out.println("Min Score: " + scores[minScoreId] + " (Iteration[" + (minScoreId + 1) + "])");
+        logger.logSummary("Min Score: " + scores[minScoreId] + " (Iteration[" + (minScoreId + 1) + "])");
+
+        int maxTileId = idOfMaximum(maxTiles);
+        System.out.println("Max Tile: " + maxTiles[maxTileId] + " (Iteration[" + (maxTileId + 1) + "])");
+        logger.logSummary("Max Tile: " + maxTiles[maxTileId] + " (Iteration[" + (maxTileId + 1) + "])");
 
         Toolkit.getDefaultToolkit().beep();
     }

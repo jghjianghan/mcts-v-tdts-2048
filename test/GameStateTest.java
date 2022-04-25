@@ -82,4 +82,29 @@ public class GameStateTest {
         Assert.assertTrue(state.isActionValid(GameAction.UP));
         Assert.assertTrue(state.isActionValid(GameAction.DOWN));
     }
+    
+    @Test
+    public void testMaxTile(){
+        int board[][];
+        GameModel model = new GameModel(100);
+        GameModel.GameState state;
+        
+        board = new int[][]{
+            {0, 0, 0, 0},
+            {0, 0, 0, 0},
+            {0, 0, 2, 0},
+            {0, 0, 0, 0},};
+        
+        state = model.new GameState(board);
+        Assert.assertEquals(2, state.getLargestTile());
+        
+        board = new int[][]{
+            {4, 8, 4, 8},
+            {16, 4, 32, 2},
+            {2, 8, 64, 8},
+            {4, 2, 16, 4},};
+        
+        state = model.new GameState(board);
+        Assert.assertEquals(64, state.getLargestTile());
+    }
 }
