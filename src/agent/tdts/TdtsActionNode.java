@@ -13,7 +13,7 @@ import game.GameModel.GameState;
  */
 class TdtsActionNode extends ActionNode {
 
-    private double utility = 0;
+    private double utility = 0; //insert V_init here
 
     TdtsActionNode(GameAction action, StateNode parent) {
         super(action, parent);
