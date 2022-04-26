@@ -79,7 +79,7 @@ public class ExperimentLogger {
                     String.format("%s%n%s%n",
                             now.format(DateTimeFormatter.ISO_DATE_TIME),
                             String.join(System.lineSeparator(), initialMessage)
-                    ).getBytes(),
+                    ).getBytes("UTF8"),
                     StandardOpenOption.CREATE);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
@@ -125,7 +125,7 @@ public class ExperimentLogger {
         try {
             Files.write(
                     path,
-                    String.format("%s%n", content).getBytes(),
+                    String.format("%s%n", content).getBytes("UTF8"),
                     StandardOpenOption.APPEND);
         } catch (IOException ex) {
             Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
