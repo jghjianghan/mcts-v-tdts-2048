@@ -48,7 +48,7 @@ public class ExperimentLogger {
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter
-                .ofPattern("yyyyMMdd_HHmmss");
+                .ofPattern("yyyyMMdd_HHmmss_SSS");
         dirName = codeName + "-" + now.format(formatter);
 
         Path baseDirPath = Paths.get(baseDirectory);
@@ -59,7 +59,7 @@ public class ExperimentLogger {
             directoryFile.mkdir();
         }
 
-        //Buat folder untuk eksperimen (./log/[codename]-[date]_[time])
+        //Buat folder untuk eksperimen (./log/[codename]-[date]_[time]_[ms])
         dirPath = Paths.get(baseDirectory, dirName);
         File innerDirectory = dirPath.toFile();
         if (!innerDirectory.exists()) {
@@ -77,7 +77,7 @@ public class ExperimentLogger {
         try {
             Files.write(summaryPath,
                     String.format("%s%n%s%n",
-                            now.format(DateTimeFormatter.ISO_DATE_TIME),
+                            now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")),
                             String.join(System.lineSeparator(), initialMessage)
                     ).getBytes("UTF8"),
                     StandardOpenOption.CREATE);
