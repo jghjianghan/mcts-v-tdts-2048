@@ -54,10 +54,10 @@ public class Experimentor {
                 .build();
 
         ExperimentLogger logger = new ExperimentLogger("mcts",
-                "Average MCTS score over n experiments",
-                agentBuilder.get().getConfigurationString(),
-                "Max Tick: " + MAX_TICK,
-                "Number of Games: " + iteration
+                "Average score of UCT GPA",
+                "Number of games: " + iteration,
+                "Number of time steps: " + MAX_TICK,
+                agentBuilder.get().getConfigurationString()
         );
 
         runExperiment(iteration, MAX_TICK, agentBuilder, logger);
@@ -99,10 +99,10 @@ public class Experimentor {
                     .build();
         
         ExperimentLogger logger = new ExperimentLogger("tdts",
-                "Average TDTS score over n experiments",
-                agentBuilder.get().getConfigurationString(),
-                "Max Tick: " + MAX_TICK,
-                "Number of Games: " + iteration
+                "Average score of Sarsa-UCT(lambda) GPA",
+                "Number of games: " + iteration,
+                "Number of time steps: " + MAX_TICK,
+                agentBuilder.get().getConfigurationString()
         );
 
         runExperiment(iteration, MAX_TICK, agentBuilder, logger);
@@ -113,7 +113,7 @@ public class Experimentor {
         ExperimentLogger logger = new ExperimentLogger(
                 "random", 
                 "Average score of Random GPA",
-                "Number of Games: " + iteration
+                "Number of games: " + iteration
         );
 
         runExperiment(iteration, Integer.MAX_VALUE, () -> new RandomAgent(), logger);

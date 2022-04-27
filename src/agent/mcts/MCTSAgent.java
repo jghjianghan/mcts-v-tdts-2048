@@ -75,7 +75,7 @@ public class MctsAgent extends GamePlayingAgent {
         return String.format(
                 "Exploration constant: %f%n"
                 + "Best-child policy: %s%n"
-                + "Normalization policy: %s%n",
+                + "Normalization policy: %s",
                 EXPLORATION_CONSTANT,
                 BEST_CHILD_POLICY,
                 NORMALIZATION_POLICY

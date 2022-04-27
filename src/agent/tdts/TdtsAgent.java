@@ -288,15 +288,15 @@ public class TdtsAgent extends GamePlayingAgent {
     public String getConfigurationString() {
         return String.format(
                 "Exploration constant: %f%n"
+                + "Reward discount rate (gamma): %f%n"
+                + "Eligibility trace decay rate (lambda): %f%n"
                 + "Best-child policy: %s%n"
-                + "Normalization policy: %s%n"
-                + "Gamma: %f%n"
-                + "Lambda: %f%n",
+                + "Normalization policy: %s",
                 EXPLORATION_CONSTANT,
-                BEST_CHILD_POLICY,
-                NORMALIZATION_POLICY,
                 REWARD_DISCOUNT,
-                ELIGIBILITY_TRACE_DECAY
+                ELIGIBILITY_TRACE_DECAY,
+                BEST_CHILD_POLICY,
+                NORMALIZATION_POLICY
         );
     }
     
