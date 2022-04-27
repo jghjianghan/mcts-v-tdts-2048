@@ -46,7 +46,7 @@ public class Main {
                     input = sc.nextLine().trim();
                     double explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
-                    System.out.println("Best-Child Policy");
+                    System.out.println("Best-child policy");
                     System.out.println("1. Robust child (most visit)");
                     System.out.println("2. Max child (maximum utility)");
                     System.out.print("Choice [1]: ");
@@ -54,8 +54,8 @@ public class Main {
                     
                     boolean isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    System.out.println("Normalization Policy");
-                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("Normalization policy");
+                    System.out.println("1. Space-local value normalization");
                     System.out.println("2. No normalization");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
@@ -84,15 +84,15 @@ public class Main {
                     input = sc.nextLine().trim();
                     double lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
                     
-                    System.out.println("Best-Child Policy");
+                    System.out.println("Best-child policy");
                     System.out.println("1. Robust child (most visit)");
                     System.out.println("2. Max child (maximum utility)");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
                     isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    System.out.println("Normalization Policy");
-                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("Normalization policy");
+                    System.out.println("1. Space-local value normalization");
                     System.out.println("2. No normalization");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
@@ -109,7 +109,7 @@ public class Main {
                     System.err.println("Unknown command");
             }
         } catch (NumberFormatException ex){
-            System.err.println("Invalid input (should be number)");
+            System.err.println("Invalid input");
         }
     }
     
