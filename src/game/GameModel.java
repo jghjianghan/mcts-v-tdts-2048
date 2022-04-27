@@ -49,7 +49,6 @@ public class GameModel {
                 for (int j = 0; j < BOARD_SIZE; j++) {
                     sb.append(board[i][j].value);
                     sb.append('\t');
-                    sb.append('\t');
                 }
                 sb.append('\n');
             }
