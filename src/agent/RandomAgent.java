@@ -20,7 +20,7 @@ public class RandomAgent extends GamePlayingAgent {
 
     @Override
     public String getConfigurationString() {
-        return "#Random Agent";
+        return "";
     }
     
 }

@@ -25,19 +25,16 @@ public class MctsAgent extends GamePlayingAgent {
     private final double EXPLORATION_CONSTANT;
     private final BestChildPolicy BEST_CHILD_POLICY;
     private final NormalizationPolicy NORMALIZATION_POLICY;
-    private final int MAX_SIMULATION_DEPTH; //blm dipake, blm ada di Class Diag
 
     private final Random rand = new Random();
 
     private MctsAgent(
             double explorationConstant,
             BestChildPolicy bestChildPolicy,
-            NormalizationPolicy normalizationPolicy,
-            int maxDepth) {
+            NormalizationPolicy normalizationPolicy) {
         this.EXPLORATION_CONSTANT = explorationConstant;
         this.BEST_CHILD_POLICY = bestChildPolicy;
         this.NORMALIZATION_POLICY = normalizationPolicy;
-        this.MAX_SIMULATION_DEPTH = maxDepth;
     }
 
     public static class Builder {
@@ -45,14 +42,12 @@ public class MctsAgent extends GamePlayingAgent {
         private double explorationConstant;
         private BestChildPolicy bestChildPolicy;
         private NormalizationPolicy normalizationPolicy;
-        private int maxDepth;
 
         public Builder() {
             //set default values
             explorationConstant = Math.sqrt(2);
             bestChildPolicy = new MostVisitPolicy();
             normalizationPolicy = new SpaceLocalNormalization();
-            maxDepth = Integer.MAX_VALUE;
         }
 
         public Builder setExplorationConstant(double explorationConstant) {
@@ -70,27 +65,21 @@ public class MctsAgent extends GamePlayingAgent {
             return this;
         }
 
-        public Builder setMaxDepth(int maxDepth) {
-            this.maxDepth = maxDepth;
-            return this;
-        }
-
         public MctsAgent build() {
-            return new MctsAgent(explorationConstant, bestChildPolicy, normalizationPolicy, maxDepth);
+            return new MctsAgent(explorationConstant, bestChildPolicy, normalizationPolicy);
         }
     }
 
     @Override
     public String getConfigurationString() {
-        return String.format("#MCTS Agent%n"
-                + "Exploration constant: %f%n"
+        return String.format(
+                "Exploration constant: %f%n"
                 + "Best-child policy: %s%n"
-                + "Normalization Policy: %s%n"
-                + "Max Depth: %d",
+                + "Normalization policy: %s%n",
                 EXPLORATION_CONSTANT,
                 BEST_CHILD_POLICY.getClass().getSimpleName(),
-                NORMALIZATION_POLICY.getClass().getSimpleName(),
-                MAX_SIMULATION_DEPTH);
+                NORMALIZATION_POLICY.getClass().getSimpleName()
+        );
     }
 
     @Override

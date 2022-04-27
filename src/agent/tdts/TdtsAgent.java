@@ -29,21 +29,18 @@ public class TdtsAgent extends GamePlayingAgent {
     private final double REWARD_DISCOUNT;
     //lambda
     private final double ELIGIBILITY_TRACE_DECAY;
-    private final int MAX_SIMULATION_DEPTH; //blm dipake, blm ada di class diag
 
     public TdtsAgent(
             double explorationConstant,
             BestChildPolicy bestChildPolicy,
             NormalizationPolicy NORMALIZATION_POLICY,
             double rewardDiscount,
-            double eligibilityTraceDecay,
-            int maxDepth) {
+            double eligibilityTraceDecay) {
         this.EXPLORATION_CONSTANT = explorationConstant;
         this.BEST_CHILD_POLICY = bestChildPolicy;
         this.NORMALIZATION_POLICY = NORMALIZATION_POLICY;
         this.REWARD_DISCOUNT = rewardDiscount;
         this.ELIGIBILITY_TRACE_DECAY = eligibilityTraceDecay;
-        this.MAX_SIMULATION_DEPTH = maxDepth;
     }
 
     public static class Builder {
@@ -52,7 +49,6 @@ public class TdtsAgent extends GamePlayingAgent {
         private BestChildPolicy bestChildPolicy;
         private NormalizationPolicy normalizationPolicy;
         private double gamma, lambda;
-        private int maxDepth;
 
         public Builder() {
             //set default values
@@ -60,7 +56,6 @@ public class TdtsAgent extends GamePlayingAgent {
             bestChildPolicy = new MostVisitPolicy();
             normalizationPolicy = new SpaceLocalNormalization();
             lambda = gamma = 1;
-            maxDepth = Integer.MAX_VALUE;
         }
 
         public Builder setExplorationConstant(double explorationConstant) {
@@ -88,19 +83,13 @@ public class TdtsAgent extends GamePlayingAgent {
             return this;
         }
 
-        public Builder setMaxDepth(int maxDepth) {
-            this.maxDepth = maxDepth;
-            return this;
-        }
-
         public TdtsAgent build() {
             return new TdtsAgent(
                     explorationConstant,
                     bestChildPolicy,
                     normalizationPolicy,
                     gamma,
-                    lambda,
-                    maxDepth
+                    lambda
             );
         }
     }
@@ -297,19 +286,17 @@ public class TdtsAgent extends GamePlayingAgent {
 
     @Override
     public String getConfigurationString() {
-        return String.format("#TDTS Agent%n"
-                + "Exploration constant: %f%n"
+        return String.format(
+                "Exploration constant: %f%n"
                 + "Best-child policy: %s%n"
-                + "Normalization Policy: %s%n"
+                + "Normalization policy: %s%n"
                 + "Gamma: %f%n"
-                + "Lambda: %f%n"
-                + "Max Depth: %d",
+                + "Lambda: %f%n",
                 EXPLORATION_CONSTANT,
                 BEST_CHILD_POLICY.getClass().getSimpleName(),
                 NORMALIZATION_POLICY.getClass().getSimpleName(),
                 REWARD_DISCOUNT,
-                ELIGIBILITY_TRACE_DECAY,
-                MAX_SIMULATION_DEPTH
+                ELIGIBILITY_TRACE_DECAY
         );
     }
     
