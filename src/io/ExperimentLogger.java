@@ -141,7 +141,7 @@ public class ExperimentLogger {
     public void nextFile() {
         try {
             fileCounter++;
-            filePath = dirPath.resolve(dirName + "-" + fileCounter);
+            filePath = dirPath.resolve(dirName + "-" + fileCounter + ".txt");
             Files.createFile(filePath);
         } catch (IOException ex) {
             Logger.getLogger(ExperimentLogger.class.getName()).log(Level.SEVERE, null, ex);
