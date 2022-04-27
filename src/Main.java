@@ -47,16 +47,16 @@ public class Main {
                     double explorationConst = (input.isEmpty()) ? Math.sqrt(2) : Double.parseDouble(input);
                     
                     System.out.println("Best-child policy");
-                    System.out.println("1. Robust child (most visit)");
-                    System.out.println("2. Max child (maximum utility)");
+                    System.out.println("1. Robust Child (most visit)");
+                    System.out.println("2. Max Child (maximum utility)");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
                     
                     boolean isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
                     System.out.println("Normalization policy");
-                    System.out.println("1. Space-local value normalization");
-                    System.out.println("2. No normalization");
+                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("2. No Normalization");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
                     boolean isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
@@ -85,15 +85,15 @@ public class Main {
                     double lambda = (input.isEmpty()) ? 1 : Double.parseDouble(input);
                     
                     System.out.println("Best-child policy");
-                    System.out.println("1. Robust child (most visit)");
-                    System.out.println("2. Max child (maximum utility)");
+                    System.out.println("1. Robust Child (most visit)");
+                    System.out.println("2. Max Child (maximum utility)");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
                     isRobustChild = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
                     System.out.println("Normalization policy");
-                    System.out.println("1. Space-local value normalization");
-                    System.out.println("2. No normalization");
+                    System.out.println("1. Space-Local Value Normalization");
+                    System.out.println("2. No Normalization");
                     System.out.print("Choice [1]: ");
                     input = sc.nextLine().trim();
                     isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;

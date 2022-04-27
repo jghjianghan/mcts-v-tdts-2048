@@ -70,7 +70,7 @@ public class StatHelper {
 
         Arrays.sort(copy);
         if (copy.length % 2 == 0) {
-            return (data[copy.length / 2] + data[copy.length / 2 - 1]) / 2.0;
+            return (copy[copy.length / 2] + copy[copy.length / 2 - 1]) / 2.0;
         } else {
             return copy[copy.length / 2];
         }

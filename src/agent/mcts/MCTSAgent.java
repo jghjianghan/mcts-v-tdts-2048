@@ -77,8 +77,8 @@ public class MctsAgent extends GamePlayingAgent {
                 + "Best-child policy: %s%n"
                 + "Normalization policy: %s%n",
                 EXPLORATION_CONSTANT,
-                BEST_CHILD_POLICY.getClass().getSimpleName(),
-                NORMALIZATION_POLICY.getClass().getSimpleName()
+                BEST_CHILD_POLICY,
+                NORMALIZATION_POLICY
         );
     }
 

@@ -46,4 +46,8 @@ public final class SpaceLocalNormalization implements NormalizationPolicy {
         globalUpperBound = Double.NEGATIVE_INFINITY;
     }
 
+    @Override
+    public String toString() {
+        return "Space-Local Value Normalization";
+    }
 }

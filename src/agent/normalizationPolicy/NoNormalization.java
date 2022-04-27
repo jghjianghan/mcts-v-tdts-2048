@@ -22,4 +22,8 @@ public class NoNormalization implements NormalizationPolicy {
     public void resetNormalizationBound() {
     }
 
+    @Override
+    public String toString() {
+        return "No Normalization";
+    }
 }

@@ -293,8 +293,8 @@ public class TdtsAgent extends GamePlayingAgent {
                 + "Gamma: %f%n"
                 + "Lambda: %f%n",
                 EXPLORATION_CONSTANT,
-                BEST_CHILD_POLICY.getClass().getSimpleName(),
-                NORMALIZATION_POLICY.getClass().getSimpleName(),
+                BEST_CHILD_POLICY,
+                NORMALIZATION_POLICY,
                 REWARD_DISCOUNT,
                 ELIGIBILITY_TRACE_DECAY
         );

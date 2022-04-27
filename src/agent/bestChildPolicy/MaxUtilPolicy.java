@@ -30,4 +30,9 @@ public class MaxUtilPolicy implements BestChildPolicy {
         }
         return bestActionList.get(rand.nextInt(bestActionList.size()));
     }
+    
+    @Override
+    public String toString() {
+        return "Max Child (maximum utility)";
+    }    
 }

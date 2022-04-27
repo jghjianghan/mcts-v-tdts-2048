@@ -30,5 +30,9 @@ public class MostVisitPolicy implements BestChildPolicy {
         }
         return bestActionList.get(rand.nextInt(bestActionList.size()));
     }
-    
+
+    @Override
+    public String toString() {
+        return "Robust Child (most visit)";
+    }    
 }
