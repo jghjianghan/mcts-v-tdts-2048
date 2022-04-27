@@ -38,9 +38,9 @@ public class Main {
                     System.out.print("Number of games: ");
                     iteration = Integer.parseInt(sc.nextLine().trim());
                     
-                    System.out.print("Number of time steps [1000000]: ");
+                    System.out.print("Number of time steps [10000]: ");
                     input = sc.nextLine().trim();
-                    int maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    int maxTick = (input.isEmpty()) ? 10000 : Integer.parseInt(input);
                     
                     System.out.print("Exploration constant [sqrt(2)]: ");
                     input = sc.nextLine().trim();
@@ -68,9 +68,9 @@ public class Main {
                     System.out.print("Number of games: ");
                     iteration = Integer.parseInt(sc.nextLine().trim());
                     
-                    System.out.print("Number of time steps [1000000]: ");
+                    System.out.print("Number of time steps [10000]: ");
                     input = sc.nextLine().trim();
-                    maxTick = (input.isEmpty()) ? 1000000 : Integer.parseInt(input);
+                    maxTick = (input.isEmpty()) ? 10000 : Integer.parseInt(input);
                     
                     System.out.print("Exploration constant [sqrt(2)]: ");
                     input = sc.nextLine().trim();
