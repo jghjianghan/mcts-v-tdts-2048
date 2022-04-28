@@ -242,8 +242,8 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
     private void showHelp() {
         JOptionPane.showMessageDialog(null,
                 "Gunakan panah di keyboard untuk menggerakkan tile.\n"
-                + "Tekan tombol R untuk me-restart game\n"
-                + "Tekan icon i atau tombol H untuk membuka Help",
+                + "Tekan tombol R untuk me-restart game.\n"
+                + "Tekan icon i atau tombol H untuk membuka Help.",
                 "2048 - Help",
                 JOptionPane.INFORMATION_MESSAGE);
     }
