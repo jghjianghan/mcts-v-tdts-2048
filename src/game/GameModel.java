@@ -16,11 +16,11 @@ public class GameModel {
     private int tickLeft;
     private Random rand = new Random();
     public final int BOARD_SIZE = 4;
-    //Batas probabilitan untuk menentukan nilai tile baru
+    // Batas probabilitan untuk menentukan nilai tile baru
     private final double NEW_TILE_PROB_THRES = 0.9;
-    //Nilai tile baru yang ditambahkan jika nilai random < threshold
+    // Nilai tile baru yang ditambahkan jika nilai random < threshold
     private final int NEW_TILE_VALUE_PRIMARY = 2;
-    //Nilai tile baru yang ditambahkan jika nilai random >= threshold
+    // Nilai tile baru yang ditambahkan jika nilai random >= threshold
     private final int NEW_TILE_VALUE_SECONDARY = 4;
 
     /**
@@ -37,23 +37,6 @@ public class GameModel {
      * Inner class yang merepresentasikan state permainan
      */
     public final class GameState {
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Score: ");
-            sb.append(score);
-            sb.append('\n');
-
-            for (int i = 0; i < BOARD_SIZE; i++) {
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    sb.append(board[i][j].value);
-                    sb.append('\t');
-                }
-                sb.append('\n');
-            }
-            return sb.toString();
-        }
 
         private Cell[][] board;
         private int score;
@@ -87,26 +70,54 @@ public class GameModel {
             evaluateAttributes();
         }
 
-        //Precalculate valid actions and isTerminal
+        // Precalculate valid actions and isTerminal
         private void evaluateAttributes() {
             validActions = new GameAction[GameAction.values().length];
             isTerminal = true;
             for (GameAction action : GameAction.values()) {
-                //Apakah aksi menyebabkan tile berpindah?
+                // Apakah aksi menyebabkan tile berpindah?
                 if (this.isSlideable(action)) {
                     validActions[action.id] = action;
-                    //Asal ada satu state yang valid, maka state ini non-terminal
+                    // Asal ada satu state yang valid, maka state ini non-terminal
                     isTerminal = false;
                 }
             }
         }
 
-        public int getCellValue(int row, int col) {
-            return board[row][col].value;
+        /**
+         * Mengembalikan aksi yang valid untuk dilakukan pada state ini
+         *
+         * @return List aksi yang valid
+         */
+        public List<GameAction> getAvailableActions() {
+            return Arrays.stream(validActions)
+                    .filter(action -> action != null)
+                    .collect(Collectors.toList());
         }
 
-        private void setCellValue(int row, int col, int value) {
-            board[row][col].value = value;
+        /**
+         * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
+         *
+         * @param action Aksi yang ingin dilakukan
+         * @return True jika aksi valid dan false jika sebaliknya
+         */
+        public boolean isActionValid(GameAction action) {
+            return validActions[action.id] != null;
+        }
+
+        /**
+         * Memeriksa apakah state ini adalah terminal state. Terminal state
+         * adalah state yang tidak memiliki aksi yang valid lagi.
+         *
+         * @return True jika state ini adalah terminal state dan False jika
+         * sebaliknya
+         */
+        public boolean isTerminal() {
+            return isTerminal;
+        }
+
+        public int getCellValue(int row, int col) {
+            return board[row][col].value;
         }
 
         public int getScore() {
@@ -210,13 +221,29 @@ public class GameModel {
         }
 
         /**
-         * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
+         * Mengembalikan list dari cell-cell yang kosong dalam state ini
          *
-         * @param action Aksi yang ingin dilakukan
-         * @return True jika aksi valid dan false jika sebaliknya
+         * @return List dari cell yang kosong
          */
-        public boolean isActionValid(GameAction action) {
-            return validActions[action.id] != null;
+        private List<Cell> getEmptyCells() {
+            return Arrays.stream(board).flatMap(Arrays::stream)
+                    .filter(cell -> cell.value == 0)
+                    .collect(Collectors.toList());
+        }
+
+        /**
+         * Gets the value of the largest tile is this state.
+         *
+         * @return The value of the largest tile
+         */
+        public int getLargestTile() {
+            int maxValue = 0;
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    maxValue = Math.max(maxValue, board[i][j].value);
+                }
+            }
+            return maxValue;
         }
 
         @Override
@@ -263,52 +290,21 @@ public class GameModel {
             return true;
         }
 
-        /**
-         * Mengembalikan aksi yang valid untuk dilakukan pada state ini
-         *
-         * @return List aksi yang valid
-         */
-        public List<GameAction> getAvailableActions() {
-            return Arrays.stream(validActions)
-                    .filter(action -> action != null)
-                    .collect(Collectors.toList());
-        }
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Score: ");
+            sb.append(score);
+            sb.append('\n');
 
-        /**
-         * Memeriksa apakah state ini adalah terminal state. Terminal state
-         * adalah state yang tidak memiliki aksi yang valid lagi.
-         *
-         * @return True jika state ini adalah terminal state dan False jika
-         * sebaliknya
-         */
-        public boolean isTerminal() {
-            return isTerminal;
-        }
-
-        /**
-         * Mengembalikan list dari cell-cell yang kosong dalam state ini
-         *
-         * @return List dari cell yang kosong
-         */
-        private List<Cell> getEmptyCells() {
-            return Arrays.stream(board).flatMap(Arrays::stream)
-                    .filter(cell -> cell.value == 0)
-                    .collect(Collectors.toList());
-        }
-    
-        /**
-         * Gets the value of the largest tile is this state.
-         * 
-         * @return The value of the largest tile
-         */
-        public int getLargestTile(){
-            int maxValue = 0;
-            for(int i = 0; i<BOARD_SIZE; i++){
+            for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
-                    maxValue = Math.max(maxValue, board[i][j].value);
+                    sb.append(board[i][j].value);
+                    sb.append('\t');
                 }
+                sb.append('\n');
             }
-            return maxValue;
+            return sb.toString();
         }
     }
 
@@ -322,7 +318,7 @@ public class GameModel {
     private void slideTiles(GameState state, GameAction action) {
         Cell[] line;
         int scoreIncrement = 0;
-        //Membangun line sesuai arah geser
+        // Membangun line sesuai arah geser
         switch (action) {
             case LEFT:
                 for (int i = 0; i < BOARD_SIZE; i++) {
@@ -374,16 +370,16 @@ public class GameModel {
     private int slideLine(Cell[] line) {
         assert line.length == BOARD_SIZE;
         int score = 0;
-        //Join tile yang sama (tidak harus sebelahan)
+        // Join tile yang sama (tidak harus sebelahan)
         int ptr = 0;
         while (ptr < BOARD_SIZE - 1) {
-            //Cari cell terdepan yang tidak kosong yang masih boleh bergabung
+            // Cari cell terdepan yang tidak kosong yang masih boleh bergabung
             while (ptr < BOARD_SIZE - 1 && line[ptr].value == 0) {
                 ptr++;
             }
             if (ptr < BOARD_SIZE - 1) {
                 int ptr2 = ptr + 1;
-                //Cari cell terdepan setelah ptr yang tidak kosong
+                // Cari cell terdepan setelah ptr yang tidak kosong
                 while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
                     ptr2++;
                 }
@@ -402,16 +398,16 @@ public class GameModel {
             }
         }
 
-        //Shift tile kalau kosong
+        // Shift tile kalau kosong
         ptr = 0;
         while (ptr < BOARD_SIZE - 1) {
-            //Cari cell terdepan yang kosong
+            // Cari cell terdepan yang kosong
             while (ptr < BOARD_SIZE - 1 && line[ptr].value != 0) {
                 ptr++;
             }
             if (ptr < BOARD_SIZE - 1) {
                 int ptr2 = ptr + 1;
-                //Cari cell terdepan setelah ptr yang tidak kosong
+                // Cari cell terdepan setelah ptr yang tidak kosong
                 while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
                     ptr2++;
                 }
