@@ -16,7 +16,7 @@ public class GameModel {
     private int tickLeft;
     private Random rand = new Random();
     public final int BOARD_SIZE = 4;
-    // Batas probabilitan untuk menentukan nilai tile baru
+    // Batas probabilitas untuk menentukan nilai tile baru
     private final double NEW_TILE_PROB_THRES = 0.9;
     // Nilai tile baru yang ditambahkan jika nilai random < threshold
     private final int NEW_TILE_VALUE_PRIMARY = 2;
@@ -31,59 +31,6 @@ public class GameModel {
      */
     public GameModel(int tick) {
         this.tickLeft = tick;
-    }
-
-    /**
-     * Menggerakan board dalam state sesuai aksi dan menghitung skor yang
-     * dihasilkan. Method ini tidak menambahkan tile baru ke papan.
-     *
-     * @param state
-     * @param action
-     */
-    private void slideTiles(GameState state, GameAction action) {
-        Cell[] line;
-        int scoreIncrement = 0;
-        // Membangun line sesuai arah geser
-        switch (action) {
-            case LEFT:
-                for (int i = 0; i < BOARD_SIZE; i++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int j = 0; j < BOARD_SIZE; j++) {
-                        line[j] = state.board[i][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case RIGHT:
-                for (int i = 0; i < BOARD_SIZE; i++) {
-                    line = new Cell[BOARD_SIZE];
-
-                    for (int j = 0, k = BOARD_SIZE - 1; j < BOARD_SIZE; j++, k--) {
-                        line[j] = state.board[i][k];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case UP:
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int i = 0; i < BOARD_SIZE; i++) {
-                        line[i] = state.board[i][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case DOWN:
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int i = 0, k = BOARD_SIZE - 1; i < BOARD_SIZE; i++, k--) {
-                        line[i] = state.board[k][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-        }
-        state.setScore(state.getScore() + scoreIncrement);
     }
 
     /**
@@ -148,6 +95,59 @@ public class GameModel {
 
         return score;
     }
+    
+    /**
+     * Menggerakan board dalam state sesuai aksi dan menghitung skor yang
+     * dihasilkan. Method ini tidak menambahkan tile baru ke papan.
+     *
+     * @param state
+     * @param action
+     */
+    private void slideTiles(GameState state, GameAction action) {
+        Cell[] line;
+        int scoreIncrement = 0;
+        // Membangun line sesuai arah geser
+        switch (action) {
+            case LEFT:
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int j = 0; j < BOARD_SIZE; j++) {
+                        line[j] = state.board[i][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case RIGHT:
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    line = new Cell[BOARD_SIZE];
+
+                    for (int j = 0, k = BOARD_SIZE - 1; j < BOARD_SIZE; j++, k--) {
+                        line[j] = state.board[i][k];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case UP:
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int i = 0; i < BOARD_SIZE; i++) {
+                        line[i] = state.board[i][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case DOWN:
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int i = 0, k = BOARD_SIZE - 1; i < BOARD_SIZE; i++, k--) {
+                        line[i] = state.board[k][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+        }
+        state.setScore(state.getScore() + scoreIncrement);
+    }
 
     /**
      * Menerapkan sebuah aksi pada state tertentu. Aksi mengakibatkan tile-tile
@@ -200,7 +200,8 @@ public class GameModel {
 
     /**
      * Apakah objek model ini masih dapat dipakai untuk applyAction? Model hanya
-     * dapat dipakai jika tick belum habis. *
+     * dapat dipakai jika tick belum habis.*
+     * @return True jika model ini masih boleh dipakai dan false jika sebaliknya.
      */
     public boolean isUsable() {
         return tickLeft > 0;
