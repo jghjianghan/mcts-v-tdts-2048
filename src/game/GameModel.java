@@ -34,6 +34,179 @@ public class GameModel {
     }
 
     /**
+     * Menggerakan board dalam state sesuai aksi dan menghitung skor yang
+     * dihasilkan. Method ini tidak menambahkan tile baru ke papan.
+     *
+     * @param state
+     * @param action
+     */
+    private void slideTiles(GameState state, GameAction action) {
+        Cell[] line;
+        int scoreIncrement = 0;
+        // Membangun line sesuai arah geser
+        switch (action) {
+            case LEFT:
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int j = 0; j < BOARD_SIZE; j++) {
+                        line[j] = state.board[i][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case RIGHT:
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    line = new Cell[BOARD_SIZE];
+
+                    for (int j = 0, k = BOARD_SIZE - 1; j < BOARD_SIZE; j++, k--) {
+                        line[j] = state.board[i][k];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case UP:
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int i = 0; i < BOARD_SIZE; i++) {
+                        line[i] = state.board[i][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+            case DOWN:
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    line = new Cell[BOARD_SIZE];
+                    for (int i = 0, k = BOARD_SIZE - 1; i < BOARD_SIZE; i++, k--) {
+                        line[i] = state.board[k][j];
+                    }
+                    scoreIncrement += slideLine(line);
+                }
+                break;
+        }
+        state.setScore(state.getScore() + scoreIncrement);
+    }
+
+    /**
+     * Menggeser garis papan permainan dari indeks kecil ke arah indeks besar
+     *
+     * @param line Array cell yang membentuk garis papan
+     * @return Skor yang didapatkan dari hasil penggabungan saat digeser
+     */
+    private int slideLine(Cell[] line) {
+        assert line.length == BOARD_SIZE;
+        int score = 0;
+        // Join tile yang sama (tidak harus sebelahan)
+        int ptr = 0;
+        while (ptr < BOARD_SIZE - 1) {
+            // Cari cell terdepan yang tidak kosong yang masih boleh bergabung
+            while (ptr < BOARD_SIZE - 1 && line[ptr].value == 0) {
+                ptr++;
+            }
+            if (ptr < BOARD_SIZE - 1) {
+                int ptr2 = ptr + 1;
+                // Cari cell terdepan setelah ptr yang tidak kosong
+                while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
+                    ptr2++;
+                }
+                if (ptr2 < BOARD_SIZE) {
+                    if (line[ptr].value == line[ptr2].value) {
+                        line[ptr].value += line[ptr2].value;
+                        score += line[ptr].value;
+                        line[ptr2].value = 0;
+                        ptr = ptr2 + 1;
+                    } else {
+                        ptr = ptr2;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // Shift tile kalau kosong
+        ptr = 0;
+        while (ptr < BOARD_SIZE - 1) {
+            // Cari cell terdepan yang kosong
+            while (ptr < BOARD_SIZE - 1 && line[ptr].value != 0) {
+                ptr++;
+            }
+            if (ptr < BOARD_SIZE - 1) {
+                int ptr2 = ptr + 1;
+                // Cari cell terdepan setelah ptr yang tidak kosong
+                while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
+                    ptr2++;
+                }
+                if (ptr2 < BOARD_SIZE) {
+                    line[ptr].value = line[ptr2].value;
+                    line[ptr2].value = 0;
+                    ptr++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return score;
+    }
+
+    /**
+     * Menerapkan sebuah aksi pada state tertentu. Aksi mengakibatkan tile-tile
+     * bergeser atau bergabung, lalu tile baru akan muncul di salah satu tempat
+     * kosong.
+     *
+     * @param state State yang ingin dikenakan aksi
+     * @param action Aksi yang ingin dilakukan
+     * @return State baru kalau berhasil, null kalau gagal (karena aksi tidak
+     * valid atau tick sudah habis)
+     */
+    public GameState applyAction(GameState state, GameAction action) {
+        if (tickLeft > 0 && state.isActionValid(action)) {
+            tickLeft--;
+            GameState copyState = state.copy();
+            slideTiles(copyState, action);
+            List<Cell> emptyCells = copyState.getEmptyCells();
+
+            Cell chosen = emptyCells.get(rand.nextInt(emptyCells.size()));
+            chosen.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
+
+            copyState.evaluateAttributes();
+
+            return copyState;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Mengembalikan sebuah initial state permainan. Permainan diawali dengan 2
+     * tile pada posisi acak (90% bernilai 2, 10% bernilai 4).
+     *
+     * @return Initial state permainan
+     */
+    public GameState generateInitialState() {
+        GameState state = new GameState();
+        List<Cell> cells = state.getEmptyCells();
+
+        Cell cell1 = cells.remove(rand.nextInt(cells.size()));
+        Cell cell2 = cells.remove(rand.nextInt(cells.size()));
+
+        cell1.value = (Math.random() >= 0.9) ? 4 : 2;
+        cell2.value = (Math.random() >= 0.9) ? 4 : 2;
+
+        state.evaluateAttributes();
+
+        return state;
+    }
+
+    /**
+     * Apakah objek model ini masih dapat dipakai untuk applyAction? Model hanya
+     * dapat dipakai jika tick belum habis. *
+     */
+    public boolean isUsable() {
+        return tickLeft > 0;
+    }
+
+    /**
      * Inner class yang merepresentasikan state permainan
      */
     public final class GameState {
@@ -306,178 +479,5 @@ public class GameModel {
             }
             return sb.toString();
         }
-    }
-
-    /**
-     * Menggerakan board dalam state sesuai aksi dan menghitung skor yang
-     * dihasilkan. Method ini tidak menambahkan tile baru ke papan.
-     *
-     * @param state
-     * @param action
-     */
-    private void slideTiles(GameState state, GameAction action) {
-        Cell[] line;
-        int scoreIncrement = 0;
-        // Membangun line sesuai arah geser
-        switch (action) {
-            case LEFT:
-                for (int i = 0; i < BOARD_SIZE; i++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int j = 0; j < BOARD_SIZE; j++) {
-                        line[j] = state.board[i][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case RIGHT:
-                for (int i = 0; i < BOARD_SIZE; i++) {
-                    line = new Cell[BOARD_SIZE];
-
-                    for (int j = 0, k = BOARD_SIZE - 1; j < BOARD_SIZE; j++, k--) {
-                        line[j] = state.board[i][k];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case UP:
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int i = 0; i < BOARD_SIZE; i++) {
-                        line[i] = state.board[i][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-            case DOWN:
-                for (int j = 0; j < BOARD_SIZE; j++) {
-                    line = new Cell[BOARD_SIZE];
-                    for (int i = 0, k = BOARD_SIZE - 1; i < BOARD_SIZE; i++, k--) {
-                        line[i] = state.board[k][j];
-                    }
-                    scoreIncrement += slideLine(line);
-                }
-                break;
-        }
-        state.setScore(state.getScore() + scoreIncrement);
-    }
-
-    /**
-     * Menggeser garis papan permainan dari indeks kecil ke arah indeks besar
-     *
-     * @param line Array cell yang membentuk garis papan
-     * @return Skor yang didapatkan dari hasil penggabungan saat digeser
-     */
-    private int slideLine(Cell[] line) {
-        assert line.length == BOARD_SIZE;
-        int score = 0;
-        // Join tile yang sama (tidak harus sebelahan)
-        int ptr = 0;
-        while (ptr < BOARD_SIZE - 1) {
-            // Cari cell terdepan yang tidak kosong yang masih boleh bergabung
-            while (ptr < BOARD_SIZE - 1 && line[ptr].value == 0) {
-                ptr++;
-            }
-            if (ptr < BOARD_SIZE - 1) {
-                int ptr2 = ptr + 1;
-                // Cari cell terdepan setelah ptr yang tidak kosong
-                while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
-                    ptr2++;
-                }
-                if (ptr2 < BOARD_SIZE) {
-                    if (line[ptr].value == line[ptr2].value) {
-                        line[ptr].value += line[ptr2].value;
-                        score += line[ptr].value;
-                        line[ptr2].value = 0;
-                        ptr = ptr2 + 1;
-                    } else {
-                        ptr = ptr2;
-                    }
-                } else {
-                    break;
-                }
-            }
-        }
-
-        // Shift tile kalau kosong
-        ptr = 0;
-        while (ptr < BOARD_SIZE - 1) {
-            // Cari cell terdepan yang kosong
-            while (ptr < BOARD_SIZE - 1 && line[ptr].value != 0) {
-                ptr++;
-            }
-            if (ptr < BOARD_SIZE - 1) {
-                int ptr2 = ptr + 1;
-                // Cari cell terdepan setelah ptr yang tidak kosong
-                while (ptr2 < BOARD_SIZE && line[ptr2].value == 0) {
-                    ptr2++;
-                }
-                if (ptr2 < BOARD_SIZE) {
-                    line[ptr].value = line[ptr2].value;
-                    line[ptr2].value = 0;
-                    ptr++;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        return score;
-    }
-
-    /**
-     * Menerapkan sebuah aksi pada state tertentu. Aksi mengakibatkan tile-tile
-     * bergeser atau bergabung, lalu tile baru akan muncul di salah satu tempat
-     * kosong.
-     *
-     * @param state State yang ingin dikenakan aksi
-     * @param action Aksi yang ingin dilakukan
-     * @return State baru kalau berhasil, null kalau gagal (karena aksi tidak
-     * valid atau tick sudah habis)
-     */
-    public GameState applyAction(GameState state, GameAction action) {
-        if (tickLeft > 0 && state.isActionValid(action)) {
-            tickLeft--;
-            GameState copyState = state.copy();
-            slideTiles(copyState, action);
-            List<Cell> emptyCells = copyState.getEmptyCells();
-
-            Cell chosen = emptyCells.get(rand.nextInt(emptyCells.size()));
-            chosen.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
-
-            copyState.evaluateAttributes();
-
-            return copyState;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Mengembalikan sebuah initial state permainan. Permainan diawali dengan 2
-     * tile pada posisi acak (90% bernilai 2, 10% bernilai 4).
-     *
-     * @return Initial state permainan
-     */
-    public GameState generateInitialState() {
-        GameState state = new GameState();
-        List<Cell> cells = state.getEmptyCells();
-
-        Cell cell1 = cells.remove(rand.nextInt(cells.size()));
-        Cell cell2 = cells.remove(rand.nextInt(cells.size()));
-
-        cell1.value = (Math.random() >= 0.9) ? 4 : 2;
-        cell2.value = (Math.random() >= 0.9) ? 4 : 2;
-
-        state.evaluateAttributes();
-
-        return state;
-    }
-
-    /**
-     * Apakah objek model ini masih dapat dipakai untuk applyAction? Model hanya
-     * dapat dipakai jika tick belum habis. *
-     */
-    public boolean isUsable() {
-        return tickLeft > 0;
     }
 }
