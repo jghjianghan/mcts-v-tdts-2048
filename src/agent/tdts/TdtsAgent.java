@@ -186,7 +186,7 @@ public class TdtsAgent extends GamePlayingAgent {
             return leaf;
         }
 
-        List<ActionNode> unvisitedActions = new ArrayList();
+        List<ActionNode> unvisitedActions = new ArrayList<>();
         for (GameAction action : GameAction.values()) {
             ActionNode child = leaf.getChildNode(action);
 
