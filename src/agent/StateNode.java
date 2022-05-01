@@ -19,17 +19,25 @@ public abstract class StateNode {
 
     private int visitCount = 0;
 
+    public StateNode(GameState state) {
+        this(state, null);
+    }
+
     public StateNode(GameState state, ActionNode action) {
         this.state = state;
         parent = action;
     }
 
-    public StateNode(GameState state) {
-        this(state, null);
-    }
-
     public GameState getState() {
         return state;
+    }
+    
+    public int getVisitCount() {
+        return visitCount;
+    }
+
+    public void incrementVisitCount() {
+        visitCount++;
     }
 
     /**
@@ -42,33 +50,4 @@ public abstract class StateNode {
     public ActionNode getChildNode(GameAction action) {
         return children[action.id];
     }
-
-    public int getVisitCount() {
-        return visitCount;
-    }
-
-    public void incrementVisitCount() {
-        visitCount++;
-    }
-
-    @Override
-    public int hashCode() {
-        return state.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final StateNode other = (StateNode) obj;
-        return this.state.equals(other.state);
-    }
-
 }
