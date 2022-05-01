@@ -30,6 +30,8 @@ public class TdtsAgent extends GamePlayingAgent {
     //lambda
     private final double ELIGIBILITY_TRACE_DECAY;
 
+    private final Random rand = new Random();
+    
     public TdtsAgent(
             double explorationConstant,
             BestChildPolicy bestChildPolicy,
@@ -94,7 +96,21 @@ public class TdtsAgent extends GamePlayingAgent {
         }
     }
 
-    private final Random rand = new Random();
+    @Override
+    public String getConfigurationString() {
+        return String.format(
+                "Exploration constant: %f%n"
+                + "Reward discount rate (gamma): %f%n"
+                + "Eligibility trace decay rate (lambda): %f%n"
+                + "Best-child policy: %s%n"
+                + "Normalization policy: %s",
+                EXPLORATION_CONSTANT,
+                REWARD_DISCOUNT,
+                ELIGIBILITY_TRACE_DECAY,
+                BEST_CHILD_POLICY,
+                NORMALIZATION_POLICY
+        );
+    }
 
     @Override
     public GameAction selectAction(GameModel.GameState state, GameModel model) {
@@ -283,21 +299,4 @@ public class TdtsAgent extends GamePlayingAgent {
             }
         }
     }
-
-    @Override
-    public String getConfigurationString() {
-        return String.format(
-                "Exploration constant: %f%n"
-                + "Reward discount rate (gamma): %f%n"
-                + "Eligibility trace decay rate (lambda): %f%n"
-                + "Best-child policy: %s%n"
-                + "Normalization policy: %s",
-                EXPLORATION_CONSTANT,
-                REWARD_DISCOUNT,
-                ELIGIBILITY_TRACE_DECAY,
-                BEST_CHILD_POLICY,
-                NORMALIZATION_POLICY
-        );
-    }
-    
 }
