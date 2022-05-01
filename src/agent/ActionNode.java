@@ -35,6 +35,14 @@ public abstract class ActionNode {
         visitCount++;
     }
 
+    public double getLowerBound() {
+        return localLowerBound;
+    }
+
+    public double getUpperBound() {
+        return localUpperBound;
+    }
+
     /**
      * Menerapkan aksi ini untuk mendapatkan node State selanjutnya. Jika state
      * baru pernah dikunjungi, maka method ini akan mereturn salah satu child.
@@ -54,12 +62,4 @@ public abstract class ActionNode {
     public abstract void updateUtility(double result);
 
     public abstract double getUtility();
-
-    public double getLowerBound() {
-        return localLowerBound;
-    }
-
-    public double getUpperBound() {
-        return localUpperBound;
-    }
 }
