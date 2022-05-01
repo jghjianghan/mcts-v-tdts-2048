@@ -54,7 +54,7 @@ public abstract class ActionNode {
     public abstract StateNode simulateAction(GameModel model);
 
     /**
-     * Memperbarui informasi utilitas yang tercapat pada state ini, termasuk
+     * Memperbarui informasi utilitas yang tercatat pada simpul ini, termasuk
      * local bounds-nya.
      *
      * @param result Hasil permainan
