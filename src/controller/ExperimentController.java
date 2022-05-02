@@ -39,7 +39,7 @@ public class ExperimentController {
      * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
      * tidak akan memakai metode normalisasi apapun.
      */
-    public static void MCTSAverage(
+    public static void mctsAverage(
             int iteration,
             int MAX_TICK,
             double EXP_CONST,
@@ -80,7 +80,7 @@ public class ExperimentController {
      * Normalization Policy sebagai teknik normalisasinya. Sebaliknya, agen
      * tidak akan memakai metode normalisasi apapun.
      */
-    public static void TDTSAverage(
+    public static void tdtsAverage(
             int iteration,
             int MAX_TICK,
             double EXP_CONST,
@@ -108,7 +108,7 @@ public class ExperimentController {
         runExperiment(iteration, MAX_TICK, agentBuilder, logger);
     }
 
-    public static void RandomAverage(int iteration) {
+    public static void randomAverage(int iteration) {
         System.out.println("Random Agent is being tested...");
         ExperimentLogger logger = new ExperimentLogger(
                 "random", 
