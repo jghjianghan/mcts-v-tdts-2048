@@ -32,7 +32,7 @@ public class Main {
                 case 1:
                     System.out.print("Number of games: ");
                     int iteration = Integer.parseInt(sc.nextLine().trim());
-                    Experimentor.RandomAverage(iteration);
+                    ExperimentController.RandomAverage(iteration);
                     break;
                 case 2: 
                     System.out.print("Number of games: ");
@@ -61,7 +61,7 @@ public class Main {
                     input = sc.nextLine().trim();
                     boolean isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    Experimentor.MCTSAverage(iteration, maxTick, explorationConst, isRobustChild, isSpaceLocalNorm);
+                    ExperimentController.MCTSAverage(iteration, maxTick, explorationConst, isRobustChild, isSpaceLocalNorm);
                     break;
                     
                 case 3: 
@@ -98,7 +98,7 @@ public class Main {
                     input = sc.nextLine().trim();
                     isSpaceLocalNorm = (input.isEmpty()) ? true : Integer.parseInt(input) == 1;
                     
-                    Experimentor.TDTSAverage(iteration, maxTick, explorationConst, gamma, lambda, isRobustChild, isSpaceLocalNorm);
+                    ExperimentController.TDTSAverage(iteration, maxTick, explorationConst, gamma, lambda, isRobustChild, isSpaceLocalNorm);
                     break;
                     
                 case 0:

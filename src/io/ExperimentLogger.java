@@ -1,6 +1,6 @@
 package io;
 
-import controller.Experimentor;
+import controller.ExperimentController;
 import game.GameAction;
 import game.GameModel.GameState;
 import java.io.File;
@@ -82,7 +82,7 @@ public class ExperimentLogger {
                     ).getBytes("UTF8"),
                     StandardOpenOption.CREATE);
         } catch (IOException ex) {
-            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExperimentController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -128,7 +128,7 @@ public class ExperimentLogger {
                     String.format("%s%n", content).getBytes("UTF8"),
                     StandardOpenOption.APPEND);
         } catch (IOException ex) {
-            Logger.getLogger(Experimentor.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExperimentController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

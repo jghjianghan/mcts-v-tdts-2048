@@ -23,7 +23,7 @@ import static util.StatHelper.*;
  *
  * @author Jiang Han
  */
-public class Experimentor {
+public class ExperimentController {
 
     /**
      * Melakukan beberapa kali pengujian untuk agen MCTS dengan algoritma UCT,
