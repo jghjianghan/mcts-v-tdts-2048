@@ -40,9 +40,6 @@ public final class GraphicalUI extends JPanel implements ActionListener, KeyList
     public static final int BOARD_HEIGHT = 500;
     private static final int MARGIN = 10;
     private static final int TILE_LEN = (BOARD_WIDTH - 5 * MARGIN) / 4;
-
-    //Stores whether the tile of a particular value has been seen or not
-    private final boolean[] hasSeen;
     
     private Timer timer;
 
@@ -86,12 +83,6 @@ public final class GraphicalUI extends JPanel implements ActionListener, KeyList
     private boolean isGameOver;
 
     public GraphicalUI() {
-        hasSeen = new boolean[20];
-        //Assumes that empty tile, 2, 4, and 8 tile has appeared before
-        for (int i = 0; i <= 3; i++) {
-            hasSeen[i] = true;
-        }
-
         //Loads the info icon image
         URL infoIconUrl = getClass().getClassLoader().getResource("images/information-icon.png");
         if (infoIconUrl == null) {
