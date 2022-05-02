@@ -13,10 +13,10 @@ import java.awt.geom.RoundRectangle2D;
  */
 public class Tile {
     int xPos, yPos, size, value;
-    private final Color textColor = new Color(5, 2, 48);
+    private final Color TEXT_COLOR = new Color(5, 2, 48);
     Color color;
     double scale;
-    private final int radius = 10;
+    private final int RADIUS = 10;
     private final int FONT_SIZE = 28;
     
     public Tile(int xPos, int yPos, Color color, int size, int value) {
@@ -40,7 +40,7 @@ public class Tile {
         Color prevColor = g2d.getColor();
         g2d.setColor(color);
         
-        RoundRectangle2D.Double tileShape = new RoundRectangle2D.Double(xPos, yPos, size, size, radius, radius);
+        RoundRectangle2D.Double tileShape = new RoundRectangle2D.Double(xPos, yPos, size, size, RADIUS, RADIUS);
         
         //scale tile
         AffineTransform scaleTile = new AffineTransform();
@@ -53,7 +53,7 @@ public class Tile {
         g2d.fill(scaleTile.createTransformedShape(tileShape));
         
         if (value != 0){            
-            g2d.setColor(textColor);
+            g2d.setColor(TEXT_COLOR);
             Font font = new Font("SansSerif", Font.BOLD, (int)Math.round(scale * FONT_SIZE));
             g2d.setFont(font);
             FontMetrics fontMetric = g2d.getFontMetrics();
