@@ -30,7 +30,7 @@ import game.GameModel;
  * The graphical user interface for this application
  * @author Jiang Han
  */
-public final class GraphicalUI extends JPanel implements UI, ActionListener, KeyListener, MouseListener {
+public final class GraphicalUI extends JPanel implements ActionListener, KeyListener, MouseListener {
 
     public static final int SCREEN_WIDTH = 500;
     public static final int SCREEN_HEIGHT = 600;
@@ -112,7 +112,6 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
      * Queues several list of tiles to be drawn into tileListQueue.
      * @param state The game state
      */
-    @Override
     public void displayBoard(GameModel.GameState state) {
         int newScore = state.getScore();
         if (newScore != score) {
@@ -214,13 +213,11 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
         }
     }
     
-    @Override
     public void showGameOver() {
         isGameOver = true;
     }
 
     //Starts the game
-    @Override
     public void start(GameModel.GameState state, GameController controller) {
         addKeyListener(this);
         addMouseListener(this);
@@ -232,7 +229,6 @@ public final class GraphicalUI extends JPanel implements UI, ActionListener, Key
     }
 
     //Restarts the game
-    @Override
     public void restart(GameModel.GameState initialState) {
         isGameOver = false;
         displayBoard(initialState);

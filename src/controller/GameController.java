@@ -4,7 +4,7 @@ package controller;
 import game.GameModel;
 import game.GameAction;
 import game.GameModel.GameState;
-import io.UI;
+import io.GraphicalUI;
 
 /**
  * Controls the flow of the application.
@@ -12,11 +12,11 @@ import io.UI;
  * @author Jiang Han
  */
 public class GameController {
-    private final UI ui;
+    private final GraphicalUI ui;
     private GameModel.GameState state;
     private GameModel forwardModel;
     
-    public GameController(UI ui){
+    public GameController(GraphicalUI ui){
         this.ui = ui;
         forwardModel = new GameModel(Integer.MAX_VALUE);
         state = forwardModel.generateInitialState();
