@@ -34,7 +34,7 @@ public class GameModel {
     }
 
     /**
-     * Menggeser garis papan permainan dari indeks kecil ke arah indeks besar
+     * Menggeser garis papan permainan dari indeks besar ke arah indeks kecil
      *
      * @param line Array cell yang membentuk garis papan
      * @return Skor yang didapatkan dari hasil penggabungan saat digeser
