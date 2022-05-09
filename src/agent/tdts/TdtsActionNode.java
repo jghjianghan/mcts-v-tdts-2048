@@ -14,9 +14,19 @@ import game.GameModel.GameState;
 class TdtsActionNode extends ActionNode {
 
     private double utility = 0; //insert V_init here
-
-    TdtsActionNode(GameAction action, StateNode parent) {
+    private final double initValue;
+    
+    TdtsActionNode(GameAction action, StateNode parent, double utility) {
         super(action, parent);
+        this.initValue = this.utility = utility;
+        localLowerBound = Math.min(localLowerBound, utility);
+        localUpperBound = Math.max(localUpperBound, utility);
+
+        ActionNode parentAction = parent.parent;
+        if (parentAction != null) {
+            parentAction.localLowerBound = Math.min(parentAction.localLowerBound, utility);
+            parentAction.localUpperBound = Math.max(parentAction.localUpperBound, utility);
+        }
     }
 
     @Override
@@ -27,7 +37,7 @@ class TdtsActionNode extends ActionNode {
         
         localLowerBound = Math.min(localLowerBound, utility);
         localUpperBound = Math.max(localUpperBound, utility);
-//        
+
         ActionNode parentAction = parent.parent;
         if (parentAction != null) {
             parentAction.localLowerBound = Math.min(parentAction.localLowerBound, utility);
@@ -47,7 +57,7 @@ class TdtsActionNode extends ActionNode {
         if (children.containsKey(nextState)) {
             return (StateNode) children.get(nextState);
         } else {
-            TdtsStateNode newNode = new TdtsStateNode(nextState, this);
+            TdtsStateNode newNode = new TdtsStateNode(nextState, this, initValue);
             children.put(nextState, newNode);
             return newNode;
         }

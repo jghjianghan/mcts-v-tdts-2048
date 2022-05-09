@@ -88,6 +88,26 @@ public class ExperimentController {
             double lambda,
             boolean isRobustChild,
             boolean isSpaceLocalNorm) {
+        tdtsAverage(
+                iteration,
+                MAX_TICK,
+                EXP_CONST,
+                gamma,
+                lambda,
+                isRobustChild,
+                isSpaceLocalNorm,
+                0);
+    }
+    
+    public static void tdtsAverage(
+            int iteration,
+            int MAX_TICK,
+            double EXP_CONST,
+            double gamma,
+            double lambda,
+            boolean isRobustChild,
+            boolean isSpaceLocalNorm,
+            double vInit) {
         System.out.println("Sarsa UCT(lambda) Agent is being tested...");
         
         Supplier<GamePlayingAgent> agentBuilder = () -> new TdtsAgent.Builder()
@@ -102,6 +122,7 @@ public class ExperimentController {
                 "Average score of Sarsa-UCT(lambda) GPA",
                 "Number of games: " + iteration,
                 "Number of time steps: " + MAX_TICK,
+                "Initial Value: " + vInit,
                 agentBuilder.get().getConfigurationString()
         );
 

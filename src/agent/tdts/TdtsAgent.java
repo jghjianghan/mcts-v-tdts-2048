@@ -29,6 +29,9 @@ public class TdtsAgent extends GamePlayingAgent {
     private final double REWARD_DISCOUNT;
     //lambda
     private final double ELIGIBILITY_TRACE_DECAY;
+    
+    //Initial value for new nodes (as well as v_playout)
+    private final double V_INIT;
 
     private final Random rand = new Random();
     
@@ -37,12 +40,14 @@ public class TdtsAgent extends GamePlayingAgent {
             BestChildPolicy bestChildPolicy,
             NormalizationPolicy NORMALIZATION_POLICY,
             double rewardDiscount,
-            double eligibilityTraceDecay) {
+            double eligibilityTraceDecay,
+            double vInit) {
         this.EXPLORATION_CONSTANT = explorationConstant;
         this.BEST_CHILD_POLICY = bestChildPolicy;
         this.NORMALIZATION_POLICY = NORMALIZATION_POLICY;
         this.REWARD_DISCOUNT = rewardDiscount;
         this.ELIGIBILITY_TRACE_DECAY = eligibilityTraceDecay;
+        this.V_INIT = vInit;
     }
 
     public static class Builder {
@@ -50,7 +55,7 @@ public class TdtsAgent extends GamePlayingAgent {
         private double explorationConstant;
         private BestChildPolicy bestChildPolicy;
         private NormalizationPolicy normalizationPolicy;
-        private double gamma, lambda;
+        private double gamma, lambda, vInit;
 
         public Builder() {
             //set default values
@@ -58,6 +63,7 @@ public class TdtsAgent extends GamePlayingAgent {
             bestChildPolicy = new MostVisitPolicy();
             normalizationPolicy = new SpaceLocalNormalization();
             lambda = gamma = 1;
+            vInit = 0;
         }
 
         public Builder setExplorationConstant(double explorationConstant) {
@@ -85,13 +91,19 @@ public class TdtsAgent extends GamePlayingAgent {
             return this;
         }
 
+        public Builder setVInit(double vInit) {
+            this.vInit = vInit;
+            return this;
+        }
+
         public TdtsAgent build() {
             return new TdtsAgent(
                     explorationConstant,
                     bestChildPolicy,
                     normalizationPolicy,
                     gamma,
-                    lambda
+                    lambda,
+                    vInit
             );
         }
     }
@@ -116,7 +128,7 @@ public class TdtsAgent extends GamePlayingAgent {
     public GameAction selectAction(GameModel.GameState state, GameModel model) {
         NORMALIZATION_POLICY.resetNormalizationBound();
 
-        StateNode root = new TdtsStateNode(state, null);
+        StateNode root = new TdtsStateNode(state, null, V_INIT);
         while (model.isUsable()) {
             StateNode leaf = select(root, model);
             StateNode child = expand(leaf, model);
@@ -266,7 +278,7 @@ public class TdtsAgent extends GamePlayingAgent {
             GameResult currentResult = simulatedTrajectory.pop();
             double reward = nextScore - currentResult.score; //harusnya dikurang skor 1 state sebelumnya
 
-            double currentValue = 0; //Use V_playout here is needed
+            double currentValue = V_INIT; //Use V_playout here is needed
             double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
             cumulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cumulativeDelta + delta;
 

@@ -14,12 +14,12 @@ import java.util.List;
  */
 class TdtsStateNode extends StateNode {
 
-    TdtsStateNode(GameState state, ActionNode action) {
+    TdtsStateNode(GameState state, ActionNode action, double childInitValue) {
         super(state, action);
         children = new ActionNode[GameAction.values().length];
         List<GameAction> validActions = state.getAvailableActions();
         for (GameAction validAction : validActions) {
-            children[validAction.id] = new TdtsActionNode(validAction, this);
+            children[validAction.id] = new TdtsActionNode(validAction, this, childInitValue);
         }
     }
 }
