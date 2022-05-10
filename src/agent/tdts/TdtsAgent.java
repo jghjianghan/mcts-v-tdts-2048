@@ -165,7 +165,7 @@ public class TdtsAgent extends GamePlayingAgent {
                 int nChild = child.getVisitCount();
                 //menghitung nilai UCB1
                 double exploitationComp = NORMALIZATION_POLICY.getNormalizedUtility(child);
-                assert exploitationComp <= 1.0;
+//                assert exploitationComp <= 1.0;
                 double explorationComp = EXPLORATION_CONSTANT
                         * Math.sqrt(Math.log(nCurr) / nChild);
                 double ucb1 = exploitationComp + explorationComp;

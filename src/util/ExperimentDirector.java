@@ -39,7 +39,6 @@ public class ExperimentDirector {
             }
         }
       
-      
         try {
             HttpHelper.pingMe();
         } catch (IOException ex) {
