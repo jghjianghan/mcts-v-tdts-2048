@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class ExperimentDirector {
     public static void main(String[] args) {
-        testVPlayoutValuesPatch();
+        testNormMethods();
     }
     private static void testNormMethods(){
         System.out.println(LocalDateTime.now().format(DateTimeFormatter
