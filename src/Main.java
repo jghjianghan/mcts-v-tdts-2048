@@ -124,7 +124,7 @@ public class Main {
         URL logoUrl = Main.class.getClassLoader().getResource("images/2048_logo.png");
         ImageIcon imgLogo = new ImageIcon(logoUrl);
         f.setIconImage(imgLogo.getImage());
-        f.setTitle("Stunning 2048 - Jiang Han (6181801034)");
+        f.setTitle("2048 by Gabriele Cirulli - Recreated by Jiang Han (6181801034)");
         
         f.pack();
         f.setResizable(false);
