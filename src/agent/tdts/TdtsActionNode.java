@@ -21,13 +21,12 @@ class TdtsActionNode extends ActionNode {
 
     @Override
     public void updateUtility(double result) {
-        //TODO
         double updateStepSize = 1.0 / this.getVisitCount();
         utility = utility + updateStepSize * result;
         
         localLowerBound = Math.min(localLowerBound, utility);
         localUpperBound = Math.max(localUpperBound, utility);
-//        
+
         ActionNode parentAction = parent.parent;
         if (parentAction != null) {
             parentAction.localLowerBound = Math.min(parentAction.localLowerBound, utility);
