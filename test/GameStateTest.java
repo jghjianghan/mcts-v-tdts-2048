@@ -11,6 +11,7 @@ import org.junit.Assert;
  */
 public class GameStateTest {
 
+    //ga diinclude di dokumen
     @Test
     public void testEquals() {
         int board[][];
@@ -27,11 +28,7 @@ public class GameStateTest {
         Assert.assertTrue(state.equals(state2));   
     }
     
-    @Test
-    public void testSlideLine(){
-        
-    }
-    
+    //ga diinclude di dokumen
     @Test
     public void testIsActionValid(){
         int board[][];
@@ -106,5 +103,14 @@ public class GameStateTest {
         
         state = model.new GameState(board);
         Assert.assertEquals(64, state.getLargestTile());
+        
+        board = new int[][]{
+            {2, 4, 4096, 512},
+            {1024, 2048, 16, 2048},
+            {4, 4096, 8, 2},
+            {512, 0, 0, 2},};
+        
+        state = model.new GameState(board);
+        Assert.assertEquals(4096, state.getLargestTile());
     }
 }
