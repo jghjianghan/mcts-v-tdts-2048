@@ -317,6 +317,10 @@ public class TdtsAgent extends GamePlayingAgent {
     }
     
     public static void main(String[] args) {
+        testPropagate();
+    }
+    
+    private static void testPropagate() {
         //Test back-propagation and TD-Backup
         TdtsAgent agent = new TdtsAgent.Builder().build();
         agent.NORMALIZATION_POLICY.updateNormalizationBound(0);
@@ -432,9 +436,9 @@ public class TdtsAgent extends GamePlayingAgent {
             gUpper.setAccessible(true);
             assert ((double)gLower.get(agent.NORMALIZATION_POLICY)) == (-164);
             assert ((double)gUpper.get(agent.NORMALIZATION_POLICY)) == (228);
+            System.out.println("Clear");
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(TdtsAgent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Clear");
     }
 }
