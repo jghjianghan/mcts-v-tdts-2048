@@ -31,7 +31,7 @@ public class TdtsAgent extends GamePlayingAgent {
     private final double ELIGIBILITY_TRACE_DECAY;
 
     private final Random rand = new Random();
-    
+
     public TdtsAgent(
             double explorationConstant,
             BestChildPolicy bestChildPolicy,
@@ -283,20 +283,52 @@ public class TdtsAgent extends GamePlayingAgent {
                 break;
             } else {
                 leaf.parent.incrementVisitCount();
-                
+
                 double currentScore = leaf.parent.parent.state.getScore();
                 double reward = nextScore - currentScore;
                 double currentValue = leaf.parent.getUtility();
                 double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
                 cumulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cumulativeDelta + delta;
-                
+
                 leaf.parent.updateUtility(cumulativeDelta);
                 NORMALIZATION_POLICY.updateNormalizationBound(cumulativeDelta);
-                
+
                 nextScore = currentScore;
                 nextValue = currentValue;
                 leaf = leaf.parent.parent;
             }
         }
+    }
+
+    public static void main(String[] args) {
+        showSimulateResult();
+    }
+
+    private static void showSimulateResult() {
+        TdtsAgent agent = new TdtsAgent.Builder().build();
+        GameModel model = new GameModel(Integer.MAX_VALUE);
+
+        TdtsStateNode root = new TdtsStateNode(model.new GameState(new int[][]{
+            {2, 32, 0, 0},
+            {2, 4, 0, 0},
+            {32, 64, 16, 4},
+            {4, 16, 32, 8}
+        }, 792), null);
+
+        TdtsActionNode rootUp = (TdtsActionNode) root.getChildNode(GameAction.UP);
+
+        TdtsStateNode startingNode = new TdtsStateNode(model.new GameState(new int[][]{
+            {4, 32, 16, 4},
+            {32, 4, 32, 8},
+            {4, 64, 0, 0},
+            {0, 16, 2, 0}
+        }, 796), rootUp);;
+
+        Stack<GameResult> trajectory = agent.simulate(startingNode, model);
+
+        trajectory.forEach(result -> {
+            System.out.println("Preceding Action: " + result.precedingAction);
+            System.out.println(result.state);
+        });
     }
 }
