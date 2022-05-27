@@ -17,9 +17,121 @@ import java.util.logging.Logger;
 public class ExperimentDirector {
 
     public static void main(String[] args) {
-        testExplorationConstantTdtsPatch();
+        testGammaTdts();
     }
 
+    private static void testGammaTdtsPart1() {
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss_SSS")));
+
+        double[] gamma = {0.5, 0.6, 0.7, 0.8};
+
+        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
+
+        int numOfGames = 50;
+        double expConst = 2.25 * Math.sqrt(2);
+        double lambda = 1;
+        boolean isSpaceLocal = true;
+        boolean isRobustChild = false;
+
+        for(int i = 0; i<maxIters.length; i++){
+            for (int j = 0; j < gamma.length; j++) {
+                //MCTS
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+            }
+        }
+        
+        try {
+            HttpHelper.pingMe();
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void testGammaTdtsPart2() {
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss_SSS")));
+
+        double[] gamma = {0.95, 0.99, 0.999, 1};
+
+        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
+
+        int numOfGames = 50;
+        double expConst = 2.25 * Math.sqrt(2);
+        double lambda = 1;
+        boolean isSpaceLocal = true;
+        boolean isRobustChild = false;
+
+        for(int i = 0; i<maxIters.length; i++){
+            for (int j = 0; j < gamma.length; j++) {
+                //MCTS
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+            }
+        }
+        
+        try {
+            HttpHelper.pingMe();
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void testGammaTdts() {
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss_SSS")));
+
+        double[] gamma = {0.5, 0.6, 0.7, 0.8, 0.95, 0.99, 0.999, 1};
+
+        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
+
+        int numOfGames = 50;
+        double expConst = 2.25 * Math.sqrt(2);
+        double lambda = 1;
+        boolean isSpaceLocal = true;
+        boolean isRobustChild = false;
+
+        for(int i = 0; i<maxIters.length; i++){
+            for (int j = 0; j < gamma.length; j++) {
+                //MCTS
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+            }
+        }
+        
+        try {
+            HttpHelper.pingMe();
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private static void testLambdaTdts() {
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter
+                .ofPattern("yyyyMMdd_HHmmss_SSS")));
+
+        double[] lambda = {0, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 0.99, 0.999, 1};
+
+        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
+
+        int numOfGames = 50;
+        double expConst = 2.25 * Math.sqrt(2);
+        double gamma = 1; //TODO
+        boolean isSpaceLocal = true;
+        boolean isRobustChild = false;
+
+        for(int i = 0; i<maxIters.length; i++){
+            for (int j = 0; j < lambda.length; j++) {
+                //MCTS
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma, lambda[i], isRobustChild, isSpaceLocal);
+            }
+        }
+        
+        try {
+            HttpHelper.pingMe();
+        } catch (IOException ex) {
+            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private static void testExplorationConstantMcts() {
         System.out.println(LocalDateTime.now().format(DateTimeFormatter
                 .ofPattern("yyyyMMdd_HHmmss_SSS")));
@@ -35,40 +147,14 @@ public class ExperimentDirector {
             0.9 * Math.sqrt(2),
             Math.sqrt(2),
             1.1 * Math.sqrt(2),
-            1.2 * Math.sqrt(2)
-        };
-        //[0.48, 0.54, 0.6, 0.66, 0.72, 1.13, 1.27, 1.41, 1.55, 1.69]
-
-        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
-
-        int numOfGames = 50;
-        boolean isSpaceLocal = true;
-        boolean isRobustChild = false;
-
-        for(int i = 0; i<maxIters.length; i++){
-            for (int j = 0; j < explorationConstant.length; j++) {
-                //MCTS
-                ExperimentController.mctsAverage(numOfGames, maxIters[i], explorationConstant[j], isRobustChild, isSpaceLocal);
-            }
-        }
-        
-        try {
-            HttpHelper.pingMe();
-        } catch (IOException ex) {
-            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private static void testExplorationConstantMctsPatch() {
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter
-                .ofPattern("yyyyMMdd_HHmmss_SSS")));
-
-        double[] explorationConstant = {
+            1.2 * Math.sqrt(2),
+            
             1.5 * Math.sqrt(2),
             1.75 * Math.sqrt(2),
             2 * Math.sqrt(2),
             2.25 * Math.sqrt(2),
         };
+        //[0.48, 0.54, 0.6, 0.66, 0.72, 1.13, 1.27, 1.41, 1.55, 1.69]
 
         int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
 
@@ -105,42 +191,14 @@ public class ExperimentDirector {
             0.9 * Math.sqrt(2),
             Math.sqrt(2),
             1.1 * Math.sqrt(2),
-            1.2 * Math.sqrt(2)
-        };
-        //[0.48, 0.54, 0.6, 0.66, 0.72, 1.13, 1.27, 1.41, 1.55, 1.69]
-
-        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
-
-        int numOfGames = 50;
-        boolean isSpaceLocal = true;
-        boolean isRobustChild = false;
-
-        double gamma = 1, lambda = 1;
-
-        for(int i = 0; i<maxIters.length; i++){
-            for (int j = 0; j < explorationConstant.length; j++) {
-                //TDTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], explorationConstant[j], gamma, lambda, isRobustChild, isSpaceLocal);
-            }
-        }
-        
-        try {
-            HttpHelper.pingMe();
-        } catch (IOException ex) {
-            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private static void testExplorationConstantTdtsPatch() {
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter
-                .ofPattern("yyyyMMdd_HHmmss_SSS")));
-
-        double[] explorationConstant = {
+            1.2 * Math.sqrt(2),
+            
             1.5 * Math.sqrt(2),
             1.75 * Math.sqrt(2),
             2 * Math.sqrt(2),
             2.25 * Math.sqrt(2),
         };
+        //[0.48, 0.54, 0.6, 0.66, 0.72, 1.13, 1.27, 1.41, 1.55, 1.69]
 
         int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
 
