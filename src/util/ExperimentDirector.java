@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class ExperimentDirector {
 
     public static void main(String[] args) {
-        testGammaTdts();
+        testGammaTdtsPart2();
     }
 
     private static void testGammaTdtsPart1() {
@@ -37,7 +37,7 @@ public class ExperimentDirector {
         for(int i = 0; i<maxIters.length; i++){
             for (int j = 0; j < gamma.length; j++) {
                 //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
             }
         }
         
@@ -65,7 +65,7 @@ public class ExperimentDirector {
         for(int i = 0; i<maxIters.length; i++){
             for (int j = 0; j < gamma.length; j++) {
                 //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
             }
         }
         
@@ -92,8 +92,7 @@ public class ExperimentDirector {
 
         for(int i = 0; i<maxIters.length; i++){
             for (int j = 0; j < gamma.length; j++) {
-                //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[i], lambda, isRobustChild, isSpaceLocal);
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
             }
         }
         
@@ -121,7 +120,7 @@ public class ExperimentDirector {
         for(int i = 0; i<maxIters.length; i++){
             for (int j = 0; j < lambda.length; j++) {
                 //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma, lambda[i], isRobustChild, isSpaceLocal);
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma, lambda[j], isRobustChild, isSpaceLocal);
             }
         }
         
