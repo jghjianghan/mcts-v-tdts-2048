@@ -7,7 +7,7 @@ import game.GameModel.GameState;
 import java.util.List;
 
 /**
- * Node pohon MCTS yang merepresentasikan state. Semua action dari state ini
+ * Node pohon TDTS yang merepresentasikan state. Semua action dari state ini
  * otomatis diexpand.
  *
  * @author Jiang Han

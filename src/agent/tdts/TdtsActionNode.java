@@ -7,7 +7,7 @@ import game.GameModel;
 import game.GameModel.GameState;
 
 /**
- * Node pohon MCTS yang merepresentasikan aksi pada state tertentu.
+ * Node pohon TDTS yang merepresentasikan aksi pada state tertentu.
  *
  * @author Jiang Han
  */
