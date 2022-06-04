@@ -8,23 +8,26 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Memilih action node dengan jumlah visit terbanyak. Kalau ada beberapa yang sama, pakai random tie breaking
+ * Memilih action node dengan jumlah visit terbanyak. Kalau ada beberapa yang
+ * sama, dilakukan random tie breaking.
+ *
  * @author Jiang Han
  */
 public class MostVisitPolicy implements BestChildPolicy {
+
     Random rand = new Random();
-    
+
     @Override
     public ActionNode selectBestChild(StateNode root) {
         List<ActionNode> bestActionList = new ArrayList<>();
         int maxVisit = -1;
-        for(GameAction action : root.state.getAvailableActions()){
+        for (GameAction action : root.state.getAvailableActions()) {
             ActionNode childAction = root.getChildNode(action);
-            if (childAction.getVisitCount() > maxVisit){
+            if (childAction.getVisitCount() > maxVisit) {
                 maxVisit = childAction.getVisitCount();
                 bestActionList.clear();
                 bestActionList.add(childAction);
-            } else if (childAction.getVisitCount() == maxVisit){
+            } else if (childAction.getVisitCount() == maxVisit) {
                 bestActionList.add(childAction);
             }
         }
@@ -34,5 +37,5 @@ public class MostVisitPolicy implements BestChildPolicy {
     @Override
     public String toString() {
         return "Robust Child (most visit)";
-    }    
+    }
 }
