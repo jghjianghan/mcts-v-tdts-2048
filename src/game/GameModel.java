@@ -7,13 +7,20 @@ import java.util.stream.Collectors;
 
 /**
  * Forward model dari permainan 2048. Mensimulasikan mekanisme permainan dan
- * perhitungan skor Pemakaian objek dari class ini dibatasi oleh nilai tick
+ * perhitungan skor. Pemakaian objek dari class ini dibatasi oleh anggaran
+ * komputasi tertentu. Definisi anggaran komputasi adalah jumlah langkah waktu.
+ * Istilah 'tick' dipakai untuk mengacu pada 'langkah waktu'.
  *
  * @author Jiang Han
  */
 public class GameModel {
 
+    /**
+     * Berapa kali lagi objek ini boleh dipakai untuk mensimulasikan aksi
+     * (anggaran komputasi)
+     */
     private int tickLeft;
+
     private Random rand = new Random();
     public final int BOARD_SIZE = 4;
     // Batas probabilitas untuk menentukan nilai tile baru
@@ -25,7 +32,7 @@ public class GameModel {
 
     /**
      * Membuat sebuah forward model baru untuk permainan 2048 yang dapat dipakai
-     * oleh GPA dengan jumlah pemakaian yang dibatasi oleh tick. *
+     * oleh GPA dengan jumlah pemakaian yang dibatasi oleh tick.
      *
      * @param tick Batas jumlah pemakaian objek (pemanggilan applyMove())
      */
@@ -95,7 +102,7 @@ public class GameModel {
 
         return score;
     }
-    
+
     /**
      * Menggerakan board dalam state sesuai aksi dan menghitung skor yang
      * dihasilkan. Method ini tidak menambahkan tile baru ke papan.
@@ -200,8 +207,11 @@ public class GameModel {
 
     /**
      * Apakah objek model ini masih dapat dipakai untuk applyAction? Model hanya
-     * dapat dipakai jika tick belum habis.*
-     * @return True jika model ini masih boleh dipakai dan false jika sebaliknya.
+     * dapat dipakai jika tick belum habis.
+     *
+     *
+     * @return True jika model ini masih boleh dipakai dan false jika
+     * sebaliknya.
      */
     public boolean isUsable() {
         return tickLeft > 0;
@@ -272,7 +282,7 @@ public class GameModel {
         /**
          * Memeriksa apakah suatu aksi valid untuk dilakukan pada state ini.
          *
-         * @param action Aksi yang ingin dilakukan
+         * @param action Aksi yang ingin diperiksa
          * @return True jika aksi valid dan false jika sebaliknya
          */
         public boolean isActionValid(GameAction action) {
@@ -314,7 +324,7 @@ public class GameModel {
 
         /**
          * Membuat salinan dari state ini yang sepenuhnya terpisah (tanpa common
-         * reference)
+         * reference/deep copy)
          *
          * @return Salisan dari state ini
          */

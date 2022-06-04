@@ -2,7 +2,7 @@ package game;
 
 /**
  * Enumerasi dari semua aksi permainan. Permainan 2048 hanya hemiliki paling
- * banyak 4 aksi yang valid. Setiap aksi diberi id supaya dapat dipakah sebagai
+ * banyak 4 aksi yang valid. Setiap aksi diberi id supaya dapat dipakai sebagai
  * penentu nomor dalam array.
  *
  * @author Jiang Han
