@@ -17,55 +17,27 @@ import java.util.logging.Logger;
 public class ExperimentDirector {
 
     public static void main(String[] args) {
-        testGammaTdtsPart2();
-    }
-
-    private static void testGammaTdtsPart1() {
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter
-                .ofPattern("yyyyMMdd_HHmmss_SSS")));
-
-        double[] gamma = {0.5, 0.6, 0.7, 0.8};
-
-        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
-
-        int numOfGames = 50;
-        double expConst = 2.25 * Math.sqrt(2);
-        double lambda = 1;
-        boolean isSpaceLocal = true;
-        boolean isRobustChild = false;
-
-        for(int i = 0; i<maxIters.length; i++){
-            for (int j = 0; j < gamma.length; j++) {
-                //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
-            }
-        }
-        
-        try {
-            HttpHelper.pingMe();
-        } catch (IOException ex) {
-            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        testLambdaTdts(new double[] {0, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 0.99, 0.999, 1});
+//        testLambdaTdts(new double[] {0, 0.1, 0.2, 0.4, 0.6, 0.8});
+        testLambdaTdts(new double[] {0.9, 0.95, 0.99, 0.999, 1});
     }
     
-    private static void testGammaTdtsPart2() {
+    private static void testLambdaTdts(double[] lambda) {
         System.out.println(LocalDateTime.now().format(DateTimeFormatter
                 .ofPattern("yyyyMMdd_HHmmss_SSS")));
-
-        double[] gamma = {0.95, 0.99, 0.999, 1};
 
         int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
 
         int numOfGames = 50;
         double expConst = 2.25 * Math.sqrt(2);
-        double lambda = 1;
+        double gamma = 0.99;
         boolean isSpaceLocal = true;
         boolean isRobustChild = false;
 
         for(int i = 0; i<maxIters.length; i++){
-            for (int j = 0; j < gamma.length; j++) {
+            for (int j = 0; j < lambda.length; j++) {
                 //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
+                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma, lambda[j], isRobustChild, isSpaceLocal);
             }
         }
         
@@ -80,7 +52,7 @@ public class ExperimentDirector {
         System.out.println(LocalDateTime.now().format(DateTimeFormatter
                 .ofPattern("yyyyMMdd_HHmmss_SSS")));
 
-        double[] gamma = {0.5, 0.6, 0.7, 0.8, 0.95, 0.99, 0.999, 1};
+        double[] gamma = {0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.999, 1};
 
         int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
 
@@ -93,34 +65,6 @@ public class ExperimentDirector {
         for(int i = 0; i<maxIters.length; i++){
             for (int j = 0; j < gamma.length; j++) {
                 ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma[j], lambda, isRobustChild, isSpaceLocal);
-            }
-        }
-        
-        try {
-            HttpHelper.pingMe();
-        } catch (IOException ex) {
-            Logger.getLogger(ExperimentDirector.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private static void testLambdaTdts() {
-        System.out.println(LocalDateTime.now().format(DateTimeFormatter
-                .ofPattern("yyyyMMdd_HHmmss_SSS")));
-
-        double[] lambda = {0, 0.1, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 0.99, 0.999, 1};
-
-        int[] maxIters = {100, 500, 1000, 2500, 5000, 7500, 10000, 12500, 15000};
-
-        int numOfGames = 50;
-        double expConst = 2.25 * Math.sqrt(2);
-        double gamma = 1; //TODO
-        boolean isSpaceLocal = true;
-        boolean isRobustChild = false;
-
-        for(int i = 0; i<maxIters.length; i++){
-            for (int j = 0; j < lambda.length; j++) {
-                //MCTS
-                ExperimentController.tdtsAverage(numOfGames, maxIters[i], expConst, gamma, lambda[j], isRobustChild, isSpaceLocal);
             }
         }
         
