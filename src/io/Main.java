@@ -1,3 +1,4 @@
+package io;
 
 import controller.*;
 import java.awt.Dimension;
@@ -113,6 +114,9 @@ public class Main {
         }
     }
     
+    /**
+     * Membangun window sebagai GUI dari permainan 2048
+     */
     private static void startGame(){
         JFrame f = new JFrame();
         GraphicalUI panel = new GraphicalUI();
