@@ -11,6 +11,12 @@ import agent.ActionNode;
  */
 public interface NormalizationPolicy {
 
+    /**
+     * Menghitung nilai normalisasi utilitas suatu simpul aksi.
+     *
+     * @param node
+     * @return
+     */
     public double getNormalizedUtility(ActionNode node);
 
     /**
