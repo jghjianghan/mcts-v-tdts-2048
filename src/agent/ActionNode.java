@@ -44,12 +44,13 @@ public abstract class ActionNode {
     }
 
     /**
-     * Menerapkan aksi ini untuk mendapatkan node State selanjutnya. Jika state
-     * baru pernah dikunjungi, maka method ini akan mereturn salah satu child.
-     * Kalau belum, StateNode baru akan dibuatkan
+     * Menerapkan aksi ini untuk mendapatkan node state selanjutnya. Jika state
+     * yang dihasilkan sudah pernah dikunjungi sebelumnya, maka method ini akan
+     * mereturn salah satu child. Kalau belum, StateNode baru akan dibuatkan.
      *
      * @param model
-     * @return Node yang merepresentasikan state
+     * @return Node yang merepresentasikan state yang dikunjungi jika aksi ini
+     * dilakukan
      */
     public abstract StateNode simulateAction(GameModel model);
 
@@ -57,7 +58,7 @@ public abstract class ActionNode {
      * Memperbarui informasi utilitas yang tercatat pada simpul ini, termasuk
      * local bounds-nya.
      *
-     * @param result Hasil permainan
+     * @param result Nilai acuan untuk memperbarui estimasi utilitas
      */
     public abstract void updateUtility(double result);
 

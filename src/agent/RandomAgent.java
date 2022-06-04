@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * GPA Random yang selalu memilih aksi secara acak.
  *
  * @author Jiang Han
  */
@@ -22,5 +23,4 @@ public class RandomAgent extends GamePlayingAgent {
     public String getConfigurationString() {
         return "";
     }
-    
 }
