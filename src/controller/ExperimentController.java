@@ -29,9 +29,9 @@ public class ExperimentController {
      * Melakukan beberapa kali pengujian untuk agen MCTS dengan algoritma UCT,
      * lalu mencatat hasil pengujian dan rata-rata skornya.
      *
-     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param iteration Jumlah pengujian yang ingin dilakukan
      * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
-     * pemilihan aksi.
+     * pemilihan aksi
      * @param EXP_CONST Konstanta eksplorasi UCT
      * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
      * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
@@ -67,13 +67,13 @@ public class ExperimentController {
      * Melakukan beberapa kali pengujian untuk agen TDTS dengan algoritma
      * Sarsa-UCT(lambda), lalu mencatat hasil pengujian dan rata-rata skornya.
      *
-     * @param iteration Jumlah pengujian yang ingin dilakukan.
+     * @param iteration Jumlah pengujian yang ingin dilakukan
      * @param MAX_TICK Jumlah langkah waktu yang diberikan ke agen pada setiap
-     * pemilihan aksi.
+     * pemilihan aksi
      * @param EXP_CONST Konstanta eksplorasi UCT
      * @param gamma Reward discount yang mengurangi nilai dari state yang jauh
-     * dari state saat ini.
-     * @param lambda Eligibility trace decay rate.
+     * dari state saat ini
+     * @param lambda Eligibility trace decay rate
      * @param isRobustChild Jika true, agen akan memakai Robust Child sebagai
      * Best-Child Policynya. Sebaliknya, agen akan memakai Max Child.
      * @param isSpaceLocalNorm Jika true, agen akan memakai Space-Local Value
@@ -89,15 +89,15 @@ public class ExperimentController {
             boolean isRobustChild,
             boolean isSpaceLocalNorm) {
         System.out.println("Sarsa UCT(lambda) Agent is being tested...");
-        
+
         Supplier<GamePlayingAgent> agentBuilder = () -> new TdtsAgent.Builder()
-                    .setExplorationConstant(EXP_CONST)
-                    .setRewardDiscount(gamma)
-                    .setEligibilityTraceDecay(lambda)
-                    .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
-                    .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
-                    .build();
-        
+                .setExplorationConstant(EXP_CONST)
+                .setRewardDiscount(gamma)
+                .setEligibilityTraceDecay(lambda)
+                .setBestChildPolicy(isRobustChild ? new MostVisitPolicy() : new MaxUtilPolicy())
+                .setNormalizationPolicy(isSpaceLocalNorm ? new SpaceLocalNormalization() : new NoNormalization())
+                .build();
+
         ExperimentLogger logger = new ExperimentLogger("tdts",
                 "Average score of Sarsa-UCT(lambda) GPA",
                 "Number of games: " + iteration,
@@ -108,10 +108,16 @@ public class ExperimentController {
         runExperiment(iteration, MAX_TICK, agentBuilder, logger);
     }
 
+    /**
+     * Melakukan beberapa kali pengujian untuk agen Random, lalu mencatat hasil
+     * pengujian ke file log.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan
+     */
     public static void randomAverage(int iteration) {
         System.out.println("Random Agent is being tested...");
         ExperimentLogger logger = new ExperimentLogger(
-                "random", 
+                "random",
                 "Average score of Random GPA",
                 "Number of games: " + iteration
         );
@@ -119,6 +125,17 @@ public class ExperimentController {
         runExperiment(iteration, Integer.MAX_VALUE, () -> new RandomAgent(), logger);
     }
 
+    /**
+     * Method generik untuk melakukan pengujian berulang terhadap GPA dengan
+     * agen tertentu.
+     *
+     * @param iteration Jumlah pengujian yang ingin dilakukan
+     * @param maxTick Jumlah langkah waktu yang diberikan ke agen pada setiap
+     * pemilihan aksi
+     * @param agentBuilder Objek Supplier yang dapat mengembalikan GPA dengan
+     * algoritma dan konfigurasi parameter tertentu
+     * @param logger Objek yang akan mencatatkan detail pengujian ke file log
+     */
     private static void runExperiment(
             int iteration,
             int maxTick,
@@ -149,7 +166,7 @@ public class ExperimentController {
                 step++;
             } while (!state.isTerminal());
             endTime = System.currentTimeMillis();
-            
+
             steps[i] = step;
             durations[i] = endTime - startTime;
 
@@ -174,20 +191,20 @@ public class ExperimentController {
         double standardDeviation = Math.sqrt(variance);
         System.out.println("Sample standard deviation: " + standardDeviation);
         logger.logSummary("Sample standard deviation: " + standardDeviation);
-        
+
         double medianScore = median(scores);
         System.out.println("Median Score: " + medianScore);
         logger.logSummary("Median Score: " + medianScore);
-        
+
         double avgStep = average(steps);
         System.out.println("Average Step: " + avgStep);
         logger.logSummary("Average Step: " + avgStep);
-        
+
         long totalTime = Arrays.stream(durations).sum();
-        System.out.println("Total time: " + (totalTime/1000.0) + " s");
-        logger.logSummary("Total time: " + (totalTime/1000.0) + " s");
-        System.out.printf("Average time per game: %.3f s%n", (totalTime/1000.0/iteration));
-        logger.logSummary(String.format("Average time per game: %.3f s", (totalTime/1000.0/iteration)));
+        System.out.println("Total time: " + (totalTime / 1000.0) + " s");
+        logger.logSummary("Total time: " + (totalTime / 1000.0) + " s");
+        System.out.printf("Average time per game: %.3f s%n", (totalTime / 1000.0 / iteration));
+        logger.logSummary(String.format("Average time per game: %.3f s", (totalTime / 1000.0 / iteration)));
 
         int maxScoreId = idOfMaximum(scores);
         System.out.println("Max Score: " + scores[maxScoreId] + " (Iteration[" + (maxScoreId + 1) + "])");
