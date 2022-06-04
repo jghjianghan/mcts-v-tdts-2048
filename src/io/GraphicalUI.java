@@ -27,7 +27,7 @@ import game.GameAction;
 import game.GameModel;
 
 /**
- * The graphical user interface for this application
+ * The graphical user interface for the 2048 game GUI
  * @author Jiang Han
  */
 public final class GraphicalUI extends JPanel implements ActionListener, KeyListener, MouseListener {
@@ -62,19 +62,19 @@ public final class GraphicalUI extends JPanel implements ActionListener, KeyList
 
     static {
         COLOR_LIST.put(0, new Color(205, 193, 180));
-        COLOR_LIST.put(2, new Color(121, 183, 172)); //kolom 1 
+        COLOR_LIST.put(2, new Color(121, 183, 172));
         COLOR_LIST.put(4, new Color(255, 255, 186));
         COLOR_LIST.put(8, new Color(214, 181, 208));
         COLOR_LIST.put(16, new Color(251, 223, 235));
-        COLOR_LIST.put(32, new Color(188, 221, 212)); //kolom 2
+        COLOR_LIST.put(32, new Color(188, 221, 212));
         COLOR_LIST.put(64, new Color(238, 224, 221));
         COLOR_LIST.put(128, new Color(203, 227, 195));
         COLOR_LIST.put(256, new Color(247, 183, 210));
-        COLOR_LIST.put(512, new Color(198, 225, 206)); //kolom 3
+        COLOR_LIST.put(512, new Color(198, 225, 206));
         COLOR_LIST.put(1024, new Color(249, 243, 229));
         COLOR_LIST.put(2048, new Color(214, 228, 143));
         COLOR_LIST.put(4096, new Color(162, 218, 219));
-        COLOR_LIST.put(8192, new Color(224, 224, 226)); //kolom 4
+        COLOR_LIST.put(8192, new Color(224, 224, 226));
         COLOR_LIST.put(16384, new Color(235, 148, 157));
         COLOR_LIST.put(32768, new Color(202, 233, 235));
         COLOR_LIST.put(65536, new Color(243, 202, 218));

@@ -8,7 +8,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * Models a rounded-rectangle tile that's drawn on the screen.
+ * Models a rounded-rectangle tile that's drawn on the 2048 GUI
  * @author Jiang Han
  */
 public class Tile {
