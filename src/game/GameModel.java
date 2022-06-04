@@ -480,7 +480,6 @@ public class GameModel {
             sb.append("Score: ");
             sb.append(score);
             sb.append('\n');
-
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
                     sb.append(board[i][j].value);
