@@ -266,7 +266,7 @@ public class TdtsAgent extends GamePlayingAgent {
             GameResult currentResult = simulatedTrajectory.pop();
             double reward = nextScore - currentResult.score; //harusnya dikurang skor 1 state sebelumnya
 
-            double currentValue = 0; //Use V_playout here is needed
+            double currentValue = 0; //V_playout
             double delta = reward + REWARD_DISCOUNT * nextValue - currentValue;
             cumulativeDelta = ELIGIBILITY_TRACE_DECAY * REWARD_DISCOUNT * cumulativeDelta + delta;
 
