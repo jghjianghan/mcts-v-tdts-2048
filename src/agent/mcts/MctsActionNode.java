@@ -43,7 +43,7 @@ class MctsActionNode extends ActionNode {
         GameState nextState = model.applyAction(parent.state, this.action);
 
         if (children.containsKey(nextState)) {
-            return (StateNode) children.get(nextState);
+            return children.get(nextState);
         } else {
             MctsStateNode newNode = new MctsStateNode(nextState, this);
             children.put(nextState, newNode);
