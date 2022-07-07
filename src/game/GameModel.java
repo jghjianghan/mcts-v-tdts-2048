@@ -47,7 +47,6 @@ public class GameModel {
      * @return Skor yang didapatkan dari hasil penggabungan saat digeser
      */
     private int slideLine(Cell[] line) {
-        assert line.length == BOARD_SIZE;
         int score = 0;
         // Join tile yang sama (tidak harus sebelahan)
         int ptr = 0;
@@ -197,8 +196,8 @@ public class GameModel {
         Cell cell1 = cells.remove(rand.nextInt(cells.size()));
         Cell cell2 = cells.remove(rand.nextInt(cells.size()));
 
-        cell1.value = (Math.random() >= 0.9) ? 4 : 2;
-        cell2.value = (Math.random() >= 0.9) ? 4 : 2;
+        cell1.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
+        cell2.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
 
         state.evaluateAttributes();
 
@@ -241,7 +240,6 @@ public class GameModel {
         }
 
         public GameState(int[][] board, int score) {
-            assert board.length == BOARD_SIZE && board[0].length == BOARD_SIZE;
             this.board = new Cell[BOARD_SIZE][];
             for (int i = 0; i < BOARD_SIZE; i++) {
                 this.board[i] = new Cell[BOARD_SIZE];

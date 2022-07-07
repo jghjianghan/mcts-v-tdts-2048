@@ -20,7 +20,7 @@ public class MostVisitPolicy implements BestChildPolicy {
     @Override
     public ActionNode selectBestChild(StateNode root) {
         List<ActionNode> bestActionList = new ArrayList<>();
-        int maxVisit = -1;
+        int maxVisit = Integer.MIN_VALUE;
         for (GameAction action : root.state.getAvailableActions()) {
             ActionNode childAction = root.getChildNode(action);
             if (childAction.getVisitCount() > maxVisit) {
