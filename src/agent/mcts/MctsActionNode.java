@@ -1,7 +1,6 @@
 package agent.mcts;
 
 import agent.ActionNode;
-import agent.GameResult;
 import agent.StateNode;
 import game.GameAction;
 import game.GameModel;
