@@ -217,7 +217,7 @@ public class MctsAgent extends GamePlayingAgent {
      * @param result Hasil simulasi permainan
      */
     private void backPropagate(StateNode stateNode, GameResult result) {
-		NORMALIZATION_POLICY.updateNormalizationBound(result.score);
+        NORMALIZATION_POLICY.updateNormalizationBound(result.score);
         while (true) {
             stateNode.incrementVisitCount();
             if (stateNode.parent == null) { //sudah sampai root
