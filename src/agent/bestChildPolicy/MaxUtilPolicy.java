@@ -20,7 +20,7 @@ public class MaxUtilPolicy implements BestChildPolicy {
     @Override
     public ActionNode selectBestChild(StateNode root) {
         List<ActionNode> bestActionList = new ArrayList<>();
-        double maxUtil = -1;
+        double maxUtil = Double.NEGATIVE_INFINITY;
         for (GameAction action : root.state.getAvailableActions()) {
             ActionNode childAction = root.getChildNode(action);
             if (childAction.getUtility() > maxUtil) {
