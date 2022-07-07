@@ -47,7 +47,6 @@ public class GameModel {
      * @return Skor yang didapatkan dari hasil penggabungan saat digeser
      */
     private int slideLine(Cell[] line) {
-        assert line.length == BOARD_SIZE;
         int score = 0;
         // Join tile yang sama (tidak harus sebelahan)
         int ptr = 0;
@@ -241,7 +240,6 @@ public class GameModel {
         }
 
         public GameState(int[][] board, int score) {
-            assert board.length == BOARD_SIZE && board[0].length == BOARD_SIZE;
             this.board = new Cell[BOARD_SIZE][];
             for (int i = 0; i < BOARD_SIZE; i++) {
                 this.board[i] = new Cell[BOARD_SIZE];
