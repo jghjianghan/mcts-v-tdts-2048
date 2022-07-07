@@ -197,8 +197,8 @@ public class GameModel {
         Cell cell1 = cells.remove(rand.nextInt(cells.size()));
         Cell cell2 = cells.remove(rand.nextInt(cells.size()));
 
-        cell1.value = (Math.random() >= 0.9) ? 4 : 2;
-        cell2.value = (Math.random() >= 0.9) ? 4 : 2;
+        cell1.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
+        cell2.value = (Math.random() >= NEW_TILE_PROB_THRES) ? NEW_TILE_VALUE_SECONDARY : NEW_TILE_VALUE_PRIMARY;
 
         state.evaluateAttributes();
 
